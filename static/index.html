@@ -19,167 +19,195 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:var(--font-mono);min-height:100vh;position:relative;overflow-x:hidden;}
-  .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:radial-gradient(900px 500px at 12% -8%, rgba(155,123,255,.14), transparent 60%),
-               radial-gradient(700px 500px at 100% 0%, rgba(61,220,151,.10), transparent 60%);}
+  
+  /* Fondo animado potente */
+  @keyframes floatingGlow {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.05); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+  .bg-glow{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(900px 600px at 15% 0%, rgba(155,123,255,.12), transparent 60%),
+      radial-gradient(800px 700px at 85% 100%, rgba(61,220,151,.08), transparent 60%),
+      radial-gradient(600px 500px at 50% 50%, rgba(14, 165, 233, 0.05), transparent 60%);
+    animation: floatingGlow 18s ease-in-out infinite alternate;
+  }
+  
   main, header{position:relative;z-index:1;}
   ::-webkit-scrollbar{width:10px;height:10px;}
   ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:6px;}
 
-  header.topbar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);background:rgba(11,12,20,.6);backdrop-filter:blur(10px);position:sticky;top:0;z-index:10;}
+  header.topbar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);background:rgba(11,12,20,.6);backdrop-filter:blur(15px);position:sticky;top:0;z-index:10;}
   .brand{display:flex;align-items:center;gap:12px;}
-  .brand-mark{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--purple),var(--mint));font-family:var(--font-display);font-weight:800;color:#04050a;font-size:15px;flex-shrink:0;}
-  .brand h1{font-family:var(--font-display);font-size:17px;font-weight:700;margin:0;}
+  .brand-mark{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--purple),var(--mint));font-family:var(--font-display);font-weight:800;color:#04050a;font-size:15px;flex-shrink:0;box-shadow:0 0 20px rgba(155,123,255,.4);}
+  .brand h1{font-family:var(--font-display);font-size:18px;font-weight:800;margin:0;letter-spacing:-0.02em;}
   .brand p{margin:2px 0 0;font-size:11px;color:var(--muted);}
-  .stats-row{display:flex;gap:8px;flex-wrap:wrap;}
-  .stat-pill{display:flex;align-items:baseline;gap:6px;padding:7px 12px;border-radius:10px;background:var(--panel);border:1px solid var(--border);font-size:11px;color:var(--muted);}
-  .stat-pill b{font-family:var(--font-display);font-size:15px;color:var(--text);font-weight:700;}
-  .stat-pill.is-mint b{color:var(--mint);}
-  .stat-pill.is-gold b{color:var(--gold);}
-
-  main.container{max-width:1180px;margin:0 auto;padding:18px 18px 70px;display:flex;flex-direction:column;gap:16px;}
-
-  .migration-banner{display:none;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid rgba(155,123,255,.35);background:rgba(155,123,255,.08);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--text);}
-
-  .ready-strip{border:1px solid var(--border);background:var(--panel);border-radius:14px;padding:14px 16px;}
-  .ready-strip .ready-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:block;}
-  .ready-chips{display:flex;gap:8px;flex-wrap:wrap;}
-  .ready-chip{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:20px;background:rgba(61,220,151,.10);border:1px solid rgba(61,220,151,.35);font-size:12px;color:var(--text);cursor:pointer;}
-  .ready-chip:hover{border-color:var(--mint);}
-  .ready-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--mint);flex-shrink:0;box-shadow:0 0 8px var(--mint);}
-  .ready-chip .pname{color:var(--muted);}
-  .ready-empty{font-size:12.5px;color:var(--muted);}
-  .ready-empty b{color:var(--gold);font-weight:700;}
-
-  /* Corrección del contenedor de la barra de perfiles para evitar solapamientos */
-  .rail-wrap { 
-    display: flex; 
-    align-items: center; 
-    gap: 12px; 
-    background: var(--panel-2);
-    padding: 8px 12px;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-  }
-  .profile-rail { 
-    display: flex; 
-    gap: 8px; 
-    overflow-x: auto; 
-    flex: 1;
-    scrollbar-width: none; 
-  }
-  .profile-rail::-webkit-scrollbar { display: none; }
-  .rail-wrap .btn {
-    flex-shrink: 0; 
-  }
   
-  .rail-chip{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:9px 15px;border-radius:20px;border:1px solid var(--border);background:var(--panel);cursor:pointer;font-size:12.5px;color:var(--muted);white-space:nowrap;transition:border-color .15s,color .15s,background .15s;font-family:var(--font-mono);}
-  .rail-chip:hover{border-color:rgba(255,255,255,.22);color:var(--text);}
-  .rail-chip.is-active{background:var(--purple);border-color:var(--purple);color:#0b0612;font-weight:700;}
-  .rail-chip .rdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--muted-dim);}
-  .rail-chip .rcount{font-size:10px;opacity:.7;}
+  .stats-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .stat-pill{display:flex;align-items:baseline;gap:6px;padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--border-soft);font-size:11px;color:var(--muted);box-shadow:inset 0 2px 10px rgba(255,255,255,.01);}
+  .stat-pill b{font-family:var(--font-display);font-size:15px;color:var(--text);font-weight:800;}
+  .stat-pill.is-mint b{color:var(--mint); text-shadow:0 0 10px rgba(61,220,151,.4);}
+  .stat-pill.is-gold b{color:var(--gold); text-shadow:0 0 10px rgba(240,196,25,.4);}
 
-  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
-  .search-box{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:9px 12px;}
+  main.container{max-width:1180px;margin:0 auto;padding:22px 18px 80px;display:flex;flex-direction:column;gap:20px;}
+
+  .migration-banner{display:none;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid rgba(155,123,255,.5);background:linear-gradient(90deg, rgba(155,123,255,.1), transparent);border-radius:14px;padding:12px 16px;font-size:12px;color:var(--text);box-shadow:0 4px 20px rgba(155,123,255,.15);}
+
+  .ready-strip{border:1px solid var(--border);background:linear-gradient(145deg, var(--panel), rgba(11,12,20,.4));border-radius:16px;padding:16px 20px;backdrop-filter:blur(10px);box-shadow:0 8px 30px rgba(0,0,0,.3);}
+  .ready-strip .ready-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;display:block;font-weight:700;}
+  .ready-chips{display:flex;gap:10px;flex-wrap:wrap;}
+  
+  /* Chip de perfiles listos, hereda color del perfil */
+  .ready-chip{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:20px;background:color-mix(in srgb, var(--p-c1) 12%, transparent);border:1px solid color-mix(in srgb, var(--p-c1) 40%, transparent);font-size:12.5px;color:var(--text);cursor:pointer;transition:all .2s ease;box-shadow:0 4px 15px color-mix(in srgb, var(--p-c1) 8%, transparent);}
+  .ready-chip:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 6px 20px color-mix(in srgb, var(--p-c1) 20%, transparent);border-color:var(--p-c1);}
+  .ready-chip .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .ready-chip .pname{color:color-mix(in srgb, var(--p-c1) 70%, white);font-weight:600;}
+  
+  .ready-empty{font-size:12.5px;color:var(--muted);}
+  .ready-empty b{color:var(--gold);font-weight:800;text-shadow:0 0 10px rgba(240,196,25,.3);}
+
+  .rail-wrap { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.02); padding: 10px 14px; border-radius: 16px; border: 1px solid var(--border-soft); box-shadow:inset 0 0 20px rgba(0,0,0,.2); }
+  .profile-rail { display: flex; gap: 10px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+  .profile-rail::-webkit-scrollbar { display: none; }
+  .rail-wrap .btn { flex-shrink: 0; }
+  
+  .rail-chip{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:24px;border:1px solid var(--border);background:var(--panel);cursor:pointer;font-size:12.5px;color:var(--muted);white-space:nowrap;transition:all .2s ease;font-family:var(--font-mono);}
+  .rail-chip:hover{border-color:var(--p-c1, rgba(255,255,255,.3));color:var(--text);transform:translateY(-1px);}
+  .rail-chip.is-active{background:linear-gradient(135deg, color-mix(in srgb, var(--p-c1) 20%, transparent), transparent);border-color:var(--p-c1);color:#fff;font-weight:700;box-shadow:0 4px 15px color-mix(in srgb, var(--p-c1) 15%, transparent);}
+  .rail-chip .rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px var(--dot-color, transparent);}
+  .rail-chip .rcount{font-size:10.5px;opacity:.8;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:10px;}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+  .search-box{flex:1;min-width:200px;display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 14px;transition:border-color .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,.2);}
+  .search-box:focus-within{border-color:var(--purple);box-shadow:0 0 0 2px rgba(155,123,255,.1), inset 0 2px 6px rgba(0,0,0,.2);}
   .search-box svg{flex-shrink:0;color:var(--muted-dim);}
-  .search-box input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12.5px;}
+  .search-box input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:13px;}
   .search-box input::placeholder{color:var(--muted-dim);}
-  select{background:var(--panel);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font-mono);font-size:12px;padding:9px 12px;outline:none;cursor:pointer;}
+  select{background:var(--panel);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:var(--font-mono);font-size:12.5px;padding:10px 14px;outline:none;cursor:pointer;transition:border-color .2s;}
+  select:focus{border-color:var(--purple);}
 
-  .btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:12px;font-weight:600;white-space:nowrap;background:var(--panel);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:9px 13px;cursor:pointer;transition:border-color .15s,background .15s;}
-  .btn:hover{border-color:rgba(255,255,255,.2);}
-  .btn.primary{background:var(--purple);border-color:var(--purple);color:#0b0612;}
-  .btn.primary:hover{background:#a98cff;}
+  .btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:.02em;white-space:nowrap;background:var(--panel);border:1px solid var(--border);border-radius:12px;color:var(--text);padding:10px 16px;cursor:pointer;transition:all .2s ease;}
+  .btn:hover{border-color:rgba(255,255,255,.3);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2);}
+  .btn.primary{background:linear-gradient(135deg, var(--purple), #b39cfb);border-color:var(--purple);color:#0b0612;box-shadow:0 4px 15px rgba(155,123,255,.3);}
+  .btn.primary:hover{background:#a98cff;box-shadow:0 6px 20px rgba(155,123,255,.4);}
   .btn.ghost{background:transparent;}
   .btn.danger{color:var(--pink);}
-  .btn.danger:hover{border-color:var(--pink);}
-  .btn.sm{padding:6px 10px;font-size:11px;}
+  .btn.danger:hover{border-color:var(--pink);background:rgba(255,111,174,.1);box-shadow:0 4px 15px rgba(255,111,174,.2);}
+  .btn.sm{padding:7px 12px;font-size:12px;}
   .btn:disabled{opacity:.4;cursor:not-allowed;}
 
-  .icon-btn{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;flex-shrink:0;transition:border-color .15s,color .15s,background .15s;}
-  .icon-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
-  .icon-btn.danger:hover{color:var(--pink);border-color:var(--pink);}
+  .icon-btn{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;flex-shrink:0;transition:all .2s ease;}
+  .icon-btn:hover{color:var(--text);border-color:rgba(255,255,255,.3);transform:scale(1.05);}
+  .icon-btn.danger:hover{color:var(--pink);border-color:var(--pink);background:rgba(255,111,174,.1);}
   .icon-btn.is-off{color:var(--pink);border-color:rgba(255,111,174,.4);background:rgba(255,111,174,.08);}
-  .icon-btn.is-on{color:var(--mint);border-color:rgba(61,220,151,.4);background:rgba(61,220,151,.08);}
+  .icon-btn.is-on{color:var(--mint);border-color:rgba(61,220,151,.4);background:rgba(61,220,151,.08);box-shadow:0 0 10px rgba(61,220,151,.2);}
 
-  .form-panel{border:1px solid var(--border);background:var(--panel-2);border-radius:14px;padding:16px;animation:formIn .2s ease both;}
-  @keyframes formIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
-  .form-panel h3{margin:0 0 4px;font-family:var(--font-display);font-size:13px;color:var(--text);}
-  .form-panel .form-sub{margin:0 0 12px;font-size:11px;color:var(--muted);}
-  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;}
-  .form-grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));}
-  .form-panel input, .form-panel select, .form-panel textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:12.5px;padding:9px 10px;outline:none;}
-  .form-panel input:focus, .form-panel select:focus, .form-panel textarea:focus{border-color:var(--purple);}
-  .form-panel textarea{grid-column:1/-1;min-height:50px;resize:vertical;}
-  .form-hint{grid-column:1/-1;font-size:10.5px;color:var(--muted-dim);}
-  .form-actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end;align-items:center;}
-  .form-toggle-link{font-size:11px;color:var(--purple);cursor:pointer;text-decoration:underline;margin-right:auto;background:none;border:none;font-family:var(--font-mono);padding:0;}
-  .form-empty-note{font-size:12px;color:var(--gold);margin:0 0 10px;}
+  .form-panel{border:1px solid var(--border);background:linear-gradient(145deg, var(--panel-2), var(--panel));border-radius:16px;padding:20px;animation:formIn .3s cubic-bezier(0.17, 0.84, 0.44, 1) both;box-shadow:0 10px 40px rgba(0,0,0,.4);}
+  @keyframes formIn{from{opacity:0;transform:translateY(-10px) scale(0.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+  .form-panel h3{margin:0 0 6px;font-family:var(--font-display);font-size:15px;color:var(--text);font-weight:800;}
+  .form-panel .form-sub{margin:0 0 14px;font-size:11.5px;color:var(--muted);}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+  .form-grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(130px,1fr));}
+  .form-panel input, .form-panel select, .form-panel textarea{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font-mono);font-size:13px;padding:11px 12px;outline:none;transition:all .2s;}
+  .form-panel input:focus, .form-panel select:focus, .form-panel textarea:focus{border-color:var(--purple);box-shadow:0 0 0 2px rgba(155,123,255,.15);}
+  .form-panel textarea{grid-column:1/-1;min-height:60px;resize:vertical;}
+  .form-hint{grid-column:1/-1;font-size:11px;color:var(--muted-dim);margin-top:2px;}
+  .form-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;align-items:center;}
+  .form-toggle-link{font-size:11.5px;color:var(--purple);cursor:pointer;text-decoration:underline;margin-right:auto;background:none;border:none;font-family:var(--font-mono);padding:0;font-weight:700;}
+  .form-empty-note{font-size:13px;color:var(--gold);margin:0 0 12px;font-weight:700;}
 
-  .focused-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .focused-head h2{font-family:var(--font-display);font-size:18px;margin:0;}
-  .back-link{font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;}
+  .focused-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .focused-head h2{font-family:var(--font-display);font-size:22px;margin:0;font-weight:800;letter-spacing:-0.02em;}
+  .back-link{font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;transition:color .2s;}
   .back-link:hover{color:var(--text);}
-  .focused-actions{display:flex;gap:6px;margin-left:auto;}
+  .focused-actions{display:flex;gap:8px;margin-left:auto;}
 
-  .profiles-list{display:flex;flex-direction:column;gap:14px;}
-  .profile-card{border:1px solid var(--border);background:var(--panel);border-radius:14px;overflow:hidden;animation:fadeUp .35s ease both;}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-  .profile-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
-  .profile-head .chev{color:var(--muted-dim);flex-shrink:0;transition:transform .25s;}
+  .profiles-list{display:flex;flex-direction:column;gap:18px;}
+  
+  /* Tarjeta de perfil super visual */
+  .profile-card{border:1px solid var(--border);border-left:5px solid var(--p-c1, var(--border));background:linear-gradient(160deg, rgba(255,255,255,.01) 0%, transparent 40%), var(--panel);border-radius:16px;overflow:hidden;animation:fadeUp .4s cubic-bezier(0.17, 0.84, 0.44, 1) both;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .2s ease, box-shadow .2s ease;}
+  .profile-card:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.3);}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+  
+  .profile-head{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;user-select:none;background:linear-gradient(90deg, color-mix(in srgb, var(--p-c1) 8%, transparent), transparent 60%);}
+  .profile-head .chev{color:var(--p-c1);flex-shrink:0;transition:transform .3s cubic-bezier(0.17, 0.84, 0.44, 1);}
   .profile-card.is-collapsed .chev{transform:rotate(-90deg);}
-  .profile-name{font-family:var(--font-display);font-size:14.5px;font-weight:700;color:var(--text);}
-  .profile-meta{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;}
-  .meta-pill{font-size:10.5px;padding:4px 9px;border-radius:20px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;}
-  .meta-pill.is-mint{color:var(--mint);border-color:rgba(61,220,151,.35);background:rgba(61,220,151,.08);}
-  .meta-pill.is-gold{color:var(--gold);border-color:rgba(240,196,25,.35);background:rgba(240,196,25,.08);}
-  .profile-head-actions{display:flex;gap:6px;}
-  .profile-body{max-height:3000px;transition:max-height .3s ease;overflow:hidden;}
+  
+  .profile-name{font-family:var(--font-display);font-size:16px;font-weight:800;background:linear-gradient(90deg, var(--p-c1), var(--p-c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 20px color-mix(in srgb, var(--p-c1) 40%, transparent);}
+  
+  .profile-meta{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;}
+  .meta-pill{font-size:11px;font-weight:700;padding:5px 12px;border-radius:24px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;background:rgba(0,0,0,.2);}
+  .meta-pill.is-mint{color:var(--mint);border-color:rgba(61,220,151,.4);background:rgba(61,220,151,.1);box-shadow:0 0 10px rgba(61,220,151,.15);}
+  .meta-pill.is-gold{color:var(--gold);border-color:rgba(240,196,25,.4);background:rgba(240,196,25,.1);box-shadow:0 0 10px rgba(240,196,25,.15);}
+  .profile-head-actions{display:flex;gap:8px;}
+  .profile-body{max-height:4000px;transition:max-height .4s cubic-bezier(0.17, 0.84, 0.44, 1);overflow:hidden;}
   .profile-card.is-collapsed .profile-body{max-height:0;}
-  .accounts-wrap{padding:0 16px 14px;display:flex;flex-direction:column;gap:8px;}
-  .profile-empty{font-size:12px;color:var(--muted-dim);padding:4px 2px 10px;}
+  .accounts-wrap{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px;}
+  .profile-empty{font-size:12.5px;color:var(--muted-dim);padding:8px 4px 12px;font-style:italic;}
 
-  .account-row{display:grid;grid-template-columns:22px 1.3fr .8fr 1fr 1.1fr 1fr auto;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:var(--panel-2);border:1px solid var(--border-soft);}
-  .acc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background-color .25s ease, box-shadow .25s ease;}
-  .acc-service{display:flex;flex-direction:column;gap:2px;min-width:0;}
-  .acc-service .svc-name{font-size:13px;color:var(--text);font-weight:700;font-family:var(--font-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .25s ease, text-shadow .25s ease;}
-  .acc-service .svc-email{font-size:10.5px;color:var(--muted-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .plan-badge{font-size:10px;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;width:fit-content;}
-  .plan-free{background:rgba(139,144,164,.14);color:var(--muted);}
-  .plan-plus{background:rgba(61,220,151,.14);color:var(--mint);}
-  .plan-pro{background:rgba(155,123,255,.16);color:var(--purple);}
-  .plan-team{background:rgba(240,196,25,.14);color:var(--gold);}
-  .plan-otro{background:rgba(255,111,174,.14);color:var(--pink);}
-  .status-badge{display:flex;flex-direction:column;gap:1px;font-size:10.5px;}
-  .status-badge .s-label{font-weight:700;letter-spacing:.02em;transition:color .25s ease;}
+  /* Fila de Cuenta con Avatares */
+  .account-row{display:grid;grid-template-columns:10px 42px 1.5fr .8fr 1.1fr 1fr 1fr auto;align-items:center;gap:14px;padding:12px 16px;border-radius:14px;background:var(--panel-2);border:1px solid var(--border-soft);transition:all .2s ease;box-shadow:inset 0 2px 10px rgba(0,0,0,.2);}
+  .account-row:hover{transform:translateY(-2px) scale(1.005);box-shadow:0 8px 24px rgba(0,0,0,.3);border-color:rgba(255,255,255,.12);}
+  
+  /* Animación de pulso para IA disponible */
+  @keyframes pulseMint { 0%{box-shadow:0 0 0 0 rgba(61,220,151,.5);} 70%{box-shadow:0 0 0 6px rgba(61,220,151,0);} 100%{box-shadow:0 0 0 0 rgba(61,220,151,0);} }
+  .st-available .acc-dot { animation: pulseMint 2s infinite; }
+  
+  .acc-dot{grid-area:dot;width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background-color .3s ease, box-shadow .3s ease;}
+  
+  /* Avatar Inteligencia Artificial */
+  .ai-avatar{grid-area:av;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:19px;font-weight:800;background:color-mix(in srgb, var(--ai-color) 15%, transparent);border:1px solid color-mix(in srgb, var(--ai-color) 40%, transparent);color:var(--ai-color);text-shadow:0 0 10px color-mix(in srgb, var(--ai-color) 50%, transparent);box-shadow:0 4px 12px color-mix(in srgb, var(--ai-color) 15%, transparent);flex-shrink:0;}
+
+  .acc-service{grid-area:service;display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .acc-service .svc-name{font-size:14px;color:var(--text);font-weight:800;font-family:var(--font-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .3s ease;text-shadow:0 0 15px color-mix(in srgb, var(--ai-color) 40%, transparent);}
+  .acc-service .svc-email{font-size:11px;color:var(--muted-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  
+  .plan-badge{grid-area:plan;font-size:10.5px;padding:4px 10px;border-radius:24px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;width:fit-content;}
+  .plan-free{background:rgba(139,144,164,.1);color:var(--muted);border:1px solid rgba(139,144,164,.2);}
+  .plan-plus{background:rgba(61,220,151,.1);color:var(--mint);border:1px solid rgba(61,220,151,.2);}
+  .plan-pro{background:rgba(155,123,255,.1);color:var(--purple);border:1px solid rgba(155,123,255,.2);}
+  .plan-team{background:rgba(240,196,25,.1);color:var(--gold);border:1px solid rgba(240,196,25,.2);}
+  .plan-otro{background:rgba(255,111,174,.1);color:var(--pink);border:1px solid rgba(255,111,174,.2);}
+  
+  /* Status Visual Mejorado (Estilo LED) */
+  .status-badge{grid-area:status;display:flex;flex-direction:column;gap:1px;font-size:10.5px;background:color-mix(in srgb, var(--st-color, var(--muted)) 8%, transparent);border:1px solid color-mix(in srgb, var(--st-color, var(--muted)) 20%, transparent);padding:5px 10px;border-radius:10px;width:fit-content;}
+  .status-badge .s-label{font-weight:800;letter-spacing:.02em;transition:color .3s ease;}
   .status-badge .s-sub{color:var(--muted-dim);font-size:9.5px;}
-  .status-badge.st-available .s-label{color:var(--mint);}
-  .status-badge.st-cooldown .s-label{color:var(--gold);}
-  .status-badge.st-disabled .s-label{color:var(--pink);}
-  .status-badge.st-neutral .s-label{color:var(--muted);}
-  .acc-lastused{font-size:11px;color:var(--muted);}
-  .acc-notes{font-size:11px;color:var(--muted-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:help;}
-  .acc-actions{display:flex;gap:5px;}
+  .st-available{--st-color:var(--mint);}
+  .st-cooldown{--st-color:var(--gold);}
+  .st-disabled{--st-color:var(--pink);}
+  .st-neutral{--st-color:var(--muted);}
+  .st-available .s-label{color:var(--mint);text-shadow:0 0 8px rgba(61,220,151,.4);}
+  .st-cooldown .s-label{color:var(--gold);text-shadow:0 0 8px rgba(240,196,25,.4);}
+  .st-disabled .s-label{color:var(--pink);text-shadow:0 0 8px rgba(255,111,174,.4);}
+  .st-neutral .s-label{color:var(--muted);}
 
-  @media (max-width:880px){
-    .account-row{grid-template-columns:18px 1fr auto;grid-template-areas:"dot service plan" "dot status lastused" "dot notes actions";row-gap:6px;}
-    .acc-dot{grid-area:dot;} .acc-service{grid-area:service;} .plan-badge{grid-area:plan;justify-self:end;}
-    .status-badge{grid-area:status;} .acc-lastused{grid-area:lastused;justify-self:end;}
-    .acc-notes{grid-area:notes;} .acc-actions{grid-area:actions;justify-self:end;}
+  .acc-lastused{grid-area:lastused;font-size:11.5px;color:var(--muted);}
+  .acc-notes{grid-area:notes;font-size:11.5px;color:var(--muted-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:help;font-style:italic;}
+  .acc-actions{grid-area:actions;display:flex;gap:6px;}
+
+  @media (max-width:950px){
+    .account-row{grid-template-columns:8px 38px 1fr auto;grid-template-areas:"dot av service plan" "dot av status lastused" "dot av notes actions";row-gap:8px;column-gap:12px;padding:14px;}
+    .plan-badge{justify-self:end;}
+    .acc-lastused{justify-self:end;}
+    .acc-actions{justify-self:end;}
   }
 
-  .empty-state{text-align:center;padding:60px 20px;border:1px dashed var(--border);border-radius:14px;color:var(--muted);}
-  .empty-state b{display:block;color:var(--text);font-family:var(--font-display);font-size:15px;margin-bottom:6px;}
-  .loading-state{text-align:center;padding:50px 20px;color:var(--muted);font-size:12px;}
+  .empty-state{text-align:center;padding:70px 20px;border:1px dashed var(--border);border-radius:16px;color:var(--muted);background:rgba(255,255,255,.01);}
+  .empty-state b{display:block;color:var(--text);font-family:var(--font-display);font-size:17px;margin-bottom:8px;font-weight:800;}
+  .loading-state{text-align:center;padding:60px 20px;color:var(--muted);font-size:13px;font-weight:700;}
 
-  .help-card{border:1px solid var(--border);background:var(--panel);border-radius:14px;padding:18px 20px;font-size:12.5px;color:var(--muted);line-height:1.6;}
-  .help-card b{color:var(--text);}
-  footer{text-align:center;padding:16px;font-size:10px;color:var(--muted-dim);}
+  .help-card{border:1px solid var(--border);background:linear-gradient(145deg, var(--panel), rgba(11,12,20,.6));border-radius:16px;padding:22px 24px;font-size:13px;color:var(--muted);line-height:1.7;box-shadow:0 10px 30px rgba(0,0,0,.2);}
+  .help-card b{color:var(--text);font-weight:700;}
+  footer{text-align:center;padding:20px;font-size:11px;color:var(--muted-dim);letter-spacing:.02em;}
 
-  .toast-wrap{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:100%;padding:0 16px;}
-  .toast{background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.45);transition:opacity .2s ease;max-width:340px;text-align:center;}
-  .toast.is-error{border-color:rgba(255,111,174,.45);color:var(--pink);}
-  .toast.is-success{border-color:rgba(61,220,151,.45);}
+  .toast-wrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:100%;padding:0 20px;}
+  .toast{background:rgba(18,19,30,.95);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:12.5px;color:var(--text);box-shadow:0 10px 40px rgba(0,0,0,.5);transition:all .3s cubic-bezier(0.17, 0.84, 0.44, 1);max-width:360px;text-align:center;font-weight:700;}
+  .toast.is-error{border-color:rgba(255,111,174,.5);color:var(--pink);box-shadow:0 10px 40px rgba(255,111,174,.2);}
+  .toast.is-success{border-color:rgba(61,220,151,.5);box-shadow:0 10px 40px rgba(61,220,151,.15);}
 
   @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
@@ -191,7 +219,7 @@
 <header class="topbar">
   <div class="brand">
     <span class="brand-mark">IA</span>
-    <div><h1>Multi-Perfil IA</h1><p>Mini App de Telegram · datos en servidor</p></div>
+    <div><h1>Multi-Perfil IA</h1><p>Mini App de Telegram · Datos en servidor</p></div>
   </div>
   <div class="stats-row" id="statsRow"></div>
 </header>
@@ -200,7 +228,7 @@
 
   <div class="migration-banner" id="migrationBanner"></div>
 
-  <section class="ready-strip" id="readyStrip"><div class="loading-state">Cargando…</div></section>
+  <section class="ready-strip" id="readyStrip"><div class="loading-state">Calculando disponibilidad…</div></section>
 
   <section class="rail-wrap">
     <div class="profile-rail" id="profileRail"></div>
@@ -209,35 +237,35 @@
 
   <section class="toolbar">
     <label class="search-box">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       <input id="searchInput" type="text" placeholder="Buscar IA, correo, notas…" autocomplete="off">
     </label>
     <select id="filterAI"><option value="">Todas las IAs</option></select>
     <select id="filterStatus">
       <option value="">Cualquier estado</option>
-      <option value="available">Disponible</option>
-      <option value="cooldown">En cooldown</option>
-      <option value="disabled">Desactivada</option>
-      <option value="neutral">Sin datos</option>
+      <option value="available">🟢 Disponible</option>
+      <option value="cooldown">🟡 En cooldown</option>
+      <option value="disabled">🔴 Desactivada</option>
+      <option value="neutral">⚪️ Sin datos</option>
     </select>
     <button class="btn" type="button" data-action="new-account">+ Cuenta IA</button>
     <button class="btn ghost" type="button" data-action="export">Exportar</button>
     <button class="btn ghost" type="button" data-action="import">Importar</button>
-    <button class="btn ghost danger" type="button" data-action="reset">Borrar todo</button>
+    <button class="btn ghost danger" type="button" data-action="reset">Resetear</button>
   </section>
 
   <section id="formZone"></section>
 
-  <section id="mainZone"><div class="loading-state">Conectando con el servidor…</div></section>
+  <section id="mainZone"><div class="loading-state">Conectando con el servidor estelar…</div></section>
 
   <section class="help-card">
-    <b>📌 Cómo funciona</b><br>
-    Cada <b>perfil</b> = un perfil de tu navegador. Adentro registrás las cuentas de IA que usás ahí. Si le decís cuántos mensajes tiene cada una y cada cuántas horas resetea, esta pantalla calcula sola si ya podés volver a usarla — y arriba siempre ves qué tenés <b>disponible ahora</b> en todos tus perfiles. Todo vive en el servidor, no en este navegador: podés abrirlo desde cualquier dispositivo con tu mismo Telegram.
+    <b>📌 Arquitectura Inteligente</b><br>
+    Cada <b>perfil</b> corresponde a un perfil de tu navegador. Adentro registrás las cuentas de IA. Configura los mensajes y sus horas de reseteo, y el sistema calculará visualmente si podés usarlas. Tu tira superior ("Disponible ahora") hereda los colores exactos de tus perfiles para que sepas dónde está cada cosa al instante.
   </section>
 
 </main>
 
-<footer>Multi-Perfil IA · datos guardados en servidor, separados por tu cuenta de Telegram</footer>
+<footer>Multi-Perfil IA · Arquitectura visual sincronizada mediante Telegram</footer>
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
@@ -249,13 +277,7 @@
      ============================================================ */
   const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
   if(tg){
-    try{ 
-      tg.ready(); 
-      tg.expand(); 
-      if (tg.requestFullscreen) {
-        tg.requestFullscreen();
-      }
-    }catch(e){}
+    try{ tg.ready(); tg.expand(); if (tg.requestFullscreen) tg.requestFullscreen(); }catch(e){}
     try{ tg.setBackgroundColor && tg.setBackgroundColor('#030308'); }catch(e){}
     try{ tg.setHeaderColor && tg.setHeaderColor('#0b0c14'); }catch(e){}
   }
@@ -265,44 +287,29 @@
     try{
       if(kind === 'success' || kind === 'error' || kind === 'warning') tg.HapticFeedback.notificationOccurred(kind);
       else tg.HapticFeedback.impactOccurred(kind || 'light');
-    }catch(e){ /* versiones viejas de Telegram no tienen todos los métodos */ }
+    }catch(e){ }
   }
 
   function resolveTgId(){
-    if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id){
-      return String(tg.initDataUnsafe.user.id);
-    }
-    // Fuera de Telegram (probando en un navegador normal): se pide un ID una sola vez
+    if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) return String(tg.initDataUnsafe.user.id);
     let dev = localStorage.getItem('dev_tg_id');
-    if(!dev){
-      dev = 'dev-' + Math.random().toString(36).slice(2, 9);
-      localStorage.setItem('dev_tg_id', dev);
-    }
+    if(!dev){ dev = 'dev-' + Math.random().toString(36).slice(2, 9); localStorage.setItem('dev_tg_id', dev); }
     return dev;
   }
   const TG_ID = resolveTgId();
 
-  /* ============================================================
-     TOASTS
-     ============================================================ */
   function showToast(msg, kind){
     const wrap = document.getElementById('toastWrap');
     const el = document.createElement('div');
     el.className = 'toast' + (kind === 'error' ? ' is-error' : kind === 'success' ? ' is-success' : '');
     el.textContent = msg;
     wrap.appendChild(el);
-    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 220); }, 2800);
+    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2800);
   }
 
-  /* ============================================================
-     API
-     ============================================================ */
   async function apiFetch(path, options){
     options = options || {};
-    const res = await fetch(path, {
-      headers: { 'Content-Type': 'application/json' },
-      ...options
-    });
+    const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...options });
     if(!res.ok){
       let msg = 'Error de red (' + res.status + ')';
       try{ const j = await res.json(); if(j && j.error) msg = j.error; }catch(e){}
@@ -313,20 +320,17 @@
   const qs = (params) => '?' + new URLSearchParams(params).toString();
 
   /* ============================================================
-     ICONOS
+     ICONOS Y VISUALES
      ============================================================ */
   const ICONS = {
-    chev:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>`,
-    pencil: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`,
-    trash:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>`,
-    clock:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
-    power:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg>`,
-    back:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>`
+    chev:   `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`,
+    pencil: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`,
+    trash:  `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>`,
+    clock:  `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
+    power:  `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg>`,
+    back:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>`
   };
 
-  /* ============================================================
-     CATÁLOGO DE PRESETS POR IA
-     ============================================================ */
   const AI_PRESETS = {
     'ChatGPT':    { plan:'Plus', limitCount:40, limitResetHours:3 },
     'Claude':     { plan:'Pro',  limitCount:45, limitResetHours:5 },
@@ -341,6 +345,7 @@
     'Meta AI':    { plan:'Free', limitCount:null, limitResetHours:null }
   };
 
+  // COLORES DE MARCA PARA LAS IA
   const AI_COLORS = {
     'ChatGPT': '#10a37f',      
     'Claude': '#d97757',       
@@ -355,9 +360,20 @@
     'Meta AI': '#06b6d4'       
   };
 
-  function getAiColor(serviceName) {
-    return AI_COLORS[serviceName] || 'var(--muted)';
-  }
+  // GRADIENTES IDENTIFICATIVOS ÚNICOS PARA PERFILES
+  const PROFILE_GRADIENTS = [
+    ['#ff6fae', '#ff9482'], // Pink -> Peach
+    ['#9b7bff', '#6f42c1'], // Purple -> Deep Purple
+    ['#3ddc97', '#20b2aa'], // Mint -> Teal
+    ['#f0c419', '#f39c12'], // Gold -> Orange
+    ['#0ea5e9', '#3b82f6'], // Cyan -> Blue
+    ['#f43f5e', '#e11d48'], // Rose -> Crimson
+    ['#10b981', '#059669'], // Emerald -> Forest
+    ['#8b5cf6', '#6d28d9']  // Violet -> Purple
+  ];
+
+  function getAiColor(serviceName) { return AI_COLORS[serviceName] || 'var(--muted)'; }
+  function getProfileGradients(idx) { return PROFILE_GRADIENTS[Math.max(0, idx) % PROFILE_GRADIENTS.length]; }
 
   /* ============================================================
      ESTADO
@@ -365,46 +381,7 @@
   let state = { profiles: [], accounts: [] };
   const ui = { search:'', filterAI:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false };
 
-  async function loadState(){
-    state = await apiFetch('/api/state' + qs({ tg_id: TG_ID }));
-  }
-
-  function getLocalLegacyData(){
-    const raw = localStorage.getItem('ia_multiperfil_v3');
-    if(!raw) return null;
-    try{
-      const parsed = JSON.parse(raw);
-      if(parsed && Array.isArray(parsed.profiles) && parsed.profiles.length) return parsed;
-    }catch(e){}
-    return null;
-  }
-
-  async function maybeOfferMigration(){
-    if(state.profiles.length > 0) return;
-    const local = getLocalLegacyData();
-    if(!local) return;
-    const banner = document.getElementById('migrationBanner');
-    banner.style.display = 'flex';
-    banner.innerHTML = `
-      <span>Encontré ${local.profiles.length} perfil(es) guardados en este navegador. ¿Los subo?</span>
-      <button class="btn primary sm" type="button" id="migrateNowBtn">Migrar ahora</button>
-      <button class="btn ghost sm" type="button" id="migrateDismissBtn">Ignorar</button>
-    `;
-    document.getElementById('migrateNowBtn').addEventListener('click', async () => {
-      try{
-        await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, mode:'merge', profiles:local.profiles, accounts:local.accounts }) });
-        banner.style.display = 'none';
-        haptic('success');
-        showToast('Datos migrados al servidor', 'success');
-        await loadState();
-        renderAll();
-      }catch(e){
-        haptic('error');
-        showToast('No se pudo migrar: ' + e.message, 'error');
-      }
-    });
-    document.getElementById('migrateDismissBtn').addEventListener('click', () => { banner.style.display = 'none'; });
-  }
+  async function loadState(){ state = await apiFetch('/api/state' + qs({ tg_id: TG_ID })); }
 
   /* ============================================================
      DISPONIBILIDAD
@@ -412,9 +389,9 @@
   function computeStatus(acc){
     if(!acc.enabled) return { key:'disabled', label:'Desactivada', sub:'apagada a mano', remainingMs:0 };
     if(!acc.lastUsed) return { key:'neutral', label:'Nunca usada', sub:'', remainingMs:0 };
-    if(!acc.limitResetHours || !acc.limitCount) return { key:'neutral', label:'Sin límite definido', sub:'', remainingMs:0 };
+    if(!acc.limitResetHours || !acc.limitCount) return { key:'neutral', label:'Sin límite', sub:'', remainingMs:0 };
     const last = new Date(acc.lastUsed).getTime();
-    if(Number.isNaN(last)) return { key:'neutral', label:'Sin límite definido', sub:'', remainingMs:0 };
+    if(Number.isNaN(last)) return { key:'neutral', label:'Sin límite', sub:'', remainingMs:0 };
     const resetAt = last + acc.limitResetHours*3600*1000;
     const now = Date.now();
     if(now >= resetAt) return { key:'available', label:'Disponible', sub:'', remainingMs:0 };
@@ -429,31 +406,21 @@
   function formatRelative(iso){
     if(!iso) return 'nunca';
     const ms = Date.now() - new Date(iso).getTime();
-    if(ms < 60000) return 'ahora mismo';
+    if(ms < 60000) return 'ahora';
     const min = Math.floor(ms/60000);
     if(min < 60) return `hace ${min}m`;
     const h = Math.floor(min/60);
     if(h < 24) return `hace ${h}h`;
     return `hace ${Math.floor(h/24)}d`;
   }
-  function escapeHtml(s){
-    return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  }
+  function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   const PLAN_CLASS = { Free:'plan-free', Plus:'plan-plus', Pro:'plan-pro', Team:'plan-team' };
   function planClass(plan){ return PLAN_CLASS[plan] || 'plan-otro'; }
 
-  /* ============================================================
-     HELPERS DE DATOS
-     ============================================================ */
   function getProfile(id){ return state.profiles.find(p => p.id === id); }
   function getAccount(id){ return state.accounts.find(a => a.id === id); }
   function accountsOf(profileId){ return state.accounts.filter(a => a.profileId === profileId); }
-  function statusCounts(accounts){
-    return {
-      available: accounts.filter(a => computeStatus(a).key === 'available').length,
-      cooldown: accounts.filter(a => computeStatus(a).key === 'cooldown').length
-    };
-  }
+  function statusCounts(accounts){ return { available: accounts.filter(a => computeStatus(a).key === 'available').length, cooldown: accounts.filter(a => computeStatus(a).key === 'cooldown').length }; }
   function nextProfileNumber(){
     let max = 0;
     state.profiles.forEach(p => { const m = /^Perfil (\d+)$/.exec(p.name.trim()); if(m) max = Math.max(max, parseInt(m[1],10)); });
@@ -463,34 +430,22 @@
     const status = computeStatus(acc).key;
     if(ui.filterAI && acc.service !== ui.filterAI) return false;
     if(ui.filterStatus && status !== ui.filterStatus) return false;
-    if(ui.search){
-      const hay = `${acc.service} ${acc.email} ${acc.notes} ${acc.plan}`.toLowerCase();
-      if(!hay.includes(ui.search)) return false;
-    }
+    if(ui.search){ const hay = `${acc.service} ${acc.email} ${acc.notes} ${acc.plan}`.toLowerCase(); if(!hay.includes(ui.search)) return false; }
     return true;
   }
 
   /* ============================================================
-     RENDER 
+     RENDERIZADO
      ============================================================ */
-  function renderAll(){
-    refreshFilterOptions();
-    renderStats();
-    renderReadyStrip();
-    renderRail();
-    renderForm();
-    renderMain();
-  }
+  function renderAll(){ refreshFilterOptions(); renderStats(); renderReadyStrip(); renderRail(); renderForm(); renderMain(); }
 
   function renderStats(){
-    const total = state.accounts.length;
     const { available, cooldown } = statusCounts(state.accounts);
     document.getElementById('statsRow').innerHTML = `
-      <div class="stat-pill"><b>${state.profiles.length}</b>perfiles</div>
-      <div class="stat-pill"><b>${total}</b>cuentas</div>
-      <div class="stat-pill is-mint"><b>${available}</b>disponibles</div>
-      <div class="stat-pill is-gold"><b>${cooldown}</b>en cooldown</div>
-    `;
+      <div class="stat-pill"><b>${state.profiles.length}</b> perfiles</div>
+      <div class="stat-pill"><b>${state.accounts.length}</b> cuentas</div>
+      <div class="stat-pill is-mint"><b>${available}</b> listas</div>
+      <div class="stat-pill is-gold"><b>${cooldown}</b> en cooldown</div>`;
   }
 
   function renderReadyStrip(){
@@ -498,38 +453,42 @@
     const available = state.accounts.filter(a => computeStatus(a).key === 'available').map(a => ({ acc:a, profile:getProfile(a.profileId) }));
     if(available.length){
       el.innerHTML = `
-        <span class="ready-label">Disponible ahora</span>
+        <span class="ready-label">🚀 Combustible listo para usar</span>
         <div class="ready-chips">
-          ${available.map(({acc,profile}) => `
-            <span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}">
-              <span class="dot"></span>${escapeHtml(acc.service)}<span class="pname">· ${escapeHtml(profile ? profile.name : '—')}</span>
-            </span>`).join('')}
+          ${available.map(({acc,profile}) => {
+            const pIdx = state.profiles.findIndex(pr => pr.id === profile?.id);
+            const pGrad = pIdx >= 0 ? getProfileGradients(pIdx) : ['var(--mint)','var(--mint)'];
+            return `<span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}" style="--p-c1: ${pGrad[0]}">
+              <span class="dot" style="background: var(--p-c1); box-shadow: 0 0 10px var(--p-c1)"></span>
+              <span style="font-weight: 800">${escapeHtml(acc.service)}</span>
+              <span class="pname">· ${escapeHtml(profile ? profile.name : '—')}</span>
+            </span>`;
+          }).join('')}
         </div>`;
       return;
     }
     const cooling = state.accounts.map(computeStatus).filter(s => s.key === 'cooldown').sort((a,b)=>a.remainingMs-b.remainingMs)[0];
-    if(state.accounts.length === 0){
-      el.innerHTML = `<span class="ready-empty">Aún no registraste ninguna cuenta. Creá un perfil y agregá la primera con "+ Cuenta IA".</span>`;
-    } else if(cooling){
-      el.innerHTML = `<span class="ready-empty">Todo en cooldown — la próxima vuelve en <b>${formatRemaining(cooling.remainingMs)}</b>.</span>`;
-    } else {
-      el.innerHTML = `<span class="ready-empty">Nada con disponibilidad calculable todavía.</span>`;
-    }
+    if(state.accounts.length === 0) el.innerHTML = `<span class="ready-empty">Aún no registraste ninguna cuenta. Creá un perfil para empezar.</span>`;
+    else if(cooling) el.innerHTML = `<span class="ready-empty">Todo recargando — próxima IA disponible en <b>${formatRemaining(cooling.remainingMs)}</b>.</span>`;
+    else el.innerHTML = `<span class="ready-empty">Nada con disponibilidad calculable todavía.</span>`;
   }
 
   function renderRail(){
     const rail = document.getElementById('profileRail');
+    const isAll = ui.activeProfile === null;
     const chips = [`
-      <button class="rail-chip ${ui.activeProfile===null?'is-active':''}" type="button" data-action="select-profile" data-id="">
-        <span class="rdot" style="background:var(--purple)"></span>Todos<span class="rcount">${state.accounts.length}</span>
+      <button class="rail-chip ${isAll?'is-active':''}" type="button" data-action="select-profile" data-id="" style="--p-c1: var(--purple);">
+        <span class="rdot" style="background:var(--purple); --dot-color:var(--purple)"></span>Todos <span class="rcount">${state.accounts.length}</span>
       </button>`];
-    state.profiles.forEach(p => {
+      
+    state.profiles.forEach((p, idx) => {
       const accs = accountsOf(p.id);
       const { available, cooldown } = statusCounts(accs);
       const dot = available ? 'var(--mint)' : cooldown ? 'var(--gold)' : 'var(--muted-dim)';
+      const grad = getProfileGradients(idx);
       chips.push(`
-        <button class="rail-chip ${ui.activeProfile===p.id?'is-active':''}" type="button" data-action="select-profile" data-id="${p.id}">
-          <span class="rdot" style="background:${dot}"></span>${escapeHtml(p.name)}<span class="rcount">${accs.length}</span>
+        <button class="rail-chip ${ui.activeProfile===p.id?'is-active':''}" type="button" data-action="select-profile" data-id="${p.id}" style="--p-c1: ${grad[0]}; --p-c2: ${grad[1]};">
+          <span class="rdot" style="background:${dot}; --dot-color:${dot}"></span>${escapeHtml(p.name)} <span class="rcount">${accs.length}</span>
         </button>`);
     });
     rail.innerHTML = chips.join('');
@@ -539,71 +498,73 @@
     const aiSel = document.getElementById('filterAI');
     const current = ui.filterAI;
     const services = [...new Set(state.accounts.map(a => a.service.trim()).filter(Boolean))].sort();
-    aiSel.innerHTML = '<option value="">Todas las IAs</option>' + services.map(s => `<option value="${escapeHtml(s)}" ${s===current?'selected':''}>${escapeHtml(s)}</option>`).join('');
+    aiSel.innerHTML = '<option value="">Cualquier IA</option>' + services.map(s => `<option value="${escapeHtml(s)}" ${s===current?'selected':''}>${escapeHtml(s)}</option>`).join('');
   }
 
   function renderMain(){
     const zone = document.getElementById('mainZone');
-    if(state.profiles.length === 0){
-      zone.innerHTML = `<div class="empty-state"><b>Todavía no hay perfiles</b>Creá el primero con "+ Perfil".</div>`;
-      return;
-    }
-    if(ui.activeProfile === null){
-      zone.innerHTML = `<div class="profiles-list">${state.profiles.map(renderProfileCard).join('')}</div>`;
+    if(state.profiles.length === 0){ zone.innerHTML = `<div class="empty-state"><b>Espacio vacío</b>Crea tu primer perfil para organizar las inteligencias artificiales.</div>`; return; }
+    if(ui.activeProfile === null) {
+      zone.innerHTML = `<div class="profiles-list">${state.profiles.map((p, idx) => renderProfileCard(p, idx)).join('')}</div>`;
     } else {
       const profile = getProfile(ui.activeProfile);
+      const idx = state.profiles.findIndex(pr => pr.id === profile.id);
       if(!profile){ ui.activeProfile = null; return renderMain(); }
-      zone.innerHTML = renderFocused(profile);
+      zone.innerHTML = renderFocused(profile, idx);
     }
   }
 
-  function renderProfileCard(profile){
+  function renderProfileCard(profile, idx){
     const all = accountsOf(profile.id);
     const visible = all.filter(matchesFilters);
     const { available, cooldown } = statusCounts(all);
+    const grad = getProfileGradients(idx);
     let body;
-    if(all.length === 0) body = `<div class="profile-empty">Sin cuentas todavía.</div>`;
-    else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
+    if(all.length === 0) body = `<div class="profile-empty">Sin cuentas registradas.</div>`;
+    else if(visible.length === 0) body = `<div class="profile-empty">Sin coincidencias para los filtros actuales.</div>`;
     else body = visible.map(renderAccountRow).join('');
+    
     return `
-      <div class="profile-card" data-profile-id="${profile.id}">
+      <div class="profile-card" data-profile-id="${profile.id}" style="--p-c1: ${grad[0]}; --p-c2: ${grad[1]};">
         <div class="profile-head" data-action="toggle-collapse" data-id="${profile.id}">
           <span class="chev">${ICONS.chev}</span>
           <span class="profile-name">${escapeHtml(profile.name)}</span>
           <div class="profile-meta">
             <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
-            ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
-            ${cooldown ? `<span class="meta-pill is-gold">${cooldown} en cooldown</span>` : ''}
+            ${available ? `<span class="meta-pill is-mint">${available} listas</span>` : ''}
+            ${cooldown ? `<span class="meta-pill is-gold">${cooldown} cooldown</span>` : ''}
           </div>
           <div class="profile-head-actions" onclick="event.stopPropagation()">
-            <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar perfil">${ICONS.pencil}</button>
-            <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil y sus cuentas">${ICONS.trash}</button>
+            <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar">${ICONS.pencil}</button>
+            <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar">${ICONS.trash}</button>
           </div>
         </div>
         <div class="profile-body"><div class="accounts-wrap">${body}</div></div>
       </div>`;
   }
 
-  function renderFocused(profile){
+  function renderFocused(profile, idx){
     const all = accountsOf(profile.id);
     const visible = all.filter(matchesFilters);
     const { available, cooldown } = statusCounts(all);
+    const grad = getProfileGradients(idx);
     let body;
-    if(all.length === 0) body = `<div class="profile-empty">Este perfil todavía no tiene cuentas.</div>`;
-    else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
+    if(all.length === 0) body = `<div class="profile-empty">Este perfil no tiene cuentas.</div>`;
+    else if(visible.length === 0) body = `<div class="profile-empty">Sin coincidencias para los filtros.</div>`;
     else body = `<div class="accounts-wrap">${visible.map(renderAccountRow).join('')}</div>`;
+    
     return `
-      <div class="focused-head">
+      <div class="focused-head" style="--p-c1: ${grad[0]}; --p-c2: ${grad[1]};">
         <span class="back-link" data-action="select-profile" data-id="">${ICONS.back} Todos los perfiles</span>
-        <h2>${escapeHtml(profile.name)}</h2>
+        <h2 class="profile-name" style="margin-left:4px">${escapeHtml(profile.name)}</h2>
         <div class="profile-meta">
           <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
-          ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
-          ${cooldown ? `<span class="meta-pill is-gold">${cooldown} en cooldown</span>` : ''}
+          ${available ? `<span class="meta-pill is-mint">${available} listas</span>` : ''}
+          ${cooldown ? `<span class="meta-pill is-gold">${cooldown} cooldown</span>` : ''}
         </div>
         <div class="focused-actions">
-          <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar perfil">${ICONS.pencil}</button>
-          <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil">${ICONS.trash}</button>
+          <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar">${ICONS.pencil}</button>
+          <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar">${ICONS.trash}</button>
         </div>
       </div>
       ${body}`;
@@ -613,27 +574,36 @@
     const status = computeStatus(acc);
     const dotColor = status.key === 'available' ? 'var(--mint)' : status.key === 'cooldown' ? 'var(--gold)' : status.key === 'disabled' ? 'var(--pink)' : 'var(--muted-dim)';
     const brandColor = getAiColor(acc.service);
-    const notesPreview = acc.notes || '';
+    const initial = (acc.service.charAt(0) || '?').toUpperCase();
     
     return `
       <div class="account-row" data-account-id="${acc.id}">
-        <span class="acc-dot" style="background:${dotColor}; box-shadow: 0 0 8px ${dotColor}80;"></span>
-        <div class="acc-service">
-          <span class="svc-name" style="color: ${brandColor}; text-shadow: 0 0 10px ${brandColor}40;">${escapeHtml(acc.service)}</span>
+        <span class="acc-dot" style="background:${dotColor}; box-shadow: 0 0 10px ${dotColor}80;"></span>
+        
+        <div class="ai-avatar" style="--ai-color: ${brandColor};" title="${escapeHtml(acc.service)}">
+          ${initial}
+        </div>
+        
+        <div class="acc-service" style="--ai-color: ${brandColor};">
+          <span class="svc-name">${escapeHtml(acc.service)}</span>
           <span class="svc-email">${escapeHtml(acc.email || 'sin correo')}</span>
         </div>
+        
         <span class="plan-badge ${planClass(acc.plan)}">${escapeHtml(acc.plan || 'Otro')}</span>
+        
         <div class="status-badge st-${status.key}">
           <span class="s-label">${status.label}</span>
           ${status.sub ? `<span class="s-sub">${status.sub}</span>` : ''}
         </div>
+        
         <span class="acc-lastused">${formatRelative(acc.lastUsed)}</span>
-        <span class="acc-notes" title="${escapeHtml(notesPreview)}">${escapeHtml(notesPreview) || '—'}</span>
+        <span class="acc-notes" title="${escapeHtml(acc.notes)}">${escapeHtml(acc.notes) || '—'}</span>
+        
         <div class="acc-actions">
-          <button class="icon-btn ${acc.enabled ? 'is-on' : 'is-off'}" type="button" data-action="toggle-enabled" data-id="${acc.id}" title="${acc.enabled ? 'Desactivar cuenta' : 'Activar cuenta'}">${ICONS.power}</button>
-          <button class="icon-btn" type="button" data-action="mark-used" data-id="${acc.id}" title="Marcar usada ahora">${ICONS.clock}</button>
-          <button class="icon-btn" type="button" data-action="edit-account" data-id="${acc.id}" title="Editar cuenta">${ICONS.pencil}</button>
-          <button class="icon-btn danger" type="button" data-action="delete-account" data-id="${acc.id}" title="Eliminar cuenta">${ICONS.trash}</button>
+          <button class="icon-btn ${acc.enabled ? 'is-on' : 'is-off'}" type="button" data-action="toggle-enabled" data-id="${acc.id}" title="${acc.enabled ? 'Apagar' : 'Encender'}">${ICONS.power}</button>
+          <button class="icon-btn" type="button" data-action="mark-used" data-id="${acc.id}" title="Marcar en uso ahora">${ICONS.clock}</button>
+          <button class="icon-btn" type="button" data-action="edit-account" data-id="${acc.id}" title="Editar">${ICONS.pencil}</button>
+          <button class="icon-btn danger" type="button" data-action="delete-account" data-id="${acc.id}" title="Eliminar">${ICONS.trash}</button>
         </div>
       </div>`;
   }
@@ -646,25 +616,18 @@
     
     const dotEl = row.querySelector('.acc-dot');
     dotEl.style.background = dotColor;
-    dotEl.style.boxShadow = `0 0 8px ${dotColor}80`;
+    dotEl.style.boxShadow = `0 0 10px ${dotColor}80`;
 
     const badge = row.querySelector('.status-badge');
     badge.className = `status-badge st-${status.key}`;
     badge.innerHTML = `<span class="s-label">${status.label}</span>${status.sub ? `<span class="s-sub">${status.sub}</span>` : ''}`;
     row.querySelector('.acc-lastused').textContent = formatRelative(acc.lastUsed);
     const powerBtn = row.querySelector('[data-action="toggle-enabled"]');
-    if(powerBtn){
-      powerBtn.classList.toggle('is-on', acc.enabled);
-      powerBtn.classList.toggle('is-off', !acc.enabled);
-      powerBtn.title = acc.enabled ? 'Desactivar cuenta' : 'Activar cuenta';
-    }
+    if(powerBtn){ powerBtn.className = `icon-btn ${acc.enabled ? 'is-on' : 'is-off'}`; powerBtn.title = acc.enabled ? 'Apagar' : 'Encender'; }
     return true;
   }
 
-  function refreshComputedVisuals(){
-    state.accounts.forEach(updateAccountRowVisual);
-    renderStats(); renderReadyStrip(); renderRail();
-  }
+  function refreshComputedVisuals(){ state.accounts.forEach(updateAccountRowVisual); renderStats(); renderReadyStrip(); renderRail(); }
 
   /* ============================================================
      FORMULARIOS
@@ -677,289 +640,160 @@
         zone.innerHTML = `
           <form class="form-panel" id="profileForm">
             <h3>${editing ? 'Renombrar perfil' : 'Nuevo perfil'}</h3>
-            <div class="form-grid">
-              <input name="name" type="text" placeholder="Nombre del perfil" value="${editing ? escapeHtml(editing.name) : 'Perfil ' + nextProfileNumber()}" required autocomplete="off">
-            </div>
+            <div class="form-grid"><input name="name" type="text" placeholder="Nombre" value="${editing ? escapeHtml(editing.name) : 'Perfil ' + nextProfileNumber()}" required autocomplete="off"></div>
             <div class="form-actions">
-              ${editing ? '' : `<button type="button" class="form-toggle-link" data-action="toggle-bulk">Crear varios numerados →</button>`}
+              ${editing ? '' : `<button type="button" class="form-toggle-link" data-action="toggle-bulk">Generar múltiples →</button>`}
               <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
-              <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Crear perfil'}</button>
+              <button type="submit" class="btn primary">${editing ? 'Guardar' : 'Crear perfil'}</button>
             </div>
           </form>`;
       } else {
         const start = nextProfileNumber();
         zone.innerHTML = `
           <form class="form-panel" id="profileBulkForm">
-            <h3>Crear varios perfiles numerados</h3>
-            <p class="form-sub">Por ejemplo: del 1 al 20 crea "Perfil 1" … "Perfil 20".</p>
+            <h3>Crear múltiples perfiles</h3>
             <div class="form-grid cols-3">
               <input name="prefix" type="text" placeholder="Prefijo" value="Perfil" autocomplete="off">
               <input name="from" type="number" min="1" placeholder="Desde" value="${start}">
               <input name="to" type="number" min="1" placeholder="Hasta" value="${start + 9}">
             </div>
             <div class="form-actions">
-              <button type="button" class="form-toggle-link" data-action="toggle-bulk">← Crear uno solo</button>
+              <button type="button" class="form-toggle-link" data-action="toggle-bulk">← Modo individual</button>
               <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
-              <button type="submit" class="btn primary">Crear perfiles</button>
+              <button type="submit" class="btn primary">Generar perfiles</button>
             </div>
           </form>`;
       }
-      const input = zone.querySelector('input[name="name"], input[name="prefix"]');
-      if(input) input.focus();
+      const input = zone.querySelector('input'); if(input) input.focus();
     } else if(ui.showForm === 'account'){
       if(state.profiles.length === 0){
-        zone.innerHTML = `
-          <div class="form-panel">
-            <p class="form-empty-note">☝️ Primero creá un perfil.</p>
-            <div class="form-actions"><button type="button" class="btn ghost" data-action="cancel-form">Cerrar</button></div>
-          </div>`;
-        return;
+        zone.innerHTML = `<div class="form-panel"><p class="form-empty-note">Crea un perfil primero.</p><div class="form-actions"><button type="button" class="btn ghost" data-action="cancel-form">Cerrar</button></div></div>`; return;
       }
       const editing = ui.editingId ? getAccount(ui.editingId) : null;
       const defaultProfileId = editing ? editing.profileId : (ui.activeProfile || state.profiles[0].id);
       const lastUsedLocal = editing && editing.lastUsed ? toLocalInputValue(editing.lastUsed) : '';
       zone.innerHTML = `
         <form class="form-panel" id="accountForm">
-          <h3>${editing ? 'Editar cuenta' : 'Nueva cuenta IA'}</h3>
+          <h3>${editing ? 'Editar Inteligencia Artificial' : 'Añadir nueva IA'}</h3>
           <div class="form-grid">
-            <select name="profileId" required>
-              ${state.profiles.map(p => `<option value="${p.id}" ${defaultProfileId===p.id ? 'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
-            </select>
+            <select name="profileId" required>${state.profiles.map(p => `<option value="${p.id}" ${defaultProfileId===p.id ? 'selected':''}>${escapeHtml(p.name)}</option>`).join('')}</select>
             <input name="service" id="serviceInput" list="serviceSuggestions" placeholder="IA (ChatGPT, Claude…)" value="${editing ? escapeHtml(editing.service) : ''}" required autocomplete="off">
             <input name="email" type="text" placeholder="Correo usado" value="${editing ? escapeHtml(editing.email) : ''}" autocomplete="off">
             <input name="plan" list="planSuggestions" placeholder="Plan" value="${editing ? escapeHtml(editing.plan) : ''}" autocomplete="off">
           </div>
           <div class="form-grid cols-3" style="margin-top:10px">
-            <input name="limitCount" type="number" min="0" placeholder="Mensajes" value="${editing && editing.limitCount ? editing.limitCount : ''}">
-            <input name="limitResetHours" type="number" min="0" placeholder="Cada cuántas horas" value="${editing && editing.limitResetHours ? editing.limitResetHours : ''}">
+            <input name="limitCount" type="number" min="0" placeholder="Mensajes / Límite" value="${editing && editing.limitCount ? editing.limitCount : ''}">
+            <input name="limitResetHours" type="number" min="0" placeholder="Cooldown (Horas)" value="${editing && editing.limitResetHours ? editing.limitResetHours : ''}">
             <input name="lastUsed" type="datetime-local" value="${lastUsedLocal}">
           </div>
-          <p class="form-hint">¿No sabés los límites exactos? Dejalos vacíos.</p>
-          <div class="form-grid" style="margin-top:6px"><textarea name="notes" placeholder="Notas…">${editing ? escapeHtml(editing.notes) : ''}</textarea></div>
+          <div class="form-grid" style="margin-top:10px"><textarea name="notes" placeholder="Notas estratégicas…">${editing ? escapeHtml(editing.notes) : ''}</textarea></div>
           <div class="form-actions">
             <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
-            <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Agregar cuenta'}</button>
+            <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Añadir a la flota'}</button>
           </div>
         </form>
         <datalist id="serviceSuggestions">${Object.keys(AI_PRESETS).map(s => `<option value="${s}">`).join('')}</datalist>
         <datalist id="planSuggestions"><option value="Free"><option value="Plus"><option value="Pro"><option value="Team"><option value="Max"><option value="Advanced"></datalist>`;
       if(!editing){
         zone.querySelector('#serviceInput').addEventListener('change', e => {
-          const preset = AI_PRESETS[e.target.value];
-          if(!preset) return;
-          const form = e.target.closest('form');
-          const planEl = form.querySelector('input[name="plan"]'), cEl = form.querySelector('input[name="limitCount"]'), rEl = form.querySelector('input[name="limitResetHours"]');
-          if(!planEl.value) planEl.value = preset.plan || '';
-          if(!cEl.value && preset.limitCount) cEl.value = preset.limitCount;
-          if(!rEl.value && preset.limitResetHours) rEl.value = preset.limitResetHours;
+          const preset = AI_PRESETS[e.target.value]; if(!preset) return;
+          const form = e.target.closest('form'), planEl = form.querySelector('input[name="plan"]'), cEl = form.querySelector('input[name="limitCount"]'), rEl = form.querySelector('input[name="limitResetHours"]');
+          if(!planEl.value) planEl.value = preset.plan || ''; if(!cEl.value && preset.limitCount) cEl.value = preset.limitCount; if(!rEl.value && preset.limitResetHours) rEl.value = preset.limitResetHours;
         });
       }
       zone.querySelector('#serviceInput').focus();
-    } else {
-      zone.innerHTML = '';
-    }
+    } else { zone.innerHTML = ''; }
   }
 
   function toLocalInputValue(iso){
-    const d = new Date(iso);
-    if(Number.isNaN(d.getTime())) return '';
-    const pad = n => String(n).padStart(2,'0');
-    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    const d = new Date(iso); if(Number.isNaN(d.getTime())) return '';
+    const pad = n => String(n).padStart(2,'0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   /* ============================================================
-     ACCIONES 
+     INTERACCIONES Y LÓGICA DE DATOS
      ============================================================ */
   function openForm(kind, editingId){ ui.showForm = kind; ui.editingId = editingId || null; ui.bulkProfileMode = false; renderForm(); }
   function closeForm(){ ui.showForm = null; ui.editingId = null; ui.bulkProfileMode = false; renderForm(); }
-
   function selectProfile(id){ ui.activeProfile = id || null; renderRail(); renderMain(); }
   function toggleCollapse(id){ const card = document.querySelector(`.profile-card[data-profile-id="${id}"]`); if(card) card.classList.toggle('is-collapsed'); }
 
   async function deleteProfile(id){
-    const profile = getProfile(id);
-    if(!profile) return;
-    if(!confirm(`¿Eliminar el perfil "${profile.name}" y todas sus cuentas?`)) return;
-    try{
-      await apiFetch(`/api/profiles/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
-      if(ui.activeProfile === id) ui.activeProfile = null;
-      haptic('success');
-      await loadState();
-      renderAll();
-      showToast('Perfil eliminado', 'success');
-    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+    const profile = getProfile(id); if(!profile || !confirm(`¿Eliminar el perfil "${profile.name}" y todas sus cuentas?`)) return;
+    try{ await apiFetch(`/api/profiles/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' }); if(ui.activeProfile === id) ui.activeProfile = null; haptic('success'); await loadState(); renderAll(); showToast('Perfil destruido', 'success'); }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
   async function deleteAccount(id){
-    const acc = getAccount(id);
-    if(!acc) return;
-    if(!confirm(`¿Eliminar la cuenta de ${acc.service}?`)) return;
-    try{
-      await apiFetch(`/api/accounts/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
-      haptic('success');
-      await loadState();
-      renderAll();
-      showToast('Cuenta eliminada', 'success');
-    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+    const acc = getAccount(id); if(!acc || !confirm(`¿Eliminar la cuenta de ${acc.service}?`)) return;
+    try{ await apiFetch(`/api/accounts/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' }); haptic('success'); await loadState(); renderAll(); showToast('Cuenta eliminada', 'success'); }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
   async function markUsedNow(id){
-    const acc = getAccount(id);
-    if(!acc) return;
-    const prev = acc.lastUsed;
-    acc.lastUsed = new Date().toISOString(); 
-    const stillMatches = !ui.filterStatus || ui.filterStatus === computeStatus(acc).key;
-    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); }
-    else { renderAll(); }
+    const acc = getAccount(id); if(!acc) return; const prev = acc.lastUsed; acc.lastUsed = new Date().toISOString(); 
+    if(!ui.filterStatus || ui.filterStatus === computeStatus(acc).key) updateAccountRowVisual(acc) ? (renderStats(), renderReadyStrip(), renderRail()) : renderAll(); else renderAll();
     haptic();
-    try{
-      const res = await apiFetch(`/api/accounts/${id}/mark-used`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) });
-      Object.assign(acc, res.account);
-    }catch(e){
-      acc.lastUsed = prev;
-      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail();
-      showToast('No se pudo guardar: ' + e.message, 'error');
-    }
+    try{ const res = await apiFetch(`/api/accounts/${id}/mark-used`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) }); Object.assign(acc, res.account); }
+    catch(e){ acc.lastUsed = prev; updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail(); showToast('Error: ' + e.message, 'error'); }
   }
 
   async function toggleEnabled(id){
-    const acc = getAccount(id);
-    if(!acc) return;
-    const prev = acc.enabled;
-    acc.enabled = !acc.enabled; 
-    const stillMatches = !ui.filterStatus || ui.filterStatus === computeStatus(acc).key;
-    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); }
-    else { renderAll(); }
+    const acc = getAccount(id); if(!acc) return; const prev = acc.enabled; acc.enabled = !acc.enabled; 
+    if(!ui.filterStatus || ui.filterStatus === computeStatus(acc).key) updateAccountRowVisual(acc) ? (renderStats(), renderReadyStrip(), renderRail()) : renderAll(); else renderAll();
     haptic();
-    try{
-      const res = await apiFetch(`/api/accounts/${id}/toggle-enabled`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) });
-      Object.assign(acc, res.account);
-    }catch(e){
-      acc.enabled = prev;
-      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail();
-      showToast('No se pudo guardar: ' + e.message, 'error');
-    }
+    try{ const res = await apiFetch(`/api/accounts/${id}/toggle-enabled`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) }); Object.assign(acc, res.account); }
+    catch(e){ acc.enabled = prev; updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail(); showToast('Error: ' + e.message, 'error'); }
   }
 
   async function submitProfileForm(name){
-    name = (name || '').trim();
-    if(!name) return;
+    name = (name || '').trim(); if(!name) return;
     try{
-      if(ui.editingId){
-        await apiFetch(`/api/profiles/${ui.editingId}`, { method:'PATCH', body: JSON.stringify({ tg_id:TG_ID, name }) });
-      } else {
-        const res = await apiFetch('/api/profiles', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, name }) });
-        ui.activeProfile = res.profile.id;
-      }
-      haptic('success');
-      closeForm();
-      await loadState();
-      renderAll();
-      showToast(ui.editingId ? 'Perfil actualizado' : 'Perfil creado', 'success');
+      if(ui.editingId) await apiFetch(`/api/profiles/${ui.editingId}`, { method:'PATCH', body: JSON.stringify({ tg_id:TG_ID, name }) });
+      else { const res = await apiFetch('/api/profiles', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, name }) }); ui.activeProfile = res.profile.id; }
+      haptic('success'); closeForm(); await loadState(); renderAll(); showToast(ui.editingId ? 'Perfil actualizado' : 'Perfil creado', 'success');
     }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
   async function submitBulkProfiles(prefix, from, to){
-    try{
-      const res = await apiFetch('/api/profiles/bulk', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, prefix, from, to }) });
-      haptic('success');
-      closeForm();
-      await loadState();
-      renderAll();
-      showToast(`${res.profiles.length} perfiles creados`, 'success');
-    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+    try{ await apiFetch('/api/profiles/bulk', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, prefix, from, to }) }); haptic('success'); closeForm(); await loadState(); renderAll(); showToast(`Perfiles generados`, 'success'); }
+    catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
   async function submitAccountForm(fd){
-    const profileId = fd.get('profileId');
-    const service = (fd.get('service') || '').trim();
-    if(!profileId || !service) return;
-    const payload = {
-      tg_id: TG_ID, profileId, service,
-      email: (fd.get('email')||'').trim(),
-      plan: (fd.get('plan')||'Free').trim() || 'Free',
-      limitCount: fd.get('limitCount') ? Number(fd.get('limitCount')) : null,
-      limitResetHours: fd.get('limitResetHours') ? Number(fd.get('limitResetHours')) : null,
-      notes: fd.get('notes') || ''
-    };
-    const lastUsedRaw = fd.get('lastUsed');
-    if(lastUsedRaw) payload.lastUsed = new Date(lastUsedRaw).toISOString();
-
+    const profileId = fd.get('profileId'), service = (fd.get('service') || '').trim(); if(!profileId || !service) return;
+    const payload = { tg_id: TG_ID, profileId, service, email: (fd.get('email')||'').trim(), plan: (fd.get('plan')||'Free').trim() || 'Free', limitCount: fd.get('limitCount') ? Number(fd.get('limitCount')) : null, limitResetHours: fd.get('limitResetHours') ? Number(fd.get('limitResetHours')) : null, notes: fd.get('notes') || '' };
+    const lastUsedRaw = fd.get('lastUsed'); if(lastUsedRaw) payload.lastUsed = new Date(lastUsedRaw).toISOString();
     try{
-      if(ui.editingId){
-        await apiFetch(`/api/accounts/${ui.editingId}`, { method:'PATCH', body: JSON.stringify(payload) });
-      } else {
-        await apiFetch('/api/accounts', { method:'POST', body: JSON.stringify(payload) });
-      }
-      haptic('success');
-      closeForm();
-      await loadState();
-      renderAll();
-      showToast(ui.editingId ? 'Cuenta actualizada' : 'Cuenta agregada', 'success');
+      if(ui.editingId) await apiFetch(`/api/accounts/${ui.editingId}`, { method:'PATCH', body: JSON.stringify(payload) }); else await apiFetch('/api/accounts', { method:'POST', body: JSON.stringify(payload) });
+      haptic('success'); closeForm(); await loadState(); renderAll(); showToast(ui.editingId ? 'Cuenta actualizada' : 'Cuenta agregada', 'success');
     }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
   async function exportData(){
-    try{
-      const data = await apiFetch('/api/export' + qs({ tg_id:TG_ID }));
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'multiperfil_ia_backup.json';
-      a.click();
-    }catch(e){ showToast('Error exportando: ' + e.message, 'error'); }
+    try{ const data = await apiFetch('/api/export' + qs({ tg_id:TG_ID })); const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'multiperfil_ia_backup.json'; a.click(); }
+    catch(e){ showToast('Error exportando: ' + e.message, 'error'); }
   }
-
   async function importData(){
-    const json = prompt('Pegá aquí tu JSON exportado (esto reemplaza todos tus datos actuales):');
-    if(!json) return;
-    try{
-      const parsed = JSON.parse(json);
-      if(!parsed || !Array.isArray(parsed.profiles) || !Array.isArray(parsed.accounts)) throw new Error('formato no reconocido');
-      await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, mode:'replace', profiles:parsed.profiles, accounts:parsed.accounts }) });
-      haptic('success');
-      await loadState();
-      renderAll();
-      showToast('Datos importados', 'success');
-    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+    const json = prompt('Pega tu JSON exportado (reemplazará tus datos actuales):'); if(!json) return;
+    try{ const parsed = JSON.parse(json); await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, mode:'replace', profiles:parsed.profiles, accounts:parsed.accounts }) }); haptic('success'); await loadState(); renderAll(); showToast('Datos importados', 'success'); }
+    catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
-
   async function resetAll(){
-    if(!confirm('¿Seguro que querés borrar todos los perfiles y cuentas del servidor?')) return;
-    try{
-      await apiFetch('/api/reset' + qs({ tg_id:TG_ID }), { method:'DELETE' });
-      ui.activeProfile = null;
-      haptic('warning');
-      await loadState();
-      renderAll();
-      showToast('Todo borrado', 'success');
-    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+    if(!confirm('¿Peligro: Borrar todo en el servidor?')) return;
+    try{ await apiFetch('/api/reset' + qs({ tg_id:TG_ID }), { method:'DELETE' }); ui.activeProfile = null; haptic('warning'); await loadState(); renderAll(); showToast('Sistema formateado', 'success'); }
+    catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
-  /* ============================================================
-     REFRESCO EN SEGUNDO PLANO
-     ============================================================ */
   async function backgroundPoll(){
     if(ui.showForm) return; 
-    try{
-      const fresh = await apiFetch('/api/state' + qs({ tg_id:TG_ID }));
-      if(JSON.stringify(fresh) !== JSON.stringify(state)){
-        state = fresh;
-        renderAll();
-      }
-    }catch(e){ }
+    try{ const fresh = await apiFetch('/api/state' + qs({ tg_id:TG_ID })); if(JSON.stringify(fresh) !== JSON.stringify(state)){ state = fresh; renderAll(); } }catch(e){ }
   }
 
-  /* ============================================================
-     LISTENERS
-     ============================================================ */
   document.getElementById('searchInput').addEventListener('input', e => { ui.search = e.target.value.toLowerCase(); renderMain(); });
   document.getElementById('filterAI').addEventListener('change', e => { ui.filterAI = e.target.value; renderMain(); });
   document.getElementById('filterStatus').addEventListener('change', e => { ui.filterStatus = e.target.value; renderMain(); });
 
   document.addEventListener('click', e => {
-    const target = e.target.closest('[data-action]');
-    if(!target) return;
+    const target = e.target.closest('[data-action]'); if(!target) return;
     const action = target.dataset.action, id = target.dataset.id;
     switch(action){
       case 'new-profile': haptic(); openForm('profile', null); break;
@@ -982,44 +816,24 @@
   });
 
   document.addEventListener('submit', e => {
-    if(e.target.id === 'profileForm'){
-      e.preventDefault();
-      submitProfileForm(new FormData(e.target).get('name'));
-    } else if(e.target.id === 'profileBulkForm'){
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      submitBulkProfiles(fd.get('prefix'), fd.get('from'), fd.get('to'));
-    } else if(e.target.id === 'accountForm'){
-      e.preventDefault();
-      submitAccountForm(new FormData(e.target));
-    }
+    if(e.target.id === 'profileForm'){ e.preventDefault(); submitProfileForm(new FormData(e.target).get('name')); }
+    else if(e.target.id === 'profileBulkForm'){ e.preventDefault(); const fd = new FormData(e.target); submitBulkProfiles(fd.get('prefix'), fd.get('from'), fd.get('to')); }
+    else if(e.target.id === 'accountForm'){ e.preventDefault(); submitAccountForm(new FormData(e.target)); }
   });
 
   document.addEventListener('keydown', e => {
     if(document.activeElement && ['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
     if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
     const order = [null, ...state.profiles.map(p => p.id)];
-    const idx = order.indexOf(ui.activeProfile);
-    if(idx === -1) return;
+    const idx = order.indexOf(ui.activeProfile); if(idx === -1) return;
     if(e.key === 'ArrowRight' && idx < order.length-1){ e.preventDefault(); selectProfile(order[idx+1]); }
     if(e.key === 'ArrowLeft' && idx > 0){ e.preventDefault(); selectProfile(order[idx-1]); }
   });
 
-  /* ============================================================
-     ARRANQUE
-     ============================================================ */
   async function boot(){
-    try{
-      await loadState();
-    }catch(e){
-      document.getElementById('mainZone').innerHTML = `<div class="empty-state"><b>No se pudo conectar</b>${escapeHtml(e.message)}</div>`;
-      showToast('Sin conexión con el servidor', 'error');
-      return;
-    }
+    try{ await loadState(); }catch(e){ document.getElementById('mainZone').innerHTML = `<div class="empty-state"><b>Desconectado</b>${escapeHtml(e.message)}</div>`; showToast('Desconectado', 'error'); return; }
     renderAll();
-    maybeOfferMigration();
-    setInterval(backgroundPoll, 30000);
-    setInterval(refreshComputedVisuals, 60000);
+    setInterval(backgroundPoll, 30000); setInterval(refreshComputedVisuals, 60000);
   }
   boot();
 })();
