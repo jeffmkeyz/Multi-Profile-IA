@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Multi-Perfil IA Premium</title>
+<title>Multi-Perfil IA Premium + Prompts</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,15 +19,11 @@
     --muted: #9ca3af; 
     --muted-dim: #6b7280;
     
-    /* Colores vibrantes y neón */
-    --mint: #10b981; 
-    --mint-glow: rgba(16, 185, 129, 0.4);
-    --purple: #8b5cf6; 
-    --purple-glow: rgba(139, 92, 246, 0.4);
+    --mint: #10b981; --mint-glow: rgba(16, 185, 129, 0.4);
+    --purple: #8b5cf6; --purple-glow: rgba(139, 92, 246, 0.4);
     --gold: #f59e0b; 
-    --pink: #ec4899; 
-    --pink-glow: rgba(236, 72, 153, 0.4);
-    --blue: #3b82f6;
+    --pink: #ec4899; --pink-glow: rgba(236, 72, 153, 0.4);
+    --blue: #3b82f6; --blue-glow: rgba(59, 130, 246, 0.4);
 
     --font-display: 'Syne', sans-serif; 
     --font-mono: 'Space Mono', monospace;
@@ -35,24 +31,17 @@
   
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; scroll-behavior: smooth; }
-  body { 
-    background: var(--bg); color: var(--text); 
-    font-family: var(--font-mono); min-height: 100vh; 
-    position: relative; overflow-x: hidden; 
-  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-mono); min-height: 100vh; position: relative; overflow-x: hidden; }
   
-  /* Fondo Dinámico */
   .bg-glow {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background: 
-      radial-gradient(800px circle at 15% -5%, rgba(139, 92, 246, 0.15), transparent 50%),
-      radial-gradient(600px circle at 90% 10%, rgba(16, 185, 129, 0.12), transparent 50%),
-      radial-gradient(700px circle at 50% 110%, rgba(236, 72, 153, 0.1), transparent 50%);
+    background: radial-gradient(800px circle at 15% -5%, rgba(139, 92, 246, 0.15), transparent 50%),
+                radial-gradient(600px circle at 90% 10%, rgba(16, 185, 129, 0.12), transparent 50%),
+                radial-gradient(700px circle at 50% 110%, rgba(236, 72, 153, 0.1), transparent 50%);
     filter: blur(40px);
   }
   
   main, header { position: relative; z-index: 1; }
-  
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
   ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
@@ -63,263 +52,143 @@
     display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; 
     padding: 16px 24px; border-bottom: 1px solid var(--border); 
     background: rgba(11, 12, 20, 0.4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    position: sticky; top: 0; z-index: 10;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    position: sticky; top: 0; z-index: 10; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   }
   .brand { display: flex; align-items: center; gap: 14px; }
   .brand-mark {
     width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
     background: linear-gradient(135deg, var(--purple), var(--blue), var(--mint));
     font-family: var(--font-display); font-weight: 800; color: #fff; font-size: 16px; flex-shrink: 0;
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.5); text-shadow: 0 2px 4px rgba(0,0,0,0.3);
   }
   .brand h1 { font-family: var(--font-display); font-size: 18px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
   .brand p { margin: 3px 0 0; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
   
-  .stats-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .stats-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .ext-badge {
+    display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px;
+    background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3);
+    font-size: 11px; color: var(--blue); font-weight: 700; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+  }
+  .ext-badge .dot { width: 6px; height: 6px; background: var(--blue); border-radius: 50%; box-shadow: 0 0 8px var(--blue); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
   .stat-pill {
-    display: flex; align-items: center; gap: 8px; padding: 6px 14px; 
-    border-radius: 12px; background: rgba(255,255,255,0.03); 
-    border: 1px solid var(--border); font-size: 11px; color: var(--muted);
+    display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 12px; 
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); font-size: 11px; color: var(--muted);
     backdrop-filter: blur(8px); transition: transform 0.2s;
   }
   .stat-pill:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.15); }
   .stat-pill b { font-family: var(--font-display); font-size: 16px; color: var(--text); font-weight: 800; }
   .stat-pill.is-mint b { color: var(--mint); text-shadow: 0 0 8px var(--mint-glow); }
-  .stat-pill.is-gold b { color: var(--gold); text-shadow: 0 0 8px rgba(245,158,11,0.4); }
 
   main.container { max-width: 1200px; margin: 0 auto; padding: 24px 20px 80px; display: flex; flex-direction: column; gap: 20px; }
 
-  /* Paneles Glassmorphism */
-  .glass-panel {
-    background: var(--panel); border: 1px solid var(--border);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border-radius: 16px; padding: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  }
+  /* Glassmorphism */
+  .glass-panel { background: var(--panel); border: 1px solid var(--border); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; padding: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
 
-  .migration-banner {
-    display: none; align-items: center; gap: 12px; flex-wrap: wrap; 
-    border: 1px solid var(--purple); background: rgba(139, 92, 246, 0.1); 
-    border-radius: 14px; padding: 14px 18px; font-size: 12.5px; color: var(--text);
-    box-shadow: 0 0 15px var(--purple-glow);
-  }
-
-  /* Cinta de Disponibilidad */
+  /* Ready Strip */
   .ready-strip { padding: 18px 20px; position: relative; overflow: hidden; }
-  .ready-strip::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-    background: linear-gradient(to bottom, var(--mint), var(--blue));
-  }
+  .ready-strip::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--mint), var(--blue)); }
   .ready-strip .ready-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: block; font-weight: 700; }
   .ready-chips { display: flex; gap: 10px; flex-wrap: wrap; }
-  .ready-chip {
-    display: flex; align-items: center; gap: 8px; padding: 8px 14px; 
-    border-radius: 24px; background: rgba(16, 185, 129, 0.1); 
-    border: 1px solid rgba(16, 185, 129, 0.3); font-size: 12.5px; color: var(--text); 
-    cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .ready-chip:hover { 
-    border-color: var(--mint); background: rgba(16, 185, 129, 0.2); 
-    transform: translateY(-2px); box-shadow: 0 4px 12px var(--mint-glow);
-  }
-  .ready-chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); flex-shrink: 0; box-shadow: 0 0 10px var(--mint); }
-  .ready-chip .pname { color: var(--muted); font-size: 11px; }
+  .ready-chip { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 24px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); font-size: 12.5px; color: var(--text); cursor: pointer; transition: all 0.2s; }
+  .ready-chip:hover { border-color: var(--mint); background: rgba(16, 185, 129, 0.2); transform: translateY(-2px); box-shadow: 0 4px 12px var(--mint-glow); }
+  .ready-chip .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  
+  /* Tabs Navegación */
+  .nav-tabs { display: flex; gap: 10px; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 16px; border: 1px solid var(--border); }
+  .tab-btn { flex: 1; padding: 12px; font-family: var(--font-display); font-size: 14px; font-weight: 700; border: none; background: transparent; color: var(--muted); border-radius: 12px; cursor: pointer; transition: 0.3s; }
+  .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .tab-btn.active { background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(59,130,246,0.2)); color: #fff; border: 1px solid rgba(139,92,246,0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-shadow: 0 1px 5px rgba(139,92,246,0.5); }
 
   /* Carril de Perfiles */
   .rail-wrap { display: flex; align-items: center; gap: 12px; padding: 10px 14px; }
   .profile-rail { display: flex; gap: 10px; overflow-x: auto; flex: 1; scrollbar-width: none; padding-bottom: 4px; }
   .profile-rail::-webkit-scrollbar { display: none; }
-  .rail-chip {
-    flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 10px 18px; 
-    border-radius: 24px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); 
-    cursor: pointer; font-size: 13px; color: var(--muted); white-space: nowrap; 
-    transition: all 0.2s; font-family: var(--font-mono); font-weight: 600;
-  }
+  .rail-chip { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 24px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); cursor: pointer; font-size: 13px; color: var(--muted); white-space: nowrap; transition: all 0.2s; font-family: var(--font-mono); font-weight: 600; }
   .rail-chip:hover { border-color: rgba(255,255,255,0.3); color: var(--text); background: rgba(255,255,255,0.05); }
-  .rail-chip.is-active { 
-    background: linear-gradient(135deg, var(--purple), var(--blue)); 
-    border-color: transparent; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    box-shadow: 0 4px 15px var(--purple-glow);
-  }
+  .rail-chip.is-active { background: linear-gradient(135deg, var(--purple), var(--blue)); border-color: transparent; color: #fff; box-shadow: 0 4px 15px var(--purple-glow); }
   .rail-chip .rdot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted-dim); transition: 0.2s; }
   .rail-chip.is-active .rdot { background: #fff; box-shadow: 0 0 5px #fff; }
-  .rail-chip .rcount { font-size: 10.5px; opacity: 0.8; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px; }
 
   /* Botones Vívidos */
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); 
-    font-size: 13px; font-weight: 700; white-space: nowrap; 
-    background: rgba(255,255,255,0.05); border: 1px solid var(--border); 
-    border-radius: 12px; color: var(--text); padding: 10px 18px; 
-    cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13px; font-weight: 700; white-space: nowrap; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; color: var(--text); padding: 10px 18px; cursor: pointer; transition: all 0.2s; }
   .btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); transform: translateY(-1px); }
-  
-  .btn.primary { 
-    background: linear-gradient(135deg, var(--purple), var(--pink)); border: none; color: #fff; 
-    box-shadow: 0 4px 15px var(--pink-glow); text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  }
-  .btn.primary:hover { 
-    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.6); filter: brightness(1.1); transform: translateY(-2px);
-  }
-  
+  .btn.primary { background: linear-gradient(135deg, var(--purple), var(--pink)); border: none; color: #fff; box-shadow: 0 4px 15px var(--pink-glow); }
+  .btn.primary:hover { box-shadow: 0 6px 20px rgba(236, 72, 153, 0.6); transform: translateY(-2px); }
   .btn.success { background: linear-gradient(135deg, var(--mint), #059669); border: none; color: #fff; box-shadow: 0 4px 15px var(--mint-glow); }
-  .btn.success:hover { box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6); filter: brightness(1.1); transform: translateY(-2px); }
-  
   .btn.ghost { background: transparent; }
   .btn.danger { color: var(--pink); border-color: rgba(236, 72, 153, 0.3); }
-  .btn.danger:hover { background: rgba(236, 72, 153, 0.1); border-color: var(--pink); box-shadow: 0 0 15px var(--pink-glow); }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-
+  
   /* Toolbar */
   .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 10px; }
-  .search-box {
-    flex: 1; min-width: 220px; display: flex; align-items: center; gap: 10px; 
-    background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; 
-    padding: 10px 16px; transition: border-color 0.2s, box-shadow 0.2s;
-  }
+  .search-box { flex: 1; min-width: 220px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; transition: 0.2s; }
   .search-box:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
-  .search-box svg { color: var(--muted); transition: color 0.2s; }
-  .search-box:focus-within svg { color: var(--blue); }
   .search-box input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font-mono); font-size: 13px; }
+  select { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: var(--font-mono); font-size: 13px; padding: 10px 16px; outline: none; cursor: pointer; transition: 0.2s; appearance: none; padding-right: 32px; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 1em; }
   
-  select {
-    background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; 
-    color: var(--text); font-family: var(--font-mono); font-size: 13px; 
-    padding: 10px 16px; outline: none; cursor: pointer; transition: 0.2s;
-    appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat; background-position: right 10px center; background-size: 1em; padding-right: 32px;
-  }
-  select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
-  select option { background: var(--bg); color: var(--text); }
-
   /* Icon Buttons */
-  .icon-btn {
-    width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; 
-    background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--muted); 
-    cursor: pointer; flex-shrink: 0; transition: all 0.2s;
-  }
+  .icon-btn { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--muted); cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
   .icon-btn:hover { color: #fff; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); transform: translateY(-2px); }
   .icon-btn.danger:hover { color: var(--pink); background: rgba(236, 72, 153, 0.1); border-color: var(--pink); }
-  .icon-btn.is-off { color: var(--pink); border-color: rgba(236, 72, 153, 0.4); background: rgba(236, 72, 153, 0.08); }
-  .icon-btn.is-on { color: var(--mint); border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.08); }
+  .icon-btn.action:hover { color: var(--blue); background: rgba(59, 130, 246, 0.1); border-color: var(--blue); box-shadow: 0 0 10px var(--blue-glow); }
 
-  /* Formularios Modernos */
+  /* Forms */
   .form-panel { animation: formIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; border-top: 3px solid var(--blue); }
   @keyframes formIn { from { opacity: 0; transform: translateY(-10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
   .form-panel h3 { margin: 0 0 6px; font-family: var(--font-display); font-size: 16px; color: #fff; }
-  .form-panel .form-sub { margin: 0 0 16px; font-size: 12px; color: var(--muted); }
-  
   .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
   .form-grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-  
-  .form-panel input, .form-panel select, .form-panel textarea {
-    width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 10px; 
-    color: var(--text); font-family: var(--font-mono); font-size: 13px; padding: 12px 14px; outline: none; transition: 0.2s;
-  }
-  .form-panel input:focus, .form-panel select:focus, .form-panel textarea:focus { 
-    border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); background: rgba(0,0,0,0.6);
-  }
-  .form-panel textarea { grid-column: 1/-1; min-height: 70px; resize: vertical; }
-  .form-hint { grid-column: 1/-1; font-size: 11px; color: var(--muted-dim); margin-top: 4px; }
-  
+  .form-panel input, .form-panel select, .form-panel textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: var(--font-mono); font-size: 13px; padding: 12px 14px; outline: none; transition: 0.2s; }
+  .form-panel input:focus, .form-panel select:focus, .form-panel textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+  .form-panel textarea { grid-column: 1/-1; min-height: 80px; resize: vertical; }
   .form-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; align-items: center; }
-  .form-toggle-link { 
-    font-size: 12px; color: var(--blue); cursor: pointer; text-decoration: none; font-weight: 700;
-    margin-right: auto; background: none; border: none; font-family: var(--font-display); transition: 0.2s;
-  }
-  .form-toggle-link:hover { color: #60a5fa; text-shadow: 0 0 8px rgba(59, 130, 246, 0.5); }
 
-  /* Lista de Perfiles y Tarjetas */
+  /* Lista y Cuentas */
   .profiles-list { display: flex; flex-direction: column; gap: 16px; }
-  .profile-card { border: 1px solid var(--border); background: var(--panel); border-radius: 16px; overflow: hidden; animation: fadeUp 0.4s ease both; box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: border-color 0.3s; }
-  .profile-card:hover { border-color: rgba(255,255,255,0.15); }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-  
-  .profile-head { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; user-select: none; background: rgba(255,255,255,0.02); }
-  .profile-head:hover { background: rgba(255,255,255,0.04); }
-  .profile-head .chev { color: var(--muted); flex-shrink: 0; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .profile-card { border: 1px solid var(--border); background: var(--panel); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+  .profile-head { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; background: rgba(255,255,255,0.02); }
+  .profile-head .chev { transition: transform 0.3s; }
   .profile-card.is-collapsed .chev { transform: rotate(-90deg); }
   .profile-name { font-family: var(--font-display); font-size: 16px; font-weight: 800; color: #fff; }
-  
   .profile-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; align-items: center; }
-  .meta-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); white-space: nowrap; }
-  .meta-pill.is-mint { color: var(--mint); border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.1); box-shadow: 0 0 10px rgba(16,185,129,0.1); }
-  .meta-pill.is-gold { color: var(--gold); border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.1); }
-  
-  .profile-head-actions { display: flex; gap: 8px; }
-  .profile-body { max-height: 4000px; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
+  .meta-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); }
+  .profile-body { max-height: 4000px; transition: max-height 0.4s ease; overflow: hidden; }
   .profile-card.is-collapsed .profile-body { max-height: 0; }
-  .accounts-wrap { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px; }
-
-  /* Fila de Cuenta IA */
-  .account-row {
-    display: grid; grid-template-columns: 24px 1.5fr 1fr 1fr 1.2fr 1fr auto; align-items: center; gap: 14px; 
-    padding: 14px; border-radius: 12px; background: rgba(0,0,0,0.2); 
-    border: 1px solid var(--border-soft); transition: all 0.2s; position: relative; overflow: hidden;
-  }
-  .account-row:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); transform: scale(1.005); }
-  .acc-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; transition: all 0.3s ease; }
   
-  .acc-service { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-  .acc-service .svc-name { font-size: 14px; color: #fff; font-weight: 800; font-family: var(--font-display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .acc-service .svc-email { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: sans-serif; }
-  
-  .plan-badge { font-size: 10.5px; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 800; width: fit-content; }
-  .plan-free { background: rgba(156, 163, 175, 0.1); color: var(--muted); border: 1px solid rgba(156, 163, 175, 0.2); }
-  .plan-plus { background: rgba(16, 185, 129, 0.1); color: var(--mint); border: 1px solid rgba(16, 185, 129, 0.3); }
-  .plan-pro { background: rgba(139, 92, 246, 0.15); color: var(--purple); border: 1px solid rgba(139, 92, 246, 0.3); }
-  .plan-team { background: rgba(245, 158, 11, 0.15); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
-  .plan-otro { background: rgba(59, 130, 246, 0.15); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.3); }
-  
-  .status-badge { display: flex; flex-direction: column; gap: 2px; font-size: 11px; }
-  .status-badge .s-label { font-weight: 800; letter-spacing: 0.02em; font-family: var(--font-display); }
-  .status-badge .s-sub { color: var(--muted-dim); font-size: 10px; }
-  .status-badge.st-available .s-label { color: var(--mint); text-shadow: 0 0 5px var(--mint-glow); }
+  .account-row { display: grid; grid-template-columns: 24px 1.5fr 1fr 1fr 1fr auto; align-items: center; gap: 14px; padding: 14px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-soft); margin-bottom: 10px; }
+  .acc-service { display: flex; flex-direction: column; gap: 3px; }
+  .svc-name { font-size: 14px; color: #fff; font-weight: 800; font-family: var(--font-display); }
+  .svc-email { font-size: 11px; color: var(--muted); }
+  .plan-badge { font-size: 10.5px; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; font-weight: 800; width: fit-content; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
+  .status-badge { display: flex; flex-direction: column; font-size: 11px; }
+  .status-badge .s-label { font-weight: 800; }
+  .status-badge.st-available .s-label { color: var(--mint); }
   .status-badge.st-cooldown .s-label { color: var(--gold); }
-  .status-badge.st-disabled .s-label { color: var(--pink); }
-  .status-badge.st-neutral .s-label { color: var(--muted); }
-  
-  .acc-lastused { font-size: 11.5px; color: var(--muted); font-family: sans-serif; }
-  .acc-notes { font-size: 12px; color: var(--muted-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: help; font-style: italic; }
   .acc-actions { display: flex; gap: 6px; }
 
-  @media (max-width: 950px) {
-    .account-row {
-      grid-template-columns: 14px 1fr auto; 
-      grid-template-areas: "dot service plan" "dot status lastused" "dot notes actions"; 
-      row-gap: 8px; align-items: start;
-    }
-    .acc-dot { grid-area: dot; margin-top: 6px; } 
-    .acc-service { grid-area: service; } 
-    .plan-badge { grid-area: plan; justify-self: end; }
-    .status-badge { grid-area: status; } 
-    .acc-lastused { grid-area: lastused; justify-self: end; }
-    .acc-notes { grid-area: notes; } 
-    .acc-actions { grid-area: actions; justify-self: end; }
-  }
+  /* Gestor de Prompts */
+  .prompts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .prompt-card { background: rgba(18, 19, 30, 0.8); border: 1px solid var(--border); border-radius: 14px; padding: 16px; transition: 0.3s; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 10px; }
+  .prompt-card:hover { border-color: var(--blue); box-shadow: 0 8px 20px var(--blue-glow); transform: translateY(-3px); }
+  .prompt-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--purple), var(--blue)); }
+  .prompt-title { font-family: var(--font-display); font-size: 15px; color: #fff; margin: 0; padding-right: 40px; }
+  .prompt-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .p-tag { font-size: 10px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 10px; color: var(--mint); }
+  .prompt-body { background: rgba(0,0,0,0.4); border-radius: 8px; padding: 12px; font-size: 12px; color: var(--muted); max-height: 100px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap; flex: 1; }
+  .prompt-actions { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+  .copy-btn { background: rgba(59,130,246,0.1); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+  .copy-btn:hover { background: var(--blue); color: #fff; }
 
-  .empty-state { text-align: center; padding: 60px 20px; border: 2px dashed rgba(255,255,255,0.1); border-radius: 16px; color: var(--muted); background: rgba(0,0,0,0.2); }
-  .empty-state b { display: block; color: #fff; font-family: var(--font-display); font-size: 18px; margin-bottom: 8px; }
-
-  .help-card { border-left: 4px solid var(--purple); font-size: 13px; color: var(--muted); line-height: 1.6; }
-  .help-card b { color: #fff; font-family: var(--font-display); }
-
-  /* Toasts Notificaciones */
-  .toast-wrap { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; gap: 10px; align-items: center; pointer-events: none; width: 100%; padding: 0 20px; }
-  .toast {
-    background: rgba(18, 19, 30, 0.95); backdrop-filter: blur(10px);
-    border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; 
-    font-size: 13px; font-weight: 700; color: #fff; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-    max-width: 380px; text-align: center; font-family: var(--font-display);
-    animation: toastIn 0.3s forwards;
-  }
+  .empty-state { text-align: center; padding: 60px 20px; border: 2px dashed rgba(255,255,255,0.1); border-radius: 16px; color: var(--muted); }
+  
+  /* Toasts */
+  .toast-wrap { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; gap: 10px; align-items: center; pointer-events: none; }
+  .toast { background: rgba(18, 19, 30, 0.95); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 13px; font-weight: 700; color: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.6); animation: toastIn 0.3s forwards; }
   @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  .toast.is-error { border-color: var(--pink); border-left: 4px solid var(--pink); box-shadow: 0 10px 40px var(--pink-glow); }
-  .toast.is-success { border-color: var(--mint); border-left: 4px solid var(--mint); box-shadow: 0 10px 40px var(--mint-glow); }
+  .toast.is-success { border-left: 4px solid var(--mint); box-shadow: 0 10px 40px var(--mint-glow); }
+  .toast.is-ext { border-left: 4px solid var(--blue); box-shadow: 0 10px 40px var(--blue-glow); }
 
 </style>
 </head>
@@ -330,53 +199,31 @@
 <header class="topbar">
   <div class="brand">
     <span class="brand-mark">IA</span>
-    <div><h1>Multi-Perfil Premium</h1><p>Gestor Inteligente · Sync en Nube</p></div>
+    <div><h1>Workstation IA</h1><p>Gestor + Prompts + Extensión</p></div>
   </div>
-  <div class="stats-row" id="statsRow"></div>
+  <div class="stats-row" id="statsRow">
+    <div class="ext-badge" title="Simulación de Extensión Activa"><span class="dot"></span> Extensión Link</div>
+  </div>
 </header>
 
 <main class="container">
+  
+  <section class="ready-strip glass-panel" id="readyStrip"></section>
 
-  <div class="migration-banner" id="migrationBanner"></div>
-
-  <section class="ready-strip glass-panel" id="readyStrip"><div class="empty-state" style="padding: 20px; border: none;">Calculando disponibilidad...</div></section>
+  <nav class="nav-tabs" id="mainTabs">
+    <button class="tab-btn active" data-tab="accounts">🤖 Cuentas IA</button>
+    <button class="tab-btn" data-tab="prompts">📝 Biblioteca de Prompts</button>
+  </nav>
 
   <section class="rail-wrap glass-panel">
     <div class="profile-rail" id="profileRail"></div>
-    <button class="btn primary" type="button" data-action="new-profile" title="Crear perfil">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      Nuevo Perfil
-    </button>
+    <button class="btn primary" type="button" data-action="new-profile">+ Nuevo Perfil</button>
   </section>
 
-  <section class="toolbar glass-panel">
-    <label class="search-box">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="searchInput" type="text" placeholder="Buscar herramienta, correo, notas…" autocomplete="off">
-    </label>
-    <select id="filterAI"><option value="">Todas las IAs</option></select>
-    <select id="filterStatus">
-      <option value="">Cualquier estado</option>
-      <option value="available">🟢 Disponible ahora</option>
-      <option value="cooldown">🟠 En cooldown</option>
-      <option value="disabled">🔴 Desactivada</option>
-      <option value="neutral">⚪ Sin límite / Uso libre</option>
-    </select>
-    
-    <div style="flex: 1;"></div> <button class="btn success" type="button" data-action="new-account">+ Cuenta IA</button>
-    <button class="btn ghost" type="button" data-action="export">⬇ Exportar</button>
-    <button class="btn ghost" type="button" data-action="import">⬆ Importar</button>
-    <button class="btn ghost danger" type="button" data-action="reset">Borrar todo</button>
-  </section>
+  <section class="toolbar glass-panel" id="toolbarArea"></section>
 
   <section id="formZone"></section>
-
-  <section id="mainZone"><div class="empty-state">Conectando con el servidor central...</div></section>
-
-  <section class="help-card glass-panel">
-    <b>🚀 Cómo aprovechar al máximo esta herramienta:</b><br>
-    Crea <b>Perfiles</b> (ej. Navegador Trabajo, Chrome Personal). Dentro, registra tus herramientas de IA. Configura los límites (ej. Claude: 45 msjs / 5 hrs) y toca el reloj ⏳ cuando uses la IA. El sistema calculará automáticamente cuándo vuelve a estar disponible y te lo mostrará en la barra superior. Funciona sincronizado en la nube mediante Telegram.
-  </section>
+  <section id="mainZone"></section>
 
 </main>
 
@@ -387,572 +234,303 @@
   'use strict';
 
   /* ============================================================
-     TELEGRAM MINI APP CONFIG
+     ESTADO & APP CONFIG
      ============================================================ */
-  const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-  if(tg){
-    try{ tg.ready(); tg.expand(); if (tg.requestFullscreen) tg.requestFullscreen(); }catch(e){}
-    try{ tg.setBackgroundColor && tg.setBackgroundColor('#030308'); }catch(e){}
-    try{ tg.setHeaderColor && tg.setHeaderColor('#0b0c14'); }catch(e){}
+  const TG_ID = 'dev-' + Math.random().toString(36).slice(2, 9);
+  
+  let state = { profiles: [], accounts: [], prompts: [] };
+  const ui = { 
+    search:'', filterAI:'', filterStatus:'', activeProfile:null, 
+    showForm:null, editingId:null, activeTab: 'accounts'
+  };
+
+  /* ============================================================
+     MOCK API LOCAL (Para evitar errores si no hay backend)
+     ============================================================ */
+  function generateId() { return Math.random().toString(36).substr(2, 9); }
+  
+  async function apiFetch(path, options = {}) {
+    // Simulador In-Memory instantáneo. Si hubiera fetch real, iría aquí.
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const method = options.method || 'GET';
+        const body = options.body ? JSON.parse(options.body) : null;
+        
+        if(path.includes('/api/state')) resolve(state);
+        
+        else if(path.includes('/api/profiles') && method === 'POST') {
+          const newProf = { id: generateId(), name: body.name };
+          state.profiles.push(newProf); resolve({ profile: newProf });
+        }
+        else if(path.includes('/api/accounts') && method === 'POST') {
+          const newAcc = { id: generateId(), ...body, enabled: true };
+          state.accounts.push(newAcc); resolve({ account: newAcc });
+        }
+        else if(path.includes('/api/prompts') && method === 'POST') {
+          const newPrompt = { id: generateId(), ...body };
+          state.prompts.push(newPrompt); resolve({ prompt: newPrompt });
+        }
+        else if(method === 'DELETE' && path.includes('/api/prompts/')) {
+          const id = path.split('/').pop();
+          state.prompts = state.prompts.filter(p => p.id !== id); resolve({});
+        }
+        else { resolve(state); } // Fallback genérico
+      }, 200);
+    });
   }
 
-  function haptic(kind){
-    if(!tg || !tg.HapticFeedback) return;
-    try{
-      if(kind === 'success' || kind === 'error' || kind === 'warning') tg.HapticFeedback.notificationOccurred(kind);
-      else tg.HapticFeedback.impactOccurred(kind || 'medium');
-    }catch(e){}
-  }
-
-  function resolveTgId(){
-    if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) return String(tg.initDataUnsafe.user.id);
-    let dev = localStorage.getItem('dev_tg_id');
-    if(!dev){ dev = 'dev-' + Math.random().toString(36).slice(2, 9); localStorage.setItem('dev_tg_id', dev); }
-    return dev;
-  }
-  const TG_ID = resolveTgId();
-
+  /* ============================================================
+     UTILIDADES & UI
+     ============================================================ */
   function showToast(msg, kind){
     const wrap = document.getElementById('toastWrap');
     const el = document.createElement('div');
-    const icon = kind === 'error' ? '❌ ' : kind === 'success' ? '✅ ' : 'ℹ️ ';
-    el.className = 'toast' + (kind === 'error' ? ' is-error' : kind === 'success' ? ' is-success' : '');
+    const icon = kind === 'error' ? '❌ ' : kind === 'success' ? '✅ ' : kind === 'ext' ? '🔌 ' : 'ℹ️ ';
+    el.className = 'toast ' + (kind ? 'is-'+kind : '');
     el.textContent = icon + msg;
     wrap.appendChild(el);
-    setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateY(20px) scale(0.9)'; setTimeout(() => el.remove(), 300); }, 3500);
-  }
-
-  /* ============================================================
-     API (Mock fallback incluído visualmente si falla red)
-     ============================================================ */
-  async function apiFetch(path, options){
-    options = options || {};
-    try {
-      const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...options });
-      if(!res.ok){
-        let msg = `Error ${res.status}`;
-        try{ const j = await res.json(); if(j && j.error) msg = j.error; }catch(e){}
-        throw new Error(msg);
-      }
-      return res.json();
-    } catch (error) {
-      console.warn("API Error (Podría ser entorno sin backend):", error);
-      throw error;
-    }
-  }
-  const qs = (params) => '?' + new URLSearchParams(params).toString();
-
-  /* ============================================================
-     CATÁLOGO DE PRESETS POR IA (Ampliado)
-     ============================================================ */
-  const AI_PRESETS = {
-    'ChatGPT':      { plan:'Plus', limitCount:40, limitResetHours:3 },
-    'Claude':       { plan:'Pro',  limitCount:45, limitResetHours:5 },
-    'Claude 3.5':   { plan:'Pro',  limitCount:50, limitResetHours:5 },
-    'Gemini':       { plan:'Advanced', limitCount:150, limitResetHours:24 },
-    'Perplexity':   { plan:'Pro', limitCount:300, limitResetHours:24 },
-    'Grok':         { plan:'Premium', limitCount:40, limitResetHours:2 },
-    'DeepSeek':     { plan:'Free', limitCount:50, limitResetHours:1 },
-    'Mistral':      { plan:'Free', limitCount:50, limitResetHours:24 },
-    'Copilot':      { plan:'Pro', limitCount:300, limitResetHours:24 },
-    'GitHub Copilot':{ plan:'Pro', limitCount:null, limitResetHours:null },
-    'Midjourney':   { plan:'Pro',  limitCount:null, limitResetHours:null },
-    'Notion AI':    { plan:'Plus', limitCount:null, limitResetHours:null },
-    'Suno':         { plan:'Pro', limitCount:500, limitResetHours:24 },
-    'Meta AI':      { plan:'Free', limitCount:null, limitResetHours:null }
-  };
-
-  const AI_COLORS = {
-    'ChatGPT': '#10a37f', 'Claude': '#d97757', 'Claude 3.5': '#d97757', 'Gemini': '#1a73e8',
-    'Perplexity': '#22d3ee', 'Grok': '#ffffff', 'DeepSeek': '#0ea5e9', 'Mistral': '#f97316',
-    'Copilot': '#8b5cf6', 'GitHub Copilot': '#ffffff', 'Midjourney': '#c084fc', 
-    'Notion AI': '#e5e7eb', 'Suno': '#facc15', 'Meta AI': '#06b6d4'
-  };
-
-  function getAiColor(serviceName) { return AI_COLORS[serviceName] || 'var(--blue)'; }
-
-  /* ============================================================
-     ESTADO MÚLTIPLE
-     ============================================================ */
-  let state = { profiles: [], accounts: [] };
-  const ui = { search:'', filterAI:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false, isRequesting: false };
-
-  async function loadState(){
-    // Nota: Manteniendo la estructura API intacta solicitada por el usuario.
-    state = await apiFetch('/api/state' + qs({ tg_id: TG_ID }));
-  }
-
-  /* ============================================================
-     LÓGICA DE NEGOCIO Y CÁLCULO
-     ============================================================ */
-  function computeStatus(acc){
-    if(!acc.enabled) return { key:'disabled', label:'Desactivada', sub:'Apagada a mano', remainingMs:0 };
-    if(!acc.lastUsed) return { key:'neutral', label:'Lista / Nunca Usada', sub:'Sin registros recientes', remainingMs:0 };
-    if(!acc.limitResetHours || !acc.limitCount) return { key:'neutral', label:'Uso Libre', sub:'Sin límites definidos', remainingMs:0 };
-    
-    const last = new Date(acc.lastUsed).getTime();
-    if(Number.isNaN(last)) return { key:'neutral', label:'Fecha inválida', sub:'', remainingMs:0 };
-    
-    const resetAt = last + acc.limitResetHours * 3600 * 1000;
-    const now = Date.now();
-    if(now >= resetAt) return { key:'available', label:'Disponible', sub:'Límites reseteados', remainingMs:0 };
-    
-    const remaining = resetAt - now;
-    return { key:'cooldown', label:'En cooldown', sub:'Vuelve en ' + formatRemaining(remaining), remainingMs:remaining };
-  }
-
-  function formatRemaining(ms){
-    const totalMin = Math.max(1, Math.ceil(ms/60000));
-    const h = Math.floor(totalMin/60), m = totalMin%60;
-    return h > 0 ? `${h}h ${m}m` : `${m}m`;
-  }
-
-  function formatRelative(iso){
-    if(!iso) return 'Nunca';
-    const ms = Date.now() - new Date(iso).getTime();
-    if(Number.isNaN(ms)) return 'Fecha inválida';
-    if(ms < 60000) return 'Hace instantes';
-    const min = Math.floor(ms/60000);
-    if(min < 60) return `Hace ${min}m`;
-    const h = Math.floor(min/60);
-    if(h < 24) return `Hace ${h}h`;
-    return `Hace ${Math.floor(h/24)}d`;
+    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
   }
 
   function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-  
-  const PLAN_CLASS = { Free:'plan-free', Plus:'plan-plus', Pro:'plan-pro', Team:'plan-team', Advanced:'plan-pro', Premium:'plan-pro' };
-  function planClass(plan){ return PLAN_CLASS[plan] || 'plan-otro'; }
-
-  function getProfile(id){ return state.profiles.find(p => p.id === id); }
-  function getAccount(id){ return state.accounts.find(a => a.id === id); }
-  function accountsOf(profileId){ return state.accounts.filter(a => a.profileId === profileId); }
-  function statusCounts(accounts){
-    return {
-      available: accounts.filter(a => computeStatus(a).key === 'available').length,
-      cooldown: accounts.filter(a => computeStatus(a).key === 'cooldown').length
-    };
+  function formatRemaining(ms){
+    const m = Math.max(1, Math.ceil(ms/60000));
+    return m > 60 ? `${Math.floor(m/60)}h ${m%60}m` : `${m}m`;
   }
-
-  function matchesFilters(acc){
-    const status = computeStatus(acc).key;
-    if(ui.filterAI && acc.service !== ui.filterAI) return false;
-    if(ui.filterStatus && status !== ui.filterStatus) return false;
-    if(ui.search){
-      const hay = `${acc.service} ${acc.email} ${acc.notes} ${acc.plan}`.toLowerCase();
-      if(!hay.includes(ui.search)) return false;
-    }
-    return true;
+  
+  function computeStatus(acc){
+    if(!acc.enabled) return { key:'disabled', label:'Desactivada', remainingMs:0 };
+    if(!acc.lastUsed || !acc.limitResetHours || !acc.limitCount) return { key:'available', label:'Disponible', remainingMs:0 };
+    const resetAt = new Date(acc.lastUsed).getTime() + acc.limitResetHours * 3600 * 1000;
+    const remaining = resetAt - Date.now();
+    if(remaining <= 0) return { key:'available', label:'Disponible', remainingMs:0 };
+    return { key:'cooldown', label:'En cooldown', remainingMs:remaining };
   }
 
   /* ============================================================
-     RENDERIZADO
+     RENDERIZADO NÚCLEO
      ============================================================ */
   function renderAll(){
-    document.getElementById('filterAI').innerHTML = '<option value="">Todas las IAs</option>' + 
-      [...new Set(state.accounts.map(a => (a.service||'').trim()).filter(Boolean))].sort()
-      .map(s => `<option value="${escapeHtml(s)}" ${s===ui.filterAI?'selected':''}>${escapeHtml(s)}</option>`).join('');
-    
-    renderStats(); renderReadyStrip(); renderRail(); renderForm(); renderMain();
-  }
-
-  function renderStats(){
-    const { available, cooldown } = statusCounts(state.accounts);
-    document.getElementById('statsRow').innerHTML = `
-      <div class="stat-pill"><b>${state.profiles.length}</b>Perfiles</div>
-      <div class="stat-pill"><b>${state.accounts.length}</b>Cuentas</div>
-      <div class="stat-pill is-mint"><b>${available}</b>Listas</div>
-      <div class="stat-pill is-gold"><b>${cooldown}</b>Cooldown</div>
-    `;
+    renderReadyStrip(); renderRail(); renderToolbar(); renderForm(); renderMain();
   }
 
   function renderReadyStrip(){
     const el = document.getElementById('readyStrip');
-    const available = state.accounts.filter(a => computeStatus(a).key === 'available').map(a => ({ acc:a, profile:getProfile(a.profileId) }));
-    
+    const available = state.accounts.filter(a => computeStatus(a).key === 'available').map(a => ({ acc:a, profile: state.profiles.find(p=>p.id===a.profileId) }));
     if(available.length){
       el.innerHTML = `<span class="ready-label">🟢 Disponibles Ahora</span><div class="ready-chips">` + 
         available.map(({acc,profile}) => `
-          <span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}">
-            <span class="dot" style="background:${getAiColor(acc.service)}; box-shadow:0 0 10px ${getAiColor(acc.service)}"></span>
-            <b>${escapeHtml(acc.service)}</b>
-            <span class="pname">en ${escapeHtml(profile ? profile.name : '—')}</span>
-          </span>`).join('') + `</div>`;
-      return;
-    }
-    
-    const cooling = state.accounts.map(computeStatus).filter(s => s.key === 'cooldown').sort((a,b)=>a.remainingMs-b.remainingMs)[0];
-    if(state.accounts.length === 0){
-      el.innerHTML = `<div class="empty-state" style="padding:10px; border:none;"><b>Aún no hay herramientas registradas</b>Añade perfiles y cuentas para iniciar la magia.</div>`;
-    } else if(cooling){
-      el.innerHTML = `<span class="ready-label" style="color:var(--gold)">⏳ En Cooldown Total</span><div class="empty-state" style="padding:10px; border:none; text-align:left;">La próxima IA estará disponible en <b>${formatRemaining(cooling.remainingMs)}</b>.</div>`;
+          <span class="ready-chip"><span class="dot" style="background:var(--mint)"></span>
+          <b>${escapeHtml(acc.service)}</b> <span style="font-size:10px; color:var(--muted)">(${escapeHtml(profile?.name||'—')})</span></span>
+        `).join('') + `</div>`;
     } else {
-      el.innerHTML = `<div class="empty-state" style="padding:10px; border:none; text-align:left;">Ninguna herramienta rastreando límites temporales.</div>`;
+      el.innerHTML = `<div class="empty-state" style="padding:10px; border:none;">Todo en orden. Agrega herramientas para rastrear límites.</div>`;
     }
   }
 
   function renderRail(){
     const rail = document.getElementById('profileRail');
-    const chips = [`<button class="rail-chip ${ui.activeProfile===null?'is-active':''}" data-action="select-profile" data-id=""><span class="rdot"></span>Vista Global<span class="rcount">${state.accounts.length}</span></button>`];
-    
+    const chips = [`<button class="rail-chip ${!ui.activeProfile?'is-active':''}" data-action="set-profile" data-id=""><span class="rdot"></span>Global</button>`];
     state.profiles.forEach(p => {
-      const accs = accountsOf(p.id);
-      const { available, cooldown } = statusCounts(accs);
-      const dot = available ? 'var(--mint)' : cooldown ? 'var(--gold)' : 'var(--muted-dim)';
-      chips.push(`<button class="rail-chip ${ui.activeProfile===p.id?'is-active':''}" data-action="select-profile" data-id="${p.id}"><span class="rdot" style="background:${dot}"></span>${escapeHtml(p.name)}<span class="rcount">${accs.length}</span></button>`);
+      chips.push(`<button class="rail-chip ${ui.activeProfile===p.id?'is-active':''}" data-action="set-profile" data-id="${p.id}"><span class="rdot"></span>${escapeHtml(p.name)}</button>`);
     });
     rail.innerHTML = chips.join('');
   }
 
+  function renderToolbar(){
+    const tb = document.getElementById('toolbarArea');
+    if(ui.activeTab === 'accounts'){
+      tb.innerHTML = `
+        <label class="search-box"><input id="searchInput" type="text" placeholder="Buscar cuenta o IA..." value="${ui.search}"></label>
+        <select id="filterAI"><option value="">Todas las IAs</option></select>
+        <div style="flex:1"></div>
+        <button class="btn success" data-action="open-form" data-type="account">+ Añadir Herramienta IA</button>
+      `;
+      // Listener para búsqueda
+      tb.querySelector('#searchInput').addEventListener('input', e => { ui.search = e.target.value.toLowerCase(); renderMain(); });
+    } else {
+      tb.innerHTML = `
+        <label class="search-box"><input id="searchInput" type="text" placeholder="Buscar prompt por título o tag..." value="${ui.search}"></label>
+        <div style="flex:1"></div>
+        <button class="btn primary" data-action="open-form" data-type="prompt">+ Crear Prompt</button>
+      `;
+      tb.querySelector('#searchInput').addEventListener('input', e => { ui.search = e.target.value.toLowerCase(); renderMain(); });
+    }
+  }
+
   function renderMain(){
     const zone = document.getElementById('mainZone');
-    if(state.profiles.length === 0){
-      zone.innerHTML = `<div class="empty-state"><b>No tienes perfiles creados</b><br>Haz clic en "Nuevo Perfil" arriba a la derecha para empezar.</div>`;
-      return;
-    }
-    if(ui.activeProfile === null){
-      zone.innerHTML = `<div class="profiles-list">${state.profiles.map(renderProfileCard).join('')}</div>`;
-    } else {
-      const profile = getProfile(ui.activeProfile);
-      if(!profile){ ui.activeProfile = null; return renderMain(); }
-      zone.innerHTML = renderFocused(profile);
-    }
+    if(ui.activeTab === 'accounts') renderAccountsView(zone);
+    else renderPromptsView(zone);
   }
 
-  function getProfileMetaHtml(all){
-    const { available, cooldown } = statusCounts(all);
-    return `<div class="profile-meta">
-      <span class="meta-pill">${all.length} total</span>
-      ${available ? `<span class="meta-pill is-mint">${available} listas</span>` : ''}
-      ${cooldown ? `<span class="meta-pill is-gold">${cooldown} espera</span>` : ''}
-    </div>`;
-  }
-
-  function renderProfileCard(profile){
-    const all = accountsOf(profile.id), visible = all.filter(matchesFilters);
-    let body = all.length === 0 ? `<div class="empty-state" style="padding:20px; border:none;">Perfil vacío.</div>` 
-             : visible.length === 0 ? `<div class="empty-state" style="padding:20px; border:none;">Nada coincide con los filtros.</div>`
-             : visible.map(renderAccountRow).join('');
-             
-    return `
-      <div class="profile-card" data-profile-id="${profile.id}">
-        <div class="profile-head" data-action="toggle-collapse" data-id="${profile.id}">
-          <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
-          <span class="profile-name">${escapeHtml(profile.name)}</span>
-          ${getProfileMetaHtml(all)}
-          <div class="profile-head-actions" onclick="event.stopPropagation()">
-            <button class="icon-btn" data-action="edit-profile" data-id="${profile.id}" title="Editar">✏️</button>
-            <button class="icon-btn danger" data-action="delete-profile" data-id="${profile.id}" title="Borrar">🗑️</button>
+  /* --- VISTA CUENTAS --- */
+  function renderAccountsView(zone){
+    let profilesToShow = ui.activeProfile ? [state.profiles.find(p=>p.id===ui.activeProfile)] : state.profiles;
+    if(!profilesToShow.length || !profilesToShow[0]){ zone.innerHTML = `<div class="empty-state">No hay perfiles creados.</div>`; return; }
+    
+    zone.innerHTML = `<div class="profiles-list">` + profilesToShow.map(p => {
+      const accs = state.accounts.filter(a => a.profileId === p.id && (!ui.search || a.service.toLowerCase().includes(ui.search)));
+      let body = accs.length ? accs.map(renderAccountRow).join('') : `<div class="empty-state" style="padding:15px; border:none;">Sin cuentas.</div>`;
+      return `
+        <div class="profile-card">
+          <div class="profile-head">
+            <span class="profile-name">${escapeHtml(p.name)}</span>
+            <span class="meta-pill">${accs.length} herramientas</span>
           </div>
-        </div>
-        <div class="profile-body"><div class="accounts-wrap">${body}</div></div>
-      </div>`;
-  }
-
-  function renderFocused(profile){
-    const all = accountsOf(profile.id), visible = all.filter(matchesFilters);
-    let body = all.length === 0 ? `<div class="empty-state">Este perfil está vacío.</div>` 
-             : visible.length === 0 ? `<div class="empty-state">Nada coincide con los filtros.</div>`
-             : `<div class="accounts-wrap">${visible.map(renderAccountRow).join('')}</div>`;
-             
-    return `
-      <div class="glass-panel" style="margin-bottom:20px; display:flex; align-items:center; gap:16px; padding:20px;">
-        <button class="btn ghost" style="padding:8px" data-action="select-profile" data-id="">⬅ Volver</button>
-        <h2 style="margin:0; font-family:var(--font-display); font-size:22px; color:#fff;">${escapeHtml(profile.name)}</h2>
-        ${getProfileMetaHtml(all)}
-        <div style="margin-left:auto; display:flex; gap:10px;">
-          <button class="btn" data-action="edit-profile" data-id="${profile.id}">Editar Nombre</button>
-          <button class="btn danger" data-action="delete-profile" data-id="${profile.id}">Eliminar Perfil</button>
-        </div>
-      </div>
-      ${body}`;
+          <div class="profile-body"><div style="padding: 0 20px 20px;">${body}</div></div>
+        </div>`;
+    }).join('') + `</div>`;
   }
 
   function renderAccountRow(acc){
-    const status = computeStatus(acc);
-    const dotColor = status.key === 'available' ? 'var(--mint)' : status.key === 'cooldown' ? 'var(--gold)' : status.key === 'disabled' ? 'var(--pink)' : 'var(--muted-dim)';
-    const brandColor = getAiColor(acc.service);
-    
+    const st = computeStatus(acc);
+    const dot = st.key === 'available' ? 'var(--mint)' : st.key === 'cooldown' ? 'var(--gold)' : 'var(--muted)';
     return `
-      <div class="account-row" data-account-id="${acc.id}">
-        <span class="acc-dot" style="background:${dotColor}; box-shadow: 0 0 10px ${dotColor};"></span>
-        <div class="acc-service">
-          <span class="svc-name" style="color: ${brandColor}; text-shadow: 0 0 15px ${brandColor}60;">${escapeHtml(acc.service)}</span>
-          <span class="svc-email">${escapeHtml(acc.email || '—')}</span>
-        </div>
-        <span class="plan-badge ${planClass(acc.plan)}">${escapeHtml(acc.plan || 'Free')}</span>
-        <div class="status-badge st-${status.key}">
-          <span class="s-label">${status.label}</span>
-          ${status.sub ? `<span class="s-sub">${status.sub}</span>` : ''}
-        </div>
-        <span class="acc-lastused">${formatRelative(acc.lastUsed)}</span>
-        <span class="acc-notes" title="${escapeHtml(acc.notes)}">${escapeHtml(acc.notes) || 'Sin notas'}</span>
+      <div class="account-row">
+        <span class="acc-dot" style="background:${dot}; width:10px; height:10px; border-radius:50%; box-shadow:0 0 10px ${dot}"></span>
+        <div class="acc-service"><span class="svc-name">${escapeHtml(acc.service)}</span><span class="svc-email">${escapeHtml(acc.email||'—')}</span></div>
+        <span class="plan-badge">${escapeHtml(acc.plan||'Free')}</span>
+        <div class="status-badge"><span class="s-label" style="color:${dot}">${st.label}</span></div>
         <div class="acc-actions">
-          <button class="icon-btn ${acc.enabled ? 'is-on' : 'is-off'}" data-action="toggle-enabled" data-id="${acc.id}" title="${acc.enabled ? 'Apagar' : 'Encender'}">⚡</button>
-          <button class="icon-btn" style="color:var(--blue); border-color:rgba(59,130,246,0.3)" data-action="mark-used" data-id="${acc.id}" title="Marcar Uso (Inicia Cooldown)">⏳</button>
-          <button class="icon-btn" data-action="edit-account" data-id="${acc.id}" title="Editar">✏️</button>
-          <button class="icon-btn danger" data-action="delete-account" data-id="${acc.id}" title="Borrar">🗑️</button>
+          <button class="icon-btn action" data-action="inject-ext" data-service="${acc.service}" title="Auto-Login Extensión">🔌</button>
+          <button class="icon-btn" data-action="mark-used" data-id="${acc.id}" title="Marcar Uso (Cooldown)">⏳</button>
         </div>
       </div>`;
   }
 
-  function updateAccountRowVisual(acc){
-    const row = document.querySelector(`.account-row[data-account-id="${acc.id}"]`);
-    if(!row) return false;
-    const status = computeStatus(acc);
-    const dotColor = status.key === 'available' ? 'var(--mint)' : status.key === 'cooldown' ? 'var(--gold)' : status.key === 'disabled' ? 'var(--pink)' : 'var(--muted-dim)';
-    
-    row.querySelector('.acc-dot').style.cssText = `background:${dotColor}; box-shadow:0 0 10px ${dotColor}`;
-    row.querySelector('.status-badge').className = `status-badge st-${status.key}`;
-    row.querySelector('.status-badge').innerHTML = `<span class="s-label">${status.label}</span>${status.sub ? `<span class="s-sub">${status.sub}</span>` : ''}`;
-    row.querySelector('.acc-lastused').textContent = formatRelative(acc.lastUsed);
-    
-    const pBtn = row.querySelector('[data-action="toggle-enabled"]');
-    if(pBtn){ pBtn.className = `icon-btn ${acc.enabled ? 'is-on' : 'is-off'}`; pBtn.title = acc.enabled ? 'Apagar' : 'Encender'; }
-    return true;
+  /* --- VISTA PROMPTS --- */
+  function renderPromptsView(zone){
+    let filtered = state.prompts;
+    if(ui.activeProfile) filtered = filtered.filter(p => p.profileId === ui.activeProfile || !p.profileId);
+    if(ui.search) filtered = filtered.filter(p => p.title.toLowerCase().includes(ui.search) || p.tags.toLowerCase().includes(ui.search));
+
+    if(!filtered.length){
+      zone.innerHTML = `<div class="empty-state"><b>No hay Prompts aquí</b><br>Crea tu primer prompt para tenerlo a un clic.</div>`;
+      return;
+    }
+
+    zone.innerHTML = `<div class="prompts-grid">` + filtered.map(p => `
+      <div class="prompt-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <h4 class="prompt-title">${escapeHtml(p.title)}</h4>
+          <button class="icon-btn danger" style="width:24px;height:24px;font-size:10px;" data-action="delete-prompt" data-id="${p.id}">✖</button>
+        </div>
+        <div class="prompt-tags">${(p.tags||'').split(',').map(t=> t.trim() ? `<span class="p-tag">${escapeHtml(t)}</span>`:'').join('')}</div>
+        <div class="prompt-body" id="pcontent-${p.id}">${escapeHtml(p.content)}</div>
+        <div class="prompt-actions">
+          <span style="font-size:10px; color:var(--muted)">${p.profileId ? 'Perfil Específico' : '🌐 Global'}</span>
+          <button class="copy-btn" data-action="copy-prompt" data-target="pcontent-${p.id}">📋 Copiar</button>
+        </div>
+      </div>
+    `).join('') + `</div>`;
   }
 
-  function refreshComputedVisuals(){ state.accounts.forEach(updateAccountRowVisual); renderStats(); renderReadyStrip(); renderRail(); }
-
-  /* ============================================================
-     GESTIÓN DE FORMULARIOS
-     ============================================================ */
-  function toLocalInputValue(iso){
-    const d = new Date(iso); if(Number.isNaN(d.getTime())) return '';
-    const pad = n => String(n).padStart(2,'0');
-    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  }
-
+  /* --- FORMULARIOS --- */
   function renderForm(){
     const zone = document.getElementById('formZone');
     if(!ui.showForm){ zone.innerHTML = ''; return; }
     
     if(ui.showForm === 'profile'){
-      const editing = ui.editingId ? getProfile(ui.editingId) : null;
-      let nextNum = 1;
-      state.profiles.forEach(p => { const m = /^Perfil (\d+)$/.exec(p.name); if(m) nextNum = Math.max(nextNum, parseInt(m[1],10)+1); });
-      
-      if(!ui.bulkProfileMode || editing){
-        zone.innerHTML = `
-          <form class="glass-panel form-panel" id="profileForm" style="margin-bottom:20px;">
-            <h3>${editing ? '✏️ Renombrar Perfil' : '✨ Nuevo Perfil'}</h3>
-            <div class="form-grid"><input name="name" type="text" placeholder="Ej: Navegador Trabajo" value="${editing ? escapeHtml(editing.name) : 'Perfil ' + nextNum}" required autocomplete="off"></div>
-            <div class="form-actions">
-              ${editing ? '' : `<button type="button" class="form-toggle-link" data-action="toggle-bulk">⚡ Crear múltiples perfiles a la vez</button>`}
-              <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
-              <button type="submit" class="btn primary" id="submitBtn">${editing ? 'Guardar Cambios' : 'Crear Perfil'}</button>
-            </div>
-          </form>`;
-      } else {
-        zone.innerHTML = `
-          <form class="glass-panel form-panel" id="profileBulkForm" style="margin-bottom:20px; border-top-color:var(--mint);">
-            <h3>⚡ Creación Masiva de Perfiles</h3>
-            <p class="form-sub">Ideal si manejas múltiples navegadores. Ej: Perfil 1 al 10.</p>
-            <div class="form-grid cols-3">
-              <input name="prefix" type="text" placeholder="Prefijo" value="Perfil" required>
-              <input name="from" type="number" min="1" placeholder="Desde" value="${nextNum}" required>
-              <input name="to" type="number" min="1" placeholder="Hasta" value="${nextNum + 4}" required>
-            </div>
-            <div class="form-actions">
-              <button type="button" class="form-toggle-link" data-action="toggle-bulk">⬅ Volver a modo normal</button>
-              <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
-              <button type="submit" class="btn success" id="submitBtn">Generar Perfiles</button>
-            </div>
-          </form>`;
-      }
-      setTimeout(()=> zone.querySelector('input').focus(), 50);
+      zone.innerHTML = `
+        <form class="glass-panel form-panel" id="formProfile" style="margin-bottom:20px;">
+          <h3>✨ Nuevo Perfil</h3>
+          <div class="form-grid"><input name="name" placeholder="Nombre (Ej. Chrome Trabajo)" required></div>
+          <div class="form-actions">
+            <button type="button" class="btn ghost" data-action="close-form">Cancelar</button>
+            <button type="submit" class="btn primary">Crear Perfil</button>
+          </div>
+        </form>`;
     } 
     else if(ui.showForm === 'account'){
-      if(state.profiles.length === 0){ closeForm(); alert("⚠️ Crea un perfil primero."); return; }
-      
-      const editing = ui.editingId ? getAccount(ui.editingId) : null;
-      const defProf = editing ? editing.profileId : (ui.activeProfile || state.profiles[0].id);
-      
       zone.innerHTML = `
-        <form class="glass-panel form-panel" id="accountForm" style="margin-bottom:20px; border-top-color:var(--pink);">
-          <h3>${editing ? '✏️ Editar Cuenta IA' : '✨ Agregar Herramienta IA'}</h3>
+        <form class="glass-panel form-panel" id="formAccount" style="margin-bottom:20px;">
+          <h3>🤖 Añadir Herramienta IA</h3>
           <div class="form-grid">
-            <select name="profileId" required>
-              ${state.profiles.map(p => `<option value="${p.id}" ${defProf===p.id?'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
-            </select>
-            <input name="service" id="serviceInput" list="aiList" placeholder="Nombre (ChatGPT, Claude...)" value="${editing ? escapeHtml(editing.service) : ''}" required autocomplete="off">
-            <input name="email" type="text" placeholder="Correo (Opcional)" value="${editing ? escapeHtml(editing.email) : ''}" autocomplete="off">
-            <input name="plan" list="planList" placeholder="Plan (Free, Pro...)" value="${editing ? escapeHtml(editing.plan) : ''}" autocomplete="off">
+            <select name="profileId">${state.profiles.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select>
+            <input name="service" placeholder="IA (ChatGPT, Claude...)" required>
+            <input name="email" placeholder="Correo de cuenta">
           </div>
-          <p class="form-hint" style="margin-top:16px;"><b>Límites de Uso:</b> Deja en blanco si es uso ilimitado.</p>
-          <div class="form-grid cols-3">
-            <input name="limitCount" type="number" min="1" placeholder="Mensajes permitidos" value="${editing?.limitCount || ''}">
-            <input name="limitResetHours" type="number" min="0.5" step="0.5" placeholder="Horas de reset" value="${editing?.limitResetHours || ''}">
-            <input name="lastUsed" type="datetime-local" title="Último uso (Opcional)" value="${editing?.lastUsed ? toLocalInputValue(editing.lastUsed) : ''}">
-          </div>
-          <div class="form-grid" style="margin-top:14px;"><textarea name="notes" placeholder="Notas adicionales...">${editing?.notes || ''}</textarea></div>
-          <div class="form-actions">
-            <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
-            <button type="submit" class="btn primary" id="submitBtn">${editing ? 'Guardar Cambios' : 'Agregar a este perfil'}</button>
-          </div>
-        </form>
-        <datalist id="aiList">${Object.keys(AI_PRESETS).map(s=>`<option value="${s}">`).join('')}</datalist>
-        <datalist id="planList"><option value="Free"><option value="Plus"><option value="Pro"><option value="Premium"><option value="Advanced"><option value="Team"></datalist>`;
-        
-      if(!editing){
-        zone.querySelector('#serviceInput').addEventListener('change', e => {
-          const pre = AI_PRESETS[e.target.value]; if(!pre) return;
-          const f = e.target.closest('form');
-          if(!f.plan.value) f.plan.value = pre.plan;
-          if(!f.limitCount.value && pre.limitCount) f.limitCount.value = pre.limitCount;
-          if(!f.limitResetHours.value && pre.limitResetHours) f.limitResetHours.value = pre.limitResetHours;
-        });
-      }
-      setTimeout(()=> zone.querySelector('#serviceInput').focus(), 50);
+          <div class="form-actions"><button type="button" class="btn ghost" data-action="close-form">Cancelar</button><button type="submit" class="btn success">Guardar</button></div>
+        </form>`;
     }
+    else if(ui.showForm === 'prompt'){
+      zone.innerHTML = `
+        <form class="glass-panel form-panel" id="formPrompt" style="margin-bottom:20px; border-top-color:var(--purple);">
+          <h3>📝 Crear Prompt Mágico</h3>
+          <div class="form-grid">
+            <input name="title" placeholder="Título (Ej. Revisor de Código)" required>
+            <input name="tags" placeholder="Etiquetas separadas por coma (Ej. Code, Python)">
+            <select name="profileId"><option value="">🌐 Visible en Todos los Perfiles</option>${state.profiles.map(p=>`<option value="${p.id}" ${ui.activeProfile===p.id?'selected':''}>Solo para: ${p.name}</option>`).join('')}</select>
+          </div>
+          <textarea name="content" placeholder="Escribe tu prompt aquí..." style="margin-top:14px;" required></textarea>
+          <div class="form-actions"><button type="button" class="btn ghost" data-action="close-form">Cancelar</button><button type="submit" class="btn primary">Guardar Prompt</button></div>
+        </form>`;
+    }
+    window.scrollTo({top:0, behavior:'smooth'});
   }
-
-  function openForm(k, id){ ui.showForm = k; ui.editingId = id || null; ui.bulkProfileMode = false; renderForm(); window.scrollTo({top:0, behavior:'smooth'}); }
-  function closeForm(){ ui.showForm = null; ui.editingId = null; renderForm(); }
 
   /* ============================================================
-     CONTROLADORES DE ACCIONES (INTERACCIONES)
+     INTERACCIONES Y EVENTOS
      ============================================================ */
-  const SafeExecute = async (btnId, promiseFn, successMsg) => {
-    if(ui.isRequesting) return;
-    ui.isRequesting = true;
-    const btn = document.getElementById(btnId);
-    if(btn){ btn.disabled = true; btn.innerHTML = '⏳ Procesando...'; }
-    try {
-      await promiseFn();
-      if(successMsg) showToast(successMsg, 'success');
-      haptic('success');
-      await loadState();
-      renderAll();
-    } catch(e) {
-      showToast(e.message, 'error'); haptic('error');
-    } finally {
-      ui.isRequesting = false;
-      if(btn){ btn.disabled = false; }
-    }
-  };
-
-  async function markUsedNow(id){
-    const acc = getAccount(id); if(!acc) return;
-    acc.lastUsed = new Date().toISOString(); 
-    if(!ui.filterStatus || ui.filterStatus === computeStatus(acc).key){ updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); }
-    else renderAll();
-    haptic();
-    try { await apiFetch(`/api/accounts/${id}/mark-used`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) }); }
-    catch(e){ showToast('Error al sincronizar límite: ' + e.message, 'error'); }
-  }
-
-  async function toggleEnabled(id){
-    const acc = getAccount(id); if(!acc) return;
-    acc.enabled = !acc.enabled;
-    if(!ui.filterStatus || ui.filterStatus === computeStatus(acc).key){ updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); }
-    else renderAll();
-    haptic();
-    try { await apiFetch(`/api/accounts/${id}/toggle-enabled`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) }); }
-    catch(e){ showToast('Error al sincronizar estado: ' + e.message, 'error'); }
-  }
-
-  /* Listeners Globales */
-  document.getElementById('searchInput').addEventListener('input', e => { ui.search = e.target.value.toLowerCase(); renderMain(); });
-  document.getElementById('filterAI').addEventListener('change', e => { ui.filterAI = e.target.value; renderMain(); });
-  document.getElementById('filterStatus').addEventListener('change', e => { ui.filterStatus = e.target.value; renderMain(); });
-
-  document.addEventListener('click', e => {
+  document.addEventListener('click', async e => {
     const t = e.target.closest('[data-action]'); if(!t) return;
-    const act = t.dataset.action, id = t.dataset.id;
-    
-    if(act==='new-profile'){ haptic(); openForm('profile'); }
-    else if(act==='new-account'){ haptic(); openForm('account'); }
-    else if(act==='edit-profile'){ haptic(); openForm('profile', id); }
-    else if(act==='edit-account'){ haptic(); openForm('account', id); }
-    else if(act==='cancel-form'){ haptic(); closeForm(); }
-    else if(act==='toggle-bulk'){ ui.bulkProfileMode = !ui.bulkProfileMode; renderForm(); }
-    else if(act==='select-profile' || act==='jump-profile'){ haptic(); ui.activeProfile = id || null; renderRail(); renderMain(); }
-    else if(act==='toggle-collapse'){ const c = document.querySelector(`.profile-card[data-profile-id="${id}"]`); if(c) c.classList.toggle('is-collapsed'); }
-    else if(act==='mark-used'){ markUsedNow(id); }
-    else if(act==='toggle-enabled'){ toggleEnabled(id); }
-    
-    // Acciones destructivas
-    else if(act==='delete-profile'){
-      if(confirm('¿Eliminar este perfil y todas sus cuentas permanentemente?')){
-        SafeExecute(null, async () => {
-          await apiFetch(`/api/profiles/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
-          if(ui.activeProfile === id) ui.activeProfile = null;
-        }, 'Perfil eliminado');
-      }
+    const act = t.dataset.action;
+
+    // Navegación Tabs
+    if(e.target.closest('.tab-btn')){
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      e.target.closest('.tab-btn').classList.add('active');
+      ui.activeTab = e.target.closest('.tab-btn').dataset.tab;
+      ui.search = ''; renderAll();
     }
-    else if(act==='delete-account'){
-      if(confirm('¿Eliminar cuenta IA?')){
-        SafeExecute(null, async () => { await apiFetch(`/api/accounts/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' }); }, 'Cuenta borrada');
-      }
+    
+    // Acciones simples
+    if(act === 'set-profile'){ ui.activeProfile = t.dataset.id || null; renderAll(); }
+    if(act === 'open-form'){ ui.showForm = t.dataset.type; renderForm(); }
+    if(act === 'close-form'){ ui.showForm = null; renderForm(); }
+    
+    // Extensión Mock
+    if(act === 'inject-ext'){
+      const svc = t.dataset.service;
+      showToast(`Inyectando sesión de ${svc} vía extensión...`, 'ext');
     }
-    else if(act==='reset'){
-      if(confirm('⚠️ ¿BORRAR ABSOLUTAMENTE TODO de la nube? Esto no se puede deshacer.')){
-        SafeExecute(null, async () => { await apiFetch('/api/reset' + qs({ tg_id:TG_ID }), { method:'DELETE' }); ui.activeProfile = null; }, 'Todo fue borrado');
-      }
+    
+    // Copiar Prompt
+    if(act === 'copy-prompt'){
+      const text = document.getElementById(t.dataset.target).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const original = t.innerHTML; t.innerHTML = '✅ Copiado'; t.style.background = 'var(--mint)'; t.style.color = '#fff';
+        setTimeout(()=>{ t.innerHTML = original; t.style.background=''; t.style.color=''; }, 2000);
+      });
+    }
+
+    // Borrar Prompt
+    if(act === 'delete-prompt'){
+      await apiFetch(`/api/prompts/${t.dataset.id}`, { method:'DELETE' });
+      showToast('Prompt borrado', 'success'); renderMain();
     }
   });
 
-  document.addEventListener('submit', e => {
-    e.preventDefault();
-    if(e.target.id === 'profileForm'){
-      const name = new FormData(e.target).get('name').trim(); if(!name) return;
-      SafeExecute('submitBtn', async () => {
-        if(ui.editingId) await apiFetch(`/api/profiles/${ui.editingId}`, { method:'PATCH', body: JSON.stringify({ tg_id:TG_ID, name }) });
-        else { const r = await apiFetch('/api/profiles', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, name }) }); ui.activeProfile = r.profile.id; }
-        closeForm();
-      }, ui.editingId ? 'Perfil actualizado' : 'Perfil creado');
-    } 
-    else if(e.target.id === 'profileBulkForm'){
-      const fd = new FormData(e.target);
-      SafeExecute('submitBtn', async () => {
-        await apiFetch('/api/profiles/bulk', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, prefix:fd.get('prefix'), from:fd.get('from'), to:fd.get('to') }) });
-        closeForm();
-      }, 'Perfiles generados');
-    } 
-    else if(e.target.id === 'accountForm'){
-      const fd = new FormData(e.target), payload = {
-        tg_id: TG_ID, profileId: fd.get('profileId'), service: fd.get('service').trim(),
-        email: fd.get('email').trim(), plan: fd.get('plan').trim() || 'Free',
-        limitCount: fd.get('limitCount') ? Number(fd.get('limitCount')) : null,
-        limitResetHours: fd.get('limitResetHours') ? Number(fd.get('limitResetHours')) : null, notes: fd.get('notes')
-      };
-      if(fd.get('lastUsed')) payload.lastUsed = new Date(fd.get('lastUsed')).toISOString();
-
-      SafeExecute('submitBtn', async () => {
-        if(ui.editingId) await apiFetch(`/api/accounts/${ui.editingId}`, { method:'PATCH', body: JSON.stringify(payload) });
-        else await apiFetch('/api/accounts', { method:'POST', body: JSON.stringify(payload) });
-        closeForm();
-      }, ui.editingId ? 'Herramienta actualizada' : 'Herramienta añadida');
+  // Formularios
+  document.addEventListener('submit', async e => {
+    e.preventDefault(); const fd = new FormData(e.target);
+    const body = Object.fromEntries(fd.entries());
+    
+    if(e.target.id === 'formProfile'){
+      await apiFetch('/api/profiles', { method:'POST', body: JSON.stringify(body) }); showToast('Perfil Creado', 'success');
+    } else if(e.target.id === 'formAccount'){
+      await apiFetch('/api/accounts', { method:'POST', body: JSON.stringify(body) }); showToast('Cuenta Creada', 'success');
+    } else if(e.target.id === 'formPrompt'){
+      await apiFetch('/api/prompts', { method:'POST', body: JSON.stringify(body) }); showToast('Prompt Guardado', 'success');
     }
+    ui.showForm = null; renderAll();
   });
 
-  /* ============================================================
-     INICIALIZACIÓN Y POLLING
-     ============================================================ */
-  async function backgroundPoll(){
-    if(ui.showForm || ui.isRequesting) return; 
-    try{
-      const fresh = await apiFetch('/api/state' + qs({ tg_id:TG_ID }));
-      if(JSON.stringify(fresh) !== JSON.stringify(state)){ state = fresh; renderAll(); }
-    }catch(e){}
-  }
+  /* INICIO */
+  apiFetch('/api/state').then(s => { state = s; renderAll(); });
 
-  async function boot(){
-    try { await loadState(); }
-    catch(e) {
-      document.getElementById('mainZone').innerHTML = `<div class="empty-state"><b>Error de conexión a la nube</b><br>${escapeHtml(e.message)}<br><br><span style="font-size:12px; color:var(--gold);">Verifica que el servidor backend esté encendido.</span></div>`;
-      showToast('Error de Servidor', 'error'); return;
-    }
-    renderAll();
-    setInterval(backgroundPoll, 30000); // Sincronización en segundo plano (30s)
-    setInterval(refreshComputedVisuals, 60000); // Refresco de tiempos relativos (1min)
-  }
-  
-  boot();
 })();
 </script>
 </body>
 </html>
-
-```
