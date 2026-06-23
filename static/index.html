@@ -51,6 +51,7 @@
   .ready-empty{font-size:12.5px;color:var(--muted);}
   .ready-empty b{color:var(--gold);font-weight:700;}
 
+  /* Corrección del contenedor de la barra de perfiles para evitar solapamientos */
   .rail-wrap { 
     display: flex; 
     align-items: center; 
@@ -271,6 +272,7 @@
     if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id){
       return String(tg.initDataUnsafe.user.id);
     }
+    // Fuera de Telegram (probando en un navegador normal): se pide un ID una sola vez
     let dev = localStorage.getItem('dev_tg_id');
     if(!dev){
       dev = 'dev-' + Math.random().toString(36).slice(2, 9);
@@ -290,21 +292,6 @@
     el.textContent = msg;
     wrap.appendChild(el);
     setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 220); }, 2800);
-  }
-
-  /* ============================================================
-     SISTEMA DE CONFIRMACIÓN ADAPTADO PARA TELEGRAM (EVITA BUGS)
-     ============================================================ */
-  function safeConfirm(msg, onConfirm) {
-    if (tg && tg.showConfirm) {
-      tg.showConfirm(msg, (approved) => {
-        if (approved) onConfirm();
-      });
-    } else {
-      if (confirm(msg)) {
-        onConfirm();
-      }
-    }
   }
 
   /* ============================================================
@@ -338,7 +325,7 @@
   };
 
   /* ============================================================
-     CATÁLOGO DE PRESETS POR IA Y PALETA DE COLORES DE PERFILES
+     CATÁLOGO DE PRESETS POR IA
      ============================================================ */
   const AI_PRESETS = {
     'ChatGPT':    { plan:'Plus', limitCount:40, limitResetHours:3 },
@@ -368,16 +355,8 @@
     'Meta AI': '#06b6d4'       
   };
 
-  const PROFILE_COLORS = ['#9b7bff', '#3ddc97', '#f0c419', '#ff6fae', '#00e5ff', '#ff9100', '#ea4335'];
-
   function getAiColor(serviceName) {
     return AI_COLORS[serviceName] || 'var(--muted)';
-  }
-
-  function getProfileColor(profileId) {
-    const idx = state.profiles.findIndex(p => p.id === profileId);
-    if(idx === -1) return 'var(--text)';
-    return PROFILE_COLORS[idx % PROFILE_COLORS.length];
   }
 
   /* ============================================================
@@ -548,11 +527,8 @@
       const accs = accountsOf(p.id);
       const { available, cooldown } = statusCounts(accs);
       const dot = available ? 'var(--mint)' : cooldown ? 'var(--gold)' : 'var(--muted-dim)';
-      const pColor = getProfileColor(p.id);
-      const isAct = ui.activeProfile === p.id;
-      
       chips.push(`
-        <button class="rail-chip ${isAct?'is-active':''}" type="button" data-action="select-profile" data-id="${p.id}" style="${isAct ? `background:${pColor}; border-color:${pColor}; color:#0b0612; font-weight:700;` : `color:${pColor}; border-color:${pColor}30;`}">
+        <button class="rail-chip ${ui.activeProfile===p.id?'is-active':''}" type="button" data-action="select-profile" data-id="${p.id}">
           <span class="rdot" style="background:${dot}"></span>${escapeHtml(p.name)}<span class="rcount">${accs.length}</span>
         </button>`);
     });
@@ -585,22 +561,21 @@
     const all = accountsOf(profile.id);
     const visible = all.filter(matchesFilters);
     const { available, cooldown } = statusCounts(all);
-    const pColor = getProfileColor(profile.id);
     let body;
     if(all.length === 0) body = `<div class="profile-empty">Sin cuentas todavía.</div>`;
     else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
     else body = visible.map(renderAccountRow).join('');
     return `
-      <div class="profile-card" data-profile-id="${profile.id}" style="border-color: ${pColor}30;">
+      <div class="profile-card" data-profile-id="${profile.id}">
         <div class="profile-head" data-action="toggle-collapse" data-id="${profile.id}">
           <span class="chev">${ICONS.chev}</span>
-          <span class="profile-name" style="color: ${pColor}; text-shadow: 0 0 10px ${pColor}30;">${escapeHtml(profile.name)}</span>
+          <span class="profile-name">${escapeHtml(profile.name)}</span>
           <div class="profile-meta">
             <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
             ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
             ${cooldown ? `<span class="meta-pill is-gold">${cooldown} en cooldown</span>` : ''}
           </div>
-          <div class="profile-head-actions">
+          <div class="profile-head-actions" onclick="event.stopPropagation()">
             <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar perfil">${ICONS.pencil}</button>
             <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil y sus cuentas">${ICONS.trash}</button>
           </div>
@@ -613,7 +588,6 @@
     const all = accountsOf(profile.id);
     const visible = all.filter(matchesFilters);
     const { available, cooldown } = statusCounts(all);
-    const pColor = getProfileColor(profile.id);
     let body;
     if(all.length === 0) body = `<div class="profile-empty">Este perfil todavía no tiene cuentas.</div>`;
     else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
@@ -621,7 +595,7 @@
     return `
       <div class="focused-head">
         <span class="back-link" data-action="select-profile" data-id="">${ICONS.back} Todos los perfiles</span>
-        <h2 style="color: ${pColor}; text-shadow: 0 0 10px ${pColor}40;">${escapeHtml(profile.name)}</h2>
+        <h2>${escapeHtml(profile.name)}</h2>
         <div class="profile-meta">
           <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
           ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
@@ -802,33 +776,31 @@
   function selectProfile(id){ ui.activeProfile = id || null; renderRail(); renderMain(); }
   function toggleCollapse(id){ const card = document.querySelector(`.profile-card[data-profile-id="${id}"]`); if(card) card.classList.toggle('is-collapsed'); }
 
-  function deleteProfile(id){
+  async function deleteProfile(id){
     const profile = getProfile(id);
     if(!profile) return;
-    safeConfirm(`¿Eliminar el perfil "${profile.name}" y todas sus cuentas?`, async () => {
-      try{
-        await apiFetch(`/api/profiles/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
-        if(ui.activeProfile === id) ui.activeProfile = null;
-        haptic('success');
-        await loadState();
-        renderAll();
-        showToast('Perfil eliminado', 'success');
-      }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
-    });
+    if(!confirm(`¿Eliminar el perfil "${profile.name}" y todas sus cuentas?`)) return;
+    try{
+      await apiFetch(`/api/profiles/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
+      if(ui.activeProfile === id) ui.activeProfile = null;
+      haptic('success');
+      await loadState();
+      renderAll();
+      showToast('Perfil eliminado', 'success');
+    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
-  function deleteAccount(id){
+  async function deleteAccount(id){
     const acc = getAccount(id);
     if(!acc) return;
-    safeConfirm(`¿Eliminar la cuenta de ${acc.service}?`, async () => {
-      try{
-        await apiFetch(`/api/accounts/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
-        haptic('success');
-        await loadState();
-        renderAll();
-        showToast('Cuenta eliminada', 'success');
-      }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
-    });
+    if(!confirm(`¿Eliminar la cuenta de ${acc.service}?`)) return;
+    try{
+      await apiFetch(`/api/accounts/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
+      haptic('success');
+      await loadState();
+      renderAll();
+      showToast('Cuenta eliminada', 'success');
+    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
   async function markUsedNow(id){
@@ -952,17 +924,16 @@
     }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
-  function resetAll(){
-    safeConfirm('¿Seguro que querés borrar todos los perfiles y cuentas del servidor?', async () => {
-      try{
-        await apiFetch('/api/reset' + qs({ tg_id:TG_ID }), { method:'DELETE' });
-        ui.activeProfile = null;
-        haptic('warning');
-        await loadState();
-        renderAll();
-        showToast('Todo borrado', 'success');
-      }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
-    });
+  async function resetAll(){
+    if(!confirm('¿Seguro que querés borrar todos los perfiles y cuentas del servidor?')) return;
+    try{
+      await apiFetch('/api/reset' + qs({ tg_id:TG_ID }), { method:'DELETE' });
+      ui.activeProfile = null;
+      haptic('warning');
+      await loadState();
+      renderAll();
+      showToast('Todo borrado', 'success');
+    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
   /* ============================================================
