@@ -44,9 +44,9 @@
   .ready-strip{border:1px solid var(--border);background:var(--panel);border-radius:14px;padding:14px 16px;}
   .ready-strip .ready-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:block;}
   .ready-chips{display:flex;gap:8px;flex-wrap:wrap;}
-  .ready-chip{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:20px;background:rgba(61,220,151,.10);border:1px solid rgba(61,220,151,.35);font-size:12px;color:var(--text);cursor:pointer;}
+  .ready-chip{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:20px;background:rgba(61,220,151,.05);border:1px solid rgba(61,220,151,.2);font-size:12px;color:var(--text);cursor:pointer;transition:border-color .2s;}
   .ready-chip:hover{border-color:var(--mint);}
-  .ready-chip .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  .ready-chip .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0; background:hsl(var(--neon-hue, 210), 100%, 65%); box-shadow:0 0 8px hsl(var(--neon-hue, 210), 100%, 65%);}
   .ready-chip .pname{color:var(--muted);}
   .ready-empty{font-size:12.5px;color:var(--muted);}
   .ready-empty b{color:var(--gold);font-weight:700;}
@@ -96,33 +96,77 @@
   .form-toggle-link{font-size:11px;color:var(--purple);cursor:pointer;text-decoration:underline;margin-right:auto;background:none;border:none;font-family:var(--font-mono);padding:0;}
   .form-empty-note{font-size:12px;color:var(--gold);margin:0 0 10px;}
 
-  .focused-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .focused-head h2{font-family:var(--font-display);font-size:18px;margin:0;}
-  .back-link{font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;}
-  .back-link:hover{color:var(--text);}
-  .focused-actions{display:flex;gap:6px;margin-left:auto;}
-
-  .profiles-list{display:flex;flex-direction:column;gap:14px;}
-  .profile-card{border:1px solid var(--border);background:var(--panel);border-radius:14px;overflow:hidden;animation:fadeUp .35s ease both;}
+  .profiles-list{display:flex;flex-direction:column;gap:16px;}
+  
+  /* ---- ESTILOS NEÓN DINÁMICOS ---- */
+  .profile-card{
+    border:1px solid hsla(var(--neon-hue, 210), 100%, 65%, 0.25);
+    background:var(--panel);
+    border-radius:14px;
+    overflow:hidden;
+    animation:fadeUp .35s ease both;
+    box-shadow: 0 4px 20px -10px hsla(var(--neon-hue, 210), 100%, 65%, 0.15);
+  }
   @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-  .profile-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
-  .profile-head .chev{color:var(--muted-dim);flex-shrink:0;transition:transform .25s;}
+  
+  .profile-head{
+    display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;
+    background: linear-gradient(135deg, hsla(var(--neon-hue, 210), 100%, 65%, 0.18), transparent 70%);
+    border-bottom: 1px solid hsla(var(--neon-hue, 210), 100%, 65%, 0.15);
+  }
+  .profile-head .chev{color:hsl(var(--neon-hue, 210), 100%, 75%); flex-shrink:0; transition:transform .25s;}
   .profile-card.is-collapsed .chev{transform:rotate(-90deg);}
-  .profile-name{font-family:var(--font-display);font-size:14.5px;font-weight:700;color:var(--text);}
+  .profile-name{
+    font-family:var(--font-display); font-size:14.5px; font-weight:700;
+    color:hsl(var(--neon-hue, 210), 100%, 75%);
+    text-shadow: 0 0 12px hsla(var(--neon-hue, 210), 100%, 75%, 0.5);
+  }
+  
+  .focused-head{
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    background: linear-gradient(135deg, hsla(var(--neon-hue, 210), 100%, 65%, 0.18), transparent 70%);
+    border: 1px solid hsla(var(--neon-hue, 210), 100%, 65%, 0.25);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 4px 20px -10px hsla(var(--neon-hue, 210), 100%, 65%, 0.15);
+  }
+  .focused-head h2{
+    font-family:var(--font-display);font-size:18px;margin:0;
+    color:hsl(var(--neon-hue, 210), 100%, 75%);
+    text-shadow: 0 0 12px hsla(var(--neon-hue, 210), 100%, 75%, 0.5);
+  }
+  
+  .account-row{
+    display:grid;grid-template-columns:22px 1.3fr .8fr 1fr 1.1fr 1fr auto;align-items:center;gap:12px;
+    padding:10px 12px;border-radius:10px;background:var(--panel-2);
+    border:1px solid var(--border-soft);
+    border-left: 2px solid hsla(var(--neon-hue, 210), 100%, 65%, 0.4);
+    transition: border-left .2s;
+  }
+  .acc-service .svc-name{
+    font-size:13px; font-weight:700; font-family:var(--font-display);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    color:hsl(var(--neon-hue, 210), 100%, 75%);
+    text-shadow: 0 0 8px hsla(var(--neon-hue, 210), 100%, 65%, 0.4);
+  }
+  /* ---------------------------------- */
+
   .profile-meta{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;}
-  .meta-pill{font-size:10.5px;padding:4px 9px;border-radius:20px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;}
+  .meta-pill{font-size:10.5px;padding:4px 9px;border-radius:20px;border:1px solid var(--border);color:var(--muted);white-space:nowrap; background:var(--panel);}
   .meta-pill.is-mint{color:var(--mint);border-color:rgba(61,220,151,.35);background:rgba(61,220,151,.08);}
   .meta-pill.is-gold{color:var(--gold);border-color:rgba(240,196,25,.35);background:rgba(240,196,25,.08);}
   .profile-head-actions{display:flex;gap:6px;}
   .profile-body{max-height:3000px;transition:max-height .3s ease;overflow:hidden;}
   .profile-card.is-collapsed .profile-body{max-height:0;}
-  .accounts-wrap{padding:0 16px 14px;display:flex;flex-direction:column;gap:8px;}
-  .profile-empty{font-size:12px;color:var(--muted-dim);padding:4px 2px 10px;}
+  .accounts-wrap{padding:14px 16px;display:flex;flex-direction:column;gap:8px;}
+  .profile-empty{font-size:12px;color:var(--muted-dim);padding:14px 16px;}
 
-  .account-row{display:grid;grid-template-columns:22px 1.3fr .8fr 1fr 1.1fr 1fr auto;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:var(--panel-2);border:1px solid var(--border-soft); transition: border-left .2s;}
+  .back-link{font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;width:100%;}
+  .back-link:hover{color:var(--text);}
+  .focused-actions{display:flex;gap:6px;margin-left:auto;}
+
   .acc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background-color .25s ease;}
   .acc-service{display:flex;flex-direction:column;gap:2px;min-width:0;}
-  .acc-service .svc-name{font-size:13px;color:var(--text);font-weight:700;font-family:var(--font-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .acc-service .svc-email{font-size:10.5px;color:var(--muted-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .plan-badge{font-size:10px;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;width:fit-content;}
   .plan-free{background:rgba(139,144,164,.14);color:var(--muted);}
@@ -239,7 +283,7 @@
     try{
       if(kind === 'success' || kind === 'error' || kind === 'warning') tg.HapticFeedback.notificationOccurred(kind);
       else tg.HapticFeedback.impactOccurred(kind || 'light');
-    }catch(e){ /* versiones viejas de Telegram no tienen todos los métodos */ }
+    }catch(e){ }
   }
 
   function resolveTgId(){
@@ -286,7 +330,7 @@
   const qs = (params) => '?' + new URLSearchParams(params).toString();
 
   /* ============================================================
-     ICONOS & COLORES DINÁMICOS
+     ICONOS & HASH MATEMÁTICO DE COLORES (FNV-1a)
      ============================================================ */
   const ICONS = {
     chev:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>`,
@@ -297,12 +341,16 @@
     back:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>`
   };
 
-  const COLOR_PALETTE = ['#9b7bff', '#3ddc97', '#f0c419', '#ff6fae', '#48bfe3', '#ff9f1c', '#a7c957', '#e0b1cb', '#ff99c8', '#a9def9', '#f15bb5', '#00f5d4'];
-  function getHashColor(str) {
-    if (!str) return '#eef0f5';
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    return COLOR_PALETTE[Math.abs(hash) % COLOR_PALETTE.length];
+  /* Este algoritmo convierte texto en un número de la rueda de color (0 a 360). 
+     Es hiper-sensible: "Perfil 1" y "Perfil 2" arrojarán colores MUY distintos. */
+  function getNeonHue(str) {
+    if (!str) return 210; // Azul oscuro por defecto
+    let h = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    return Math.abs(h) % 360;
   }
 
   /* ============================================================
@@ -326,7 +374,6 @@
      ESTADO
      ============================================================ */
   let state = { profiles: [], accounts: [] };
-  // ui.collapsedProfiles mantiene el estado de qué perfiles están cerrados permanentemente
   const ui = { search:'', filterAI:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false, collapsedProfiles: new Set() };
 
   async function loadState(){
@@ -465,8 +512,8 @@
         <span class="ready-label">Disponible ahora</span>
         <div class="ready-chips">
           ${available.map(({acc,profile}) => `
-            <span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}">
-              <span class="dot" style="background:${getHashColor(acc.service)}; box-shadow:0 0 8px ${getHashColor(acc.service)}"></span>
+            <span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}" style="--neon-hue: ${getNeonHue(acc.service)}">
+              <span class="dot"></span>
               ${escapeHtml(acc.service)}<span class="pname">· ${escapeHtml(profile ? profile.name : '—')}</span>
             </span>`).join('')}
         </div>`;
@@ -527,7 +574,6 @@
     const visible = all.filter(matchesFilters);
     const { available, cooldown } = statusCounts(all);
     const isCollapsed = ui.collapsedProfiles.has(profile.id);
-    const profileColor = getHashColor(profile.name);
 
     let body;
     if(all.length === 0) body = `<div class="profile-empty">Sin cuentas todavía.</div>`;
@@ -535,10 +581,10 @@
     else body = visible.map(renderAccountRow).join('');
 
     return `
-      <div class="profile-card ${isCollapsed ? 'is-collapsed' : ''}" data-profile-id="${profile.id}" style="border-left: 4px solid ${profileColor}">
+      <div class="profile-card ${isCollapsed ? 'is-collapsed' : ''}" data-profile-id="${profile.id}" style="--neon-hue: ${getNeonHue(profile.name)}">
         <div class="profile-head" data-action="toggle-collapse" data-id="${profile.id}">
           <span class="chev">${ICONS.chev}</span>
-          <span class="profile-name" style="color: ${profileColor}">${escapeHtml(profile.name)}</span>
+          <span class="profile-name">${escapeHtml(profile.name)}</span>
           <div class="profile-meta">
             <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
             ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
@@ -557,17 +603,16 @@
     const all = accountsOf(profile.id);
     const visible = all.filter(matchesFilters);
     const { available, cooldown } = statusCounts(all);
-    const profileColor = getHashColor(profile.name);
 
     let body;
     if(all.length === 0) body = `<div class="profile-empty">Este perfil todavía no tiene cuentas.</div>`;
     else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
-    else body = `<div class="accounts-wrap">${visible.map(renderAccountRow).join('')}</div>`;
+    else body = visible.map(renderAccountRow).join('');
 
     return `
-      <div class="focused-head" style="border-left: 4px solid ${profileColor}; padding-left: 12px; border-radius: 4px;">
+      <div class="focused-head" style="--neon-hue: ${getNeonHue(profile.name)}">
         <span class="back-link" data-action="select-profile" data-id="">${ICONS.back} Todos los perfiles</span>
-        <h2 style="color: ${profileColor}">${escapeHtml(profile.name)}</h2>
+        <h2>${escapeHtml(profile.name)}</h2>
         <div class="profile-meta">
           <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
           ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
@@ -578,20 +623,19 @@
           <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil">${ICONS.trash}</button>
         </div>
       </div>
-      <div style="margin-top: 14px;">${body}</div>`;
+      <div class="accounts-wrap" style="margin-top: 16px; padding: 0;">${body}</div>`;
   }
 
   function renderAccountRow(acc){
     const status = computeStatus(acc);
     const dotColor = status.key === 'available' ? 'var(--mint)' : status.key === 'cooldown' ? 'var(--gold)' : status.key === 'disabled' ? 'var(--pink)' : 'var(--muted-dim)';
     const notesPreview = acc.notes || '';
-    const aiColor = getHashColor(acc.service);
 
     return `
-      <div class="account-row" data-account-id="${acc.id}" style="border-left: 2px solid ${aiColor}40;">
+      <div class="account-row" data-account-id="${acc.id}" style="--neon-hue: ${getNeonHue(acc.service)}">
         <span class="acc-dot" style="background:${dotColor}"></span>
         <div class="acc-service">
-          <span class="svc-name" style="color: ${aiColor}">${escapeHtml(acc.service)}</span>
+          <span class="svc-name">${escapeHtml(acc.service)}</span>
           <span class="svc-email">${escapeHtml(acc.email || 'sin correo')}</span>
         </div>
         <span class="plan-badge ${planClass(acc.plan)}">${escapeHtml(acc.plan || 'Otro')}</span>
