@@ -46,7 +46,7 @@
   .ready-chips{display:flex;gap:8px;flex-wrap:wrap;}
   .ready-chip{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:20px;background:rgba(61,220,151,.10);border:1px solid rgba(61,220,151,.35);font-size:12px;color:var(--text);cursor:pointer;}
   .ready-chip:hover{border-color:var(--mint);}
-  .ready-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--mint);flex-shrink:0;box-shadow:0 0 8px var(--mint);}
+  .ready-chip .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
   .ready-chip .pname{color:var(--muted);}
   .ready-empty{font-size:12.5px;color:var(--muted);}
   .ready-empty b{color:var(--gold);font-weight:700;}
@@ -103,12 +103,7 @@
   .focused-actions{display:flex;gap:6px;margin-left:auto;}
 
   .profiles-list{display:flex;flex-direction:column;gap:14px;}
-  .profile-card{border:1px solid var(--border);background:var(--panel);border-radius:14px;overflow:hidden;animation:fadeUp .35s ease both;border-left:4px solid var(--profile-color, var(--purple));}
-  .profile-card .profile-head{
-    background:linear-gradient(to right, var(--profile-color, transparent) 0%, transparent 60%);
-    background-size:300% 100%;
-    background-position:left center;
-  }
+  .profile-card{border:1px solid var(--border);background:var(--panel);border-radius:14px;overflow:hidden;animation:fadeUp .35s ease both;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
   .profile-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
   .profile-head .chev{color:var(--muted-dim);flex-shrink:0;transition:transform .25s;}
@@ -124,7 +119,7 @@
   .accounts-wrap{padding:0 16px 14px;display:flex;flex-direction:column;gap:8px;}
   .profile-empty{font-size:12px;color:var(--muted-dim);padding:4px 2px 10px;}
 
-  .account-row{display:grid;grid-template-columns:22px 1.3fr .8fr 1fr 1.1fr 1fr auto;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:var(--panel-2);border:1px solid var(--border-soft);border-left:3px solid var(--service-color, var(--muted-dim));}
+  .account-row{display:grid;grid-template-columns:22px 1.3fr .8fr 1fr 1.1fr 1fr auto;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:var(--panel-2);border:1px solid var(--border-soft); transition: border-left .2s;}
   .acc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background-color .25s ease;}
   .acc-service{display:flex;flex-direction:column;gap:2px;min-width:0;}
   .acc-service .svc-name{font-size:13px;color:var(--text);font-weight:700;font-family:var(--font-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -291,7 +286,7 @@
   const qs = (params) => '?' + new URLSearchParams(params).toString();
 
   /* ============================================================
-     ICONOS
+     ICONOS & COLORES DINÁMICOS
      ============================================================ */
   const ICONS = {
     chev:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>`,
@@ -301,6 +296,14 @@
     power:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg>`,
     back:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>`
   };
+
+  const COLOR_PALETTE = ['#9b7bff', '#3ddc97', '#f0c419', '#ff6fae', '#48bfe3', '#ff9f1c', '#a7c957', '#e0b1cb', '#ff99c8', '#a9def9', '#f15bb5', '#00f5d4'];
+  function getHashColor(str) {
+    if (!str) return '#eef0f5';
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    return COLOR_PALETTE[Math.abs(hash) % COLOR_PALETTE.length];
+  }
 
   /* ============================================================
      CATÁLOGO DE PRESETS POR IA
@@ -320,71 +323,16 @@
   };
 
   /* ============================================================
-     PALETAS DE COLORES
-     ============================================================ */
-  const PROFILE_COLORS = [
-    '#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6',
-    '#1abc9c', '#e67e22', '#2c3e50', '#e84393', '#00b894',
-    '#fd79a8', '#6c5ce7', '#fdcb6e', '#00cec9', '#e17055'
-  ];
-  const SERVICE_COLORS = [
-    '#ff7675', '#74b9ff', '#55efc4', '#ffeaa7', '#a29bfe',
-    '#fd79a8', '#fdcb6e', '#00cec9', '#fab1a0', '#81ecec',
-    '#e17055', '#0984e3', '#00b894', '#6c5ce7', '#fdcb6e'
-  ];
-
-  function hashString(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = ((hash << 5) - hash) + str.charCodeAt(i);
-      hash |= 0;
-    }
-    return Math.abs(hash);
-  }
-
-  function getProfileColor(id) {
-    const idx = hashString(id) % PROFILE_COLORS.length;
-    return PROFILE_COLORS[idx];
-  }
-
-  function getServiceColor(service) {
-    const idx = hashString(service) % SERVICE_COLORS.length;
-    return SERVICE_COLORS[idx];
-  }
-
-  /* ============================================================
      ESTADO
      ============================================================ */
   let state = { profiles: [], accounts: [] };
-  const ui = {
-    search:'', filterAI:'', filterStatus:'', activeProfile:null,
-    showForm:null, editingId:null, bulkProfileMode:false,
-    collapsedProfiles: [] // IDs de perfiles colapsados
-  };
-
-  // Persistencia del colapso
-  function loadCollapsedState() {
-    try {
-      const raw = localStorage.getItem('ia_collapsed');
-      if (raw) {
-        const arr = JSON.parse(raw);
-        if (Array.isArray(arr)) ui.collapsedProfiles = arr;
-      }
-    } catch(e) {}
-  }
-  function saveCollapsedState() {
-    try {
-      localStorage.setItem('ia_collapsed', JSON.stringify(ui.collapsedProfiles));
-    } catch(e) {}
-  }
+  // ui.collapsedProfiles mantiene el estado de qué perfiles están cerrados permanentemente
+  const ui = { search:'', filterAI:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false, collapsedProfiles: new Set() };
 
   async function loadState(){
     state = await apiFetch('/api/state' + qs({ tg_id: TG_ID }));
   }
 
-  /* Si en este navegador quedaron datos de la versión sin servidor
-     (localStorage), y el servidor todavía no tiene nada para este usuario,
-     se ofrece subirlos en un solo paso — sin perder lo que ya habías armado. */
   function getLocalLegacyData(){
     const raw = localStorage.getItem('ia_multiperfil_v3');
     if(!raw) return null;
@@ -518,7 +466,8 @@
         <div class="ready-chips">
           ${available.map(({acc,profile}) => `
             <span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}">
-              <span class="dot"></span>${escapeHtml(acc.service)}<span class="pname">· ${escapeHtml(profile ? profile.name : '—')}</span>
+              <span class="dot" style="background:${getHashColor(acc.service)}; box-shadow:0 0 8px ${getHashColor(acc.service)}"></span>
+              ${escapeHtml(acc.service)}<span class="pname">· ${escapeHtml(profile ? profile.name : '—')}</span>
             </span>`).join('')}
         </div>`;
       return;
@@ -542,11 +491,10 @@
     state.profiles.forEach(p => {
       const accs = accountsOf(p.id);
       const { available, cooldown } = statusCounts(accs);
-      const color = getProfileColor(p.id);
-      // El punto ahora muestra el color del perfil, no el estado
+      const dot = available ? 'var(--mint)' : cooldown ? 'var(--gold)' : 'var(--muted-dim)';
       chips.push(`
         <button class="rail-chip ${ui.activeProfile===p.id?'is-active':''}" type="button" data-action="select-profile" data-id="${p.id}">
-          <span class="rdot" style="background:${color}"></span>${escapeHtml(p.name)}<span class="rcount">${accs.length}</span>
+          <span class="rdot" style="background:${dot}"></span>${escapeHtml(p.name)}<span class="rcount">${accs.length}</span>
         </button>`);
     });
     rail.innerHTML = chips.join('');
@@ -578,17 +526,19 @@
     const all = accountsOf(profile.id);
     const visible = all.filter(matchesFilters);
     const { available, cooldown } = statusCounts(all);
-    const color = getProfileColor(profile.id);
-    const isCollapsed = ui.collapsedProfiles.includes(profile.id) ? 'is-collapsed' : '';
+    const isCollapsed = ui.collapsedProfiles.has(profile.id);
+    const profileColor = getHashColor(profile.name);
+
     let body;
     if(all.length === 0) body = `<div class="profile-empty">Sin cuentas todavía.</div>`;
     else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
     else body = visible.map(renderAccountRow).join('');
+
     return `
-      <div class="profile-card ${isCollapsed}" data-profile-id="${profile.id}" style="--profile-color: ${color};">
+      <div class="profile-card ${isCollapsed ? 'is-collapsed' : ''}" data-profile-id="${profile.id}" style="border-left: 4px solid ${profileColor}">
         <div class="profile-head" data-action="toggle-collapse" data-id="${profile.id}">
           <span class="chev">${ICONS.chev}</span>
-          <span class="profile-name">${escapeHtml(profile.name)}</span>
+          <span class="profile-name" style="color: ${profileColor}">${escapeHtml(profile.name)}</span>
           <div class="profile-meta">
             <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
             ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
@@ -607,14 +557,17 @@
     const all = accountsOf(profile.id);
     const visible = all.filter(matchesFilters);
     const { available, cooldown } = statusCounts(all);
+    const profileColor = getHashColor(profile.name);
+
     let body;
     if(all.length === 0) body = `<div class="profile-empty">Este perfil todavía no tiene cuentas.</div>`;
     else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
     else body = `<div class="accounts-wrap">${visible.map(renderAccountRow).join('')}</div>`;
+
     return `
-      <div class="focused-head">
+      <div class="focused-head" style="border-left: 4px solid ${profileColor}; padding-left: 12px; border-radius: 4px;">
         <span class="back-link" data-action="select-profile" data-id="">${ICONS.back} Todos los perfiles</span>
-        <h2>${escapeHtml(profile.name)}</h2>
+        <h2 style="color: ${profileColor}">${escapeHtml(profile.name)}</h2>
         <div class="profile-meta">
           <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
           ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
@@ -625,19 +578,20 @@
           <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil">${ICONS.trash}</button>
         </div>
       </div>
-      ${body}`;
+      <div style="margin-top: 14px;">${body}</div>`;
   }
 
   function renderAccountRow(acc){
     const status = computeStatus(acc);
     const dotColor = status.key === 'available' ? 'var(--mint)' : status.key === 'cooldown' ? 'var(--gold)' : status.key === 'disabled' ? 'var(--pink)' : 'var(--muted-dim)';
     const notesPreview = acc.notes || '';
-    const serviceColor = getServiceColor(acc.service);
+    const aiColor = getHashColor(acc.service);
+
     return `
-      <div class="account-row" data-account-id="${acc.id}" style="--service-color: ${serviceColor};">
+      <div class="account-row" data-account-id="${acc.id}" style="border-left: 2px solid ${aiColor}40;">
         <span class="acc-dot" style="background:${dotColor}"></span>
         <div class="acc-service">
-          <span class="svc-name">${escapeHtml(acc.service)}</span>
+          <span class="svc-name" style="color: ${aiColor}">${escapeHtml(acc.service)}</span>
           <span class="svc-email">${escapeHtml(acc.email || 'sin correo')}</span>
         </div>
         <span class="plan-badge ${planClass(acc.plan)}">${escapeHtml(acc.plan || 'Otro')}</span>
@@ -656,7 +610,7 @@
       </div>`;
   }
 
-  /* ---------- Actualizaciones quirúrgicas (optimistas) ---------- */
+  /* ---------- Actualizaciones quirúrgicas ---------- */
   function updateAccountRowVisual(acc){
     const row = document.querySelector(`.account-row[data-account-id="${acc.id}"]`);
     if(!row) return false;
@@ -783,18 +737,19 @@
   }
 
   /* ============================================================
-     ACCIONES (ahora async, contra la API)
+     ACCIONES Y COLAPSO PERMANENTE
      ============================================================ */
   function openForm(kind, editingId){ ui.showForm = kind; ui.editingId = editingId || null; ui.bulkProfileMode = false; renderForm(); }
   function closeForm(){ ui.showForm = null; ui.editingId = null; ui.bulkProfileMode = false; renderForm(); }
 
   function selectProfile(id){ ui.activeProfile = id || null; renderRail(); renderMain(); }
+  
   function toggleCollapse(id){
-    const idx = ui.collapsedProfiles.indexOf(id);
-    if(idx >= 0) ui.collapsedProfiles.splice(idx, 1);
-    else ui.collapsedProfiles.push(id);
-    saveCollapsedState();
-    // Actualizar la tarjeta visualmente sin re-renderizar todo
+    if (ui.collapsedProfiles.has(id)) {
+      ui.collapsedProfiles.delete(id);
+    } else {
+      ui.collapsedProfiles.add(id);
+    }
     const card = document.querySelector(`.profile-card[data-profile-id="${id}"]`);
     if(card) card.classList.toggle('is-collapsed');
   }
@@ -806,9 +761,6 @@
     try{
       await apiFetch(`/api/profiles/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
       if(ui.activeProfile === id) ui.activeProfile = null;
-      // Quitar de colapsados si estaba
-      const idx = ui.collapsedProfiles.indexOf(id);
-      if(idx >= 0) { ui.collapsedProfiles.splice(idx, 1); saveCollapsedState(); }
       haptic('success');
       await loadState();
       renderAll();
@@ -833,7 +785,7 @@
     const acc = getAccount(id);
     if(!acc) return;
     const prev = acc.lastUsed;
-    acc.lastUsed = new Date().toISOString(); // optimista: se ve al toque
+    acc.lastUsed = new Date().toISOString();
     const stillMatches = !ui.filterStatus || ui.filterStatus === computeStatus(acc).key;
     if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); }
     else { renderAll(); }
@@ -852,7 +804,7 @@
     const acc = getAccount(id);
     if(!acc) return;
     const prev = acc.enabled;
-    acc.enabled = !acc.enabled; // optimista
+    acc.enabled = !acc.enabled;
     const stillMatches = !ui.filterStatus || ui.filterStatus === computeStatus(acc).key;
     if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); }
     else { renderAll(); }
@@ -955,9 +907,6 @@
     try{
       await apiFetch('/api/reset' + qs({ tg_id:TG_ID }), { method:'DELETE' });
       ui.activeProfile = null;
-      // Limpiar colapsados
-      ui.collapsedProfiles = [];
-      saveCollapsedState();
       haptic('warning');
       await loadState();
       renderAll();
@@ -969,14 +918,14 @@
      REFRESCO EN SEGUNDO PLANO
      ============================================================ */
   async function backgroundPoll(){
-    if(ui.showForm) return; // no interrumpir un formulario abierto
+    if(ui.showForm) return;
     try{
       const fresh = await apiFetch('/api/state' + qs({ tg_id:TG_ID }));
       if(JSON.stringify(fresh) !== JSON.stringify(state)){
         state = fresh;
         renderAll();
       }
-    }catch(e){ /* silencioso: no molestar con un toast cada 30s */ }
+    }catch(e){ }
   }
 
   /* ============================================================
@@ -1038,7 +987,6 @@
      ARRANQUE
      ============================================================ */
   async function boot(){
-    loadCollapsedState(); // recuperar colapsos guardados
     try{
       await loadState();
     }catch(e){
