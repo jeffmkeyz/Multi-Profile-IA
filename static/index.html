@@ -37,7 +37,7 @@
   .stat-pill.is-mint b{color:var(--mint);}
   .stat-pill.is-gold b{color:var(--gold);}
 
-  main.container{max-width:1180px;margin:0 auto;padding:18px 18px 70px;display:flex;flex-direction:column;gap:16px;}
+  main.container{max-width:1400px;margin:0 auto;padding:18px 18px 70px;display:flex;flex-direction:column;gap:16px;}
 
   .migration-banner{display:none;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid rgba(155,123,255,.35);background:rgba(155,123,255,.08);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--text);}
 
@@ -60,7 +60,7 @@
   .rail-chip .rcount{font-size:10px;opacity:.7;}
 
   .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
-  .search-box{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:9px 12px;}
+  .search-box{flex:1;min-width:250px;display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:9px 12px;}
   .search-box svg{flex-shrink:0;color:var(--muted-dim);}
   .search-box input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12.5px;}
   .search-box input::placeholder{color:var(--muted-dim);}
@@ -141,7 +141,7 @@
   .acc-notes{font-size:11px;color:var(--muted-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:help;}
   .acc-actions{display:flex;gap:5px;}
 
-  @media (max-width:880px){
+  @media (max-width:1024px){
     .account-row{grid-template-columns:18px 1fr auto;grid-template-areas:"dot service plan" "dot status lastused" "dot notes actions";row-gap:6px;}
     .acc-dot{grid-area:dot;} .acc-service{grid-area:service;} .plan-badge{grid-area:plan;justify-self:end;}
     .status-badge{grid-area:status;} .acc-lastused{grid-area:lastused;justify-self:end;}
@@ -160,6 +160,36 @@
   .toast{background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.45);transition:opacity .2s ease;max-width:340px;text-align:center;}
   .toast.is-error{border-color:rgba(255,111,174,.45);color:var(--pink);}
   .toast.is-success{border-color:rgba(61,220,151,.45);}
+
+  @media (min-width:1025px){
+    header.topbar{padding:20px 28px;flex-wrap:nowrap;}
+    .stats-row{flex-wrap:nowrap;}
+    main.container{padding:24px 24px 70px;gap:20px;}
+  }
+
+  @media (min-width:1200px){
+    .brand h1{font-size:18px;}
+    .brand p{font-size:11.5px;}
+    .stat-pill{font-size:11.5px;padding:8px 14px;}
+    .stat-pill b{font-size:16px;}
+    .profile-name{font-size:15.5px;}
+    .acc-service .svc-name{font-size:13.5px;}
+    .acc-service .svc-email{font-size:11px;}
+    .status-badge{font-size:11px;}
+    .acc-lastused{font-size:11.5px;}
+    .acc-notes{font-size:11.5px;}
+    .account-row{padding:12px 16px;gap:16px;}
+    .accounts-wrap{gap:10px;}
+    .profile-head{padding:16px 20px;}
+    .accounts-wrap{padding:0 20px 16px;}
+    .help-card{font-size:13px;padding:20px 24px;}
+    .btn{font-size:12.5px;padding:10px 15px;}
+    .search-box input{font-size:13px;}
+    select{font-size:12.5px;}
+    .ready-strip{padding:16px 20px;}
+    .form-panel{padding:20px;}
+    .form-panel h3{font-size:14px;}
+  }
 
   @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
