@@ -3,193 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Multi-Perfil IA Premium + Prompts</title>
+<title>Multi-Perfil IA</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #030308; 
-    --panel: rgba(11, 12, 20, 0.65); 
-    --panel-2: rgba(18, 19, 30, 0.75);
-    --border: rgba(255, 255, 255, 0.1); 
-    --border-soft: rgba(255, 255, 255, 0.05);
-    --text: #eef0f5; 
-    --muted: #9ca3af; 
-    --muted-dim: #6b7280;
-    
-    --mint: #10b981; --mint-glow: rgba(16, 185, 129, 0.4);
-    --purple: #8b5cf6; --purple-glow: rgba(139, 92, 246, 0.4);
-    --gold: #f59e0b; 
-    --pink: #ec4899; --pink-glow: rgba(236, 72, 153, 0.4);
-    --blue: #3b82f6; --blue-glow: rgba(59, 130, 246, 0.4);
-
-    --font-display: 'Syne', sans-serif; 
-    --font-mono: 'Space Mono', monospace;
+  :root{
+    --bg:#030308; --panel:#0b0c14; --panel-2:#12131e;
+    --border:rgba(255,255,255,.08); --border-soft:rgba(255,255,255,.05);
+    --text:#eef0f5; --muted:#8b90a4; --muted-dim:#5d6075;
+    --mint:#3ddc97; --purple:#9b7bff; --gold:#f0c419; --pink:#ff6fae;
+    --font-display:'Syne',sans-serif; --font-mono:'Space Mono',monospace;
   }
-  
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; scroll-behavior: smooth; }
-  body { background: var(--bg); color: var(--text); font-family: var(--font-mono); min-height: 100vh; position: relative; overflow-x: hidden; }
-  
-  .bg-glow {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background: radial-gradient(800px circle at 15% -5%, rgba(139, 92, 246, 0.15), transparent 50%),
-                radial-gradient(600px circle at 90% 10%, rgba(16, 185, 129, 0.12), transparent 50%),
-                radial-gradient(700px circle at 50% 110%, rgba(236, 72, 153, 0.1), transparent 50%);
-    filter: blur(40px);
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-mono);min-height:100vh;position:relative;overflow-x:hidden;}
+  .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(900px 500px at 12% -8%, rgba(155,123,255,.14), transparent 60%),
+               radial-gradient(700px 500px at 100% 0%, rgba(61,220,151,.10), transparent 60%);}
+  main, header{position:relative;z-index:1;}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:6px;}
+
+  header.topbar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);background:rgba(11,12,20,.6);backdrop-filter:blur(10px);position:sticky;top:0;z-index:10;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand-mark{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--purple),var(--mint));font-family:var(--font-display);font-weight:800;color:#04050a;font-size:15px;flex-shrink:0;}
+  .brand h1{font-family:var(--font-display);font-size:17px;font-weight:700;margin:0;}
+  .brand p{margin:2px 0 0;font-size:11px;color:var(--muted);}
+  .stats-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .stat-pill{display:flex;align-items:baseline;gap:6px;padding:7px 12px;border-radius:10px;background:var(--panel);border:1px solid var(--border);font-size:11px;color:var(--muted);}
+  .stat-pill b{font-family:var(--font-display);font-size:15px;color:var(--text);font-weight:700;}
+  .stat-pill.is-mint b{color:var(--mint);}
+  .stat-pill.is-gold b{color:var(--gold);}
+
+  main.container{max-width:1180px;margin:0 auto;padding:18px 18px 70px;display:flex;flex-direction:column;gap:16px;}
+
+  .migration-banner{display:none;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid rgba(155,123,255,.35);background:rgba(155,123,255,.08);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--text);}
+
+  .ready-strip{border:1px solid var(--border);background:var(--panel);border-radius:14px;padding:14px 16px;}
+  .ready-strip .ready-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:block;}
+  .ready-chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .ready-chip{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:20px;background:rgba(61,220,151,.10);border:1px solid rgba(61,220,151,.35);font-size:12px;color:var(--text);cursor:pointer;}
+  .ready-chip:hover{border-color:var(--mint);}
+  .ready-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--mint);flex-shrink:0;box-shadow:0 0 8px var(--mint);}
+  .ready-chip .pname{color:var(--muted);}
+  .ready-empty{font-size:12.5px;color:var(--muted);}
+  .ready-empty b{color:var(--gold);font-weight:700;}
+
+  .rail-wrap { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    background: var(--panel-2);
+    padding: 8px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
   }
-  
-  main, header { position: relative; z-index: 1; }
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
-
-  /* Topbar Premium */
-  header.topbar {
-    display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; 
-    padding: 16px 24px; border-bottom: 1px solid var(--border); 
-    background: rgba(11, 12, 20, 0.4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    position: sticky; top: 0; z-index: 10; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  .profile-rail { 
+    display: flex; 
+    gap: 8px; 
+    overflow-x: auto; 
+    flex: 1;
+    scrollbar-width: none; 
   }
-  .brand { display: flex; align-items: center; gap: 14px; }
-  .brand-mark {
-    width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, var(--purple), var(--blue), var(--mint));
-    font-family: var(--font-display); font-weight: 800; color: #fff; font-size: 16px; flex-shrink: 0;
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.5); text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  }
-  .brand h1 { font-family: var(--font-display); font-size: 18px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
-  .brand p { margin: 3px 0 0; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  
-  .stats-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-  .ext-badge {
-    display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px;
-    background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3);
-    font-size: 11px; color: var(--blue); font-weight: 700; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
-  }
-  .ext-badge .dot { width: 6px; height: 6px; background: var(--blue); border-radius: 50%; box-shadow: 0 0 8px var(--blue); animation: pulse 2s infinite; }
-  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-
-  .stat-pill {
-    display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 12px; 
-    background: rgba(255,255,255,0.03); border: 1px solid var(--border); font-size: 11px; color: var(--muted);
-    backdrop-filter: blur(8px); transition: transform 0.2s;
-  }
-  .stat-pill:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.15); }
-  .stat-pill b { font-family: var(--font-display); font-size: 16px; color: var(--text); font-weight: 800; }
-  .stat-pill.is-mint b { color: var(--mint); text-shadow: 0 0 8px var(--mint-glow); }
-
-  main.container { max-width: 1200px; margin: 0 auto; padding: 24px 20px 80px; display: flex; flex-direction: column; gap: 20px; }
-
-  /* Glassmorphism */
-  .glass-panel { background: var(--panel); border: 1px solid var(--border); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; padding: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
-
-  /* Ready Strip */
-  .ready-strip { padding: 18px 20px; position: relative; overflow: hidden; }
-  .ready-strip::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--mint), var(--blue)); }
-  .ready-strip .ready-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: block; font-weight: 700; }
-  .ready-chips { display: flex; gap: 10px; flex-wrap: wrap; }
-  .ready-chip { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 24px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); font-size: 12.5px; color: var(--text); cursor: pointer; transition: all 0.2s; }
-  .ready-chip:hover { border-color: var(--mint); background: rgba(16, 185, 129, 0.2); transform: translateY(-2px); box-shadow: 0 4px 12px var(--mint-glow); }
-  .ready-chip .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  
-  /* Tabs Navegación */
-  .nav-tabs { display: flex; gap: 10px; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 16px; border: 1px solid var(--border); }
-  .tab-btn { flex: 1; padding: 12px; font-family: var(--font-display); font-size: 14px; font-weight: 700; border: none; background: transparent; color: var(--muted); border-radius: 12px; cursor: pointer; transition: 0.3s; }
-  .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
-  .tab-btn.active { background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(59,130,246,0.2)); color: #fff; border: 1px solid rgba(139,92,246,0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-shadow: 0 1px 5px rgba(139,92,246,0.5); }
-
-  /* Carril de Perfiles */
-  .rail-wrap { display: flex; align-items: center; gap: 12px; padding: 10px 14px; }
-  .profile-rail { display: flex; gap: 10px; overflow-x: auto; flex: 1; scrollbar-width: none; padding-bottom: 4px; }
   .profile-rail::-webkit-scrollbar { display: none; }
-  .rail-chip { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 24px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); cursor: pointer; font-size: 13px; color: var(--muted); white-space: nowrap; transition: all 0.2s; font-family: var(--font-mono); font-weight: 600; }
-  .rail-chip:hover { border-color: rgba(255,255,255,0.3); color: var(--text); background: rgba(255,255,255,0.05); }
-  .rail-chip.is-active { background: linear-gradient(135deg, var(--purple), var(--blue)); border-color: transparent; color: #fff; box-shadow: 0 4px 15px var(--purple-glow); }
-  .rail-chip .rdot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted-dim); transition: 0.2s; }
-  .rail-chip.is-active .rdot { background: #fff; box-shadow: 0 0 5px #fff; }
-
-  /* Botones Vívidos */
-  .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13px; font-weight: 700; white-space: nowrap; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; color: var(--text); padding: 10px 18px; cursor: pointer; transition: all 0.2s; }
-  .btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); transform: translateY(-1px); }
-  .btn.primary { background: linear-gradient(135deg, var(--purple), var(--pink)); border: none; color: #fff; box-shadow: 0 4px 15px var(--pink-glow); }
-  .btn.primary:hover { box-shadow: 0 6px 20px rgba(236, 72, 153, 0.6); transform: translateY(-2px); }
-  .btn.success { background: linear-gradient(135deg, var(--mint), #059669); border: none; color: #fff; box-shadow: 0 4px 15px var(--mint-glow); }
-  .btn.ghost { background: transparent; }
-  .btn.danger { color: var(--pink); border-color: rgba(236, 72, 153, 0.3); }
+  .rail-wrap .btn {
+    flex-shrink: 0; 
+  }
   
-  /* Toolbar */
-  .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 10px; }
-  .search-box { flex: 1; min-width: 220px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; transition: 0.2s; }
-  .search-box:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
-  .search-box input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font-mono); font-size: 13px; }
-  select { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: var(--font-mono); font-size: 13px; padding: 10px 16px; outline: none; cursor: pointer; transition: 0.2s; appearance: none; padding-right: 32px; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 1em; }
-  
-  /* Icon Buttons */
-  .icon-btn { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--muted); cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
-  .icon-btn:hover { color: #fff; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); transform: translateY(-2px); }
-  .icon-btn.danger:hover { color: var(--pink); background: rgba(236, 72, 153, 0.1); border-color: var(--pink); }
-  .icon-btn.action:hover { color: var(--blue); background: rgba(59, 130, 246, 0.1); border-color: var(--blue); box-shadow: 0 0 10px var(--blue-glow); }
+  .rail-chip{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:9px 15px;border-radius:20px;border:1px solid var(--border);background:var(--panel);cursor:pointer;font-size:12.5px;color:var(--muted);white-space:nowrap;transition:border-color .15s,color .15s,background .15s;font-family:var(--font-mono);}
+  .rail-chip:hover{border-color:rgba(255,255,255,.22);color:var(--text);}
+  .rail-chip.is-active{background:var(--purple);border-color:var(--purple);color:#0b0612;font-weight:700;}
+  .rail-chip .rdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--muted-dim);}
+  .rail-chip .rcount{font-size:10px;opacity:.7;}
 
-  /* Forms */
-  .form-panel { animation: formIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; border-top: 3px solid var(--blue); }
-  @keyframes formIn { from { opacity: 0; transform: translateY(-10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  .form-panel h3 { margin: 0 0 6px; font-family: var(--font-display); font-size: 16px; color: #fff; }
-  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
-  .form-grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-  .form-panel input, .form-panel select, .form-panel textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: var(--font-mono); font-size: 13px; padding: 12px 14px; outline: none; transition: 0.2s; }
-  .form-panel input:focus, .form-panel select:focus, .form-panel textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
-  .form-panel textarea { grid-column: 1/-1; min-height: 80px; resize: vertical; }
-  .form-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; align-items: center; }
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .search-box{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:9px 12px;}
+  .search-box svg{flex-shrink:0;color:var(--muted-dim);}
+  .search-box input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12.5px;}
+  .search-box input::placeholder{color:var(--muted-dim);}
+  select{background:var(--panel);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font-mono);font-size:12px;padding:9px 12px;outline:none;cursor:pointer;}
 
-  /* Lista y Cuentas */
-  .profiles-list { display: flex; flex-direction: column; gap: 16px; }
-  .profile-card { border: 1px solid var(--border); background: var(--panel); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-  .profile-head { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; background: rgba(255,255,255,0.02); }
-  .profile-head .chev { transition: transform 0.3s; }
-  .profile-card.is-collapsed .chev { transform: rotate(-90deg); }
-  .profile-name { font-family: var(--font-display); font-size: 16px; font-weight: 800; color: #fff; }
-  .profile-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; align-items: center; }
-  .meta-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); }
-  .profile-body { max-height: 4000px; transition: max-height 0.4s ease; overflow: hidden; }
-  .profile-card.is-collapsed .profile-body { max-height: 0; }
-  
-  .account-row { display: grid; grid-template-columns: 24px 1.5fr 1fr 1fr 1fr auto; align-items: center; gap: 14px; padding: 14px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-soft); margin-bottom: 10px; }
-  .acc-service { display: flex; flex-direction: column; gap: 3px; }
-  .svc-name { font-size: 14px; color: #fff; font-weight: 800; font-family: var(--font-display); }
-  .svc-email { font-size: 11px; color: var(--muted); }
-  .plan-badge { font-size: 10.5px; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; font-weight: 800; width: fit-content; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
-  .status-badge { display: flex; flex-direction: column; font-size: 11px; }
-  .status-badge .s-label { font-weight: 800; }
-  .status-badge.st-available .s-label { color: var(--mint); }
-  .status-badge.st-cooldown .s-label { color: var(--gold); }
-  .acc-actions { display: flex; gap: 6px; }
+  .btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:12px;font-weight:600;white-space:nowrap;background:var(--panel);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:9px 13px;cursor:pointer;transition:border-color .15s,background .15s;}
+  .btn:hover{border-color:rgba(255,255,255,.2);}
+  .btn.primary{background:var(--purple);border-color:var(--purple);color:#0b0612;}
+  .btn.primary:hover{background:#a98cff;}
+  .btn.ghost{background:transparent;}
+  .btn.danger{color:var(--pink);}
+  .btn.danger:hover{border-color:var(--pink);}
+  .btn.sm{padding:6px 10px;font-size:11px;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
 
-  /* Gestor de Prompts */
-  .prompts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-  .prompt-card { background: rgba(18, 19, 30, 0.8); border: 1px solid var(--border); border-radius: 14px; padding: 16px; transition: 0.3s; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 10px; }
-  .prompt-card:hover { border-color: var(--blue); box-shadow: 0 8px 20px var(--blue-glow); transform: translateY(-3px); }
-  .prompt-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--purple), var(--blue)); }
-  .prompt-title { font-family: var(--font-display); font-size: 15px; color: #fff; margin: 0; padding-right: 40px; }
-  .prompt-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-  .p-tag { font-size: 10px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 10px; color: var(--mint); }
-  .prompt-body { background: rgba(0,0,0,0.4); border-radius: 8px; padding: 12px; font-size: 12px; color: var(--muted); max-height: 100px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap; flex: 1; }
-  .prompt-actions { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
-  .copy-btn { background: rgba(59,130,246,0.1); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
-  .copy-btn:hover { background: var(--blue); color: #fff; }
+  .icon-btn{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;flex-shrink:0;transition:border-color .15s,color .15s,background .15s;}
+  .icon-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+  .icon-btn.danger:hover{color:var(--pink);border-color:var(--pink);}
+  .icon-btn.is-off{color:var(--pink);border-color:rgba(255,111,174,.4);background:rgba(255,111,174,.08);}
+  .icon-btn.is-on{color:var(--mint);border-color:rgba(61,220,151,.4);background:rgba(61,220,151,.08);}
 
-  .empty-state { text-align: center; padding: 60px 20px; border: 2px dashed rgba(255,255,255,0.1); border-radius: 16px; color: var(--muted); }
-  
-  /* Toasts */
-  .toast-wrap { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; gap: 10px; align-items: center; pointer-events: none; }
-  .toast { background: rgba(18, 19, 30, 0.95); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; font-size: 13px; font-weight: 700; color: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.6); animation: toastIn 0.3s forwards; }
-  @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  .toast.is-success { border-left: 4px solid var(--mint); box-shadow: 0 10px 40px var(--mint-glow); }
-  .toast.is-ext { border-left: 4px solid var(--blue); box-shadow: 0 10px 40px var(--blue-glow); }
+  .form-panel{border:1px solid var(--border);background:var(--panel-2);border-radius:14px;padding:16px;animation:formIn .2s ease both;}
+  @keyframes formIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+  .form-panel h3{margin:0 0 4px;font-family:var(--font-display);font-size:13px;color:var(--text);}
+  .form-panel .form-sub{margin:0 0 12px;font-size:11px;color:var(--muted);}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;}
+  .form-grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));}
+  .form-panel input, .form-panel select, .form-panel textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:12.5px;padding:9px 10px;outline:none;}
+  .form-panel input:focus, .form-panel select:focus, .form-panel textarea:focus{border-color:var(--purple);}
+  .form-panel textarea{grid-column:1/-1;min-height:50px;resize:vertical;}
+  .form-hint{grid-column:1/-1;font-size:10.5px;color:var(--muted-dim);}
+  .form-actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end;align-items:center;}
+  .form-toggle-link{font-size:11px;color:var(--purple);cursor:pointer;text-decoration:underline;margin-right:auto;background:none;border:none;font-family:var(--font-mono);padding:0;}
+  .form-empty-note{font-size:12px;color:var(--gold);margin:0 0 10px;}
 
+  .focused-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .focused-head h2{font-family:var(--font-display);font-size:18px;margin:0;}
+  .back-link{font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;}
+  .back-link:hover{color:var(--text);}
+  .focused-actions{display:flex;gap:6px;margin-left:auto;}
+
+  .profiles-list{display:flex;flex-direction:column;gap:14px;}
+  .profile-card{border:1px solid var(--border);background:var(--panel);border-radius:14px;overflow:hidden;animation:fadeUp .35s ease both;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .profile-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
+  .profile-head .chev{color:var(--muted-dim);flex-shrink:0;transition:transform .25s;}
+  .profile-card.is-collapsed .chev{transform:rotate(-90deg);}
+  .profile-name{font-family:var(--font-display);font-size:14.5px;font-weight:700;color:var(--text);}
+  .profile-meta{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;}
+  .meta-pill{font-size:10.5px;padding:4px 9px;border-radius:20px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;}
+  .meta-pill.is-mint{color:var(--mint);border-color:rgba(61,220,151,.35);background:rgba(61,220,151,.08);}
+  .meta-pill.is-gold{color:var(--gold);border-color:rgba(240,196,25,.35);background:rgba(240,196,25,.08);}
+  .profile-head-actions{display:flex;gap:6px;}
+  .profile-body{max-height:3000px;transition:max-height .3s ease;overflow:hidden;}
+  .profile-card.is-collapsed .profile-body{max-height:0;}
+  .accounts-wrap{padding:0 16px 14px;display:flex;flex-direction:column;gap:8px;}
+  .profile-empty{font-size:12px;color:var(--muted-dim);padding:4px 2px 10px;}
+
+  .account-row{display:grid;grid-template-columns:22px 1.3fr .8fr 1fr 1.1fr 1fr auto;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:var(--panel-2);border:1px solid var(--border-soft);}
+  .acc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background-color .25s ease, box-shadow .25s ease;}
+  .acc-service{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .acc-service .svc-name{font-size:13px;color:var(--text);font-weight:700;font-family:var(--font-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .25s ease, text-shadow .25s ease;}
+  .acc-service .svc-email{font-size:10.5px;color:var(--muted-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .plan-badge{font-size:10px;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;width:fit-content;}
+  .plan-free{background:rgba(139,144,164,.14);color:var(--muted);}
+  .plan-plus{background:rgba(61,220,151,.14);color:var(--mint);}
+  .plan-pro{background:rgba(155,123,255,.16);color:var(--purple);}
+  .plan-team{background:rgba(240,196,25,.14);color:var(--gold);}
+  .plan-otro{background:rgba(255,111,174,.14);color:var(--pink);}
+  .status-badge{display:flex;flex-direction:column;gap:1px;font-size:10.5px;}
+  .status-badge .s-label{font-weight:700;letter-spacing:.02em;transition:color .25s ease;}
+  .status-badge .s-sub{color:var(--muted-dim);font-size:9.5px;}
+  .status-badge.st-available .s-label{color:var(--mint);}
+  .status-badge.st-cooldown .s-label{color:var(--gold);}
+  .status-badge.st-disabled .s-label{color:var(--pink);}
+  .status-badge.st-neutral .s-label{color:var(--muted);}
+  .acc-lastused{font-size:11px;color:var(--muted);}
+  .acc-notes{font-size:11px;color:var(--muted-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:help;}
+  .acc-actions{display:flex;gap:5px;}
+
+  @media (max-width:880px){
+    .account-row{grid-template-columns:18px 1fr auto;grid-template-areas:"dot service plan" "dot status lastused" "dot notes actions";row-gap:6px;}
+    .acc-dot{grid-area:dot;} .acc-service{grid-area:service;} .plan-badge{grid-area:plan;justify-self:end;}
+    .status-badge{grid-area:status;} .acc-lastused{grid-area:lastused;justify-self:end;}
+    .acc-notes{grid-area:notes;} .acc-actions{grid-area:actions;justify-self:end;}
+  }
+
+  .empty-state{text-align:center;padding:60px 20px;border:1px dashed var(--border);border-radius:14px;color:var(--muted);}
+  .empty-state b{display:block;color:var(--text);font-family:var(--font-display);font-size:15px;margin-bottom:6px;}
+  .loading-state{text-align:center;padding:50px 20px;color:var(--muted);font-size:12px;}
+
+  .help-card{border:1px solid var(--border);background:var(--panel);border-radius:14px;padding:18px 20px;font-size:12.5px;color:var(--muted);line-height:1.6;}
+  .help-card b{color:var(--text);}
+  footer{text-align:center;padding:16px;font-size:10px;color:var(--muted-dim);}
+
+  .toast-wrap{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:100%;padding:0 16px;}
+  .toast{background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.45);transition:opacity .2s ease;max-width:340px;text-align:center;}
+  .toast.is-error{border-color:rgba(255,111,174,.45);color:var(--pink);}
+  .toast.is-success{border-color:rgba(61,220,151,.45);}
+
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
 </head>
 <body>
@@ -199,34 +190,53 @@
 <header class="topbar">
   <div class="brand">
     <span class="brand-mark">IA</span>
-    <div><h1>Workstation IA</h1><p>Gestor + Prompts + Extensión</p></div>
+    <div><h1>Multi-Perfil IA</h1><p>Mini App de Telegram · datos en servidor</p></div>
   </div>
-  <div class="stats-row" id="statsRow">
-    <div class="ext-badge" title="Simulación de Extensión Activa"><span class="dot"></span> Extensión Link</div>
-  </div>
+  <div class="stats-row" id="statsRow"></div>
 </header>
 
 <main class="container">
-  
-  <section class="ready-strip glass-panel" id="readyStrip"></section>
 
-  <nav class="nav-tabs" id="mainTabs">
-    <button class="tab-btn active" data-tab="accounts">🤖 Cuentas IA</button>
-    <button class="tab-btn" data-tab="prompts">📝 Biblioteca de Prompts</button>
-  </nav>
+  <div class="migration-banner" id="migrationBanner"></div>
 
-  <section class="rail-wrap glass-panel">
+  <section class="ready-strip" id="readyStrip"><div class="loading-state">Cargando…</div></section>
+
+  <section class="rail-wrap">
     <div class="profile-rail" id="profileRail"></div>
-    <button class="btn primary" type="button" data-action="new-profile">+ Nuevo Perfil</button>
+    <button class="btn primary" type="button" data-action="new-profile" title="Crear perfil">+ Perfil</button>
   </section>
 
-  <section class="toolbar glass-panel" id="toolbarArea"></section>
+  <section class="toolbar">
+    <label class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="searchInput" type="text" placeholder="Buscar IA, correo, notas…" autocomplete="off">
+    </label>
+    <select id="filterAI"><option value="">Todas las IAs</option></select>
+    <select id="filterStatus">
+      <option value="">Cualquier estado</option>
+      <option value="available">Disponible</option>
+      <option value="cooldown">En cooldown</option>
+      <option value="disabled">Desactivada</option>
+      <option value="neutral">Sin datos</option>
+    </select>
+    <button class="btn" type="button" data-action="new-account">+ Cuenta IA</button>
+    <button class="btn ghost" type="button" data-action="export">Exportar</button>
+    <button class="btn ghost" type="button" data-action="import">Importar</button>
+    <button class="btn ghost danger" type="button" data-action="reset">Borrar todo</button>
+  </section>
 
   <section id="formZone"></section>
-  <section id="mainZone"></section>
+
+  <section id="mainZone"><div class="loading-state">Conectando con el servidor…</div></section>
+
+  <section class="help-card">
+    <b>📌 Cómo funciona</b><br>
+    Cada <b>perfil</b> = un perfil de tu navegador. Adentro registrás las cuentas de IA que usás ahí. Si le decís cuántos mensajes tiene cada una y cada cuántas horas resetea, esta pantalla calcula sola si ya podés volver a usarla — y arriba siempre ves qué tenés <b>disponible ahora</b> en todos tus perfiles. Todo vive en el servidor, no en este navegador: podés abrirlo desde cualquier dispositivo con tu mismo Telegram.
+  </section>
 
 </main>
 
+<footer>Multi-Perfil IA · datos guardados en servidor, separados por tu cuenta de Telegram</footer>
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
@@ -234,302 +244,813 @@
   'use strict';
 
   /* ============================================================
-     ESTADO & APP CONFIG
+     TELEGRAM MINI APP
      ============================================================ */
-  const TG_ID = 'dev-' + Math.random().toString(36).slice(2, 9);
-  
-  let state = { profiles: [], accounts: [], prompts: [] };
-  const ui = { 
-    search:'', filterAI:'', filterStatus:'', activeProfile:null, 
-    showForm:null, editingId:null, activeTab: 'accounts'
-  };
-
-  /* ============================================================
-     MOCK API LOCAL (Para evitar errores si no hay backend)
-     ============================================================ */
-  function generateId() { return Math.random().toString(36).substr(2, 9); }
-  
-  async function apiFetch(path, options = {}) {
-    // Simulador In-Memory instantáneo. Si hubiera fetch real, iría aquí.
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const method = options.method || 'GET';
-        const body = options.body ? JSON.parse(options.body) : null;
-        
-        if(path.includes('/api/state')) resolve(state);
-        
-        else if(path.includes('/api/profiles') && method === 'POST') {
-          const newProf = { id: generateId(), name: body.name };
-          state.profiles.push(newProf); resolve({ profile: newProf });
-        }
-        else if(path.includes('/api/accounts') && method === 'POST') {
-          const newAcc = { id: generateId(), ...body, enabled: true };
-          state.accounts.push(newAcc); resolve({ account: newAcc });
-        }
-        else if(path.includes('/api/prompts') && method === 'POST') {
-          const newPrompt = { id: generateId(), ...body };
-          state.prompts.push(newPrompt); resolve({ prompt: newPrompt });
-        }
-        else if(method === 'DELETE' && path.includes('/api/prompts/')) {
-          const id = path.split('/').pop();
-          state.prompts = state.prompts.filter(p => p.id !== id); resolve({});
-        }
-        else { resolve(state); } // Fallback genérico
-      }, 200);
-    });
+  const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+  if(tg){
+    try{ 
+      tg.ready(); 
+      tg.expand(); 
+      if (tg.requestFullscreen) {
+        tg.requestFullscreen();
+      }
+    }catch(e){}
+    try{ tg.setBackgroundColor && tg.setBackgroundColor('#030308'); }catch(e){}
+    try{ tg.setHeaderColor && tg.setHeaderColor('#0b0c14'); }catch(e){}
   }
 
+  function haptic(kind){
+    if(!tg || !tg.HapticFeedback) return;
+    try{
+      if(kind === 'success' || kind === 'error' || kind === 'warning') tg.HapticFeedback.notificationOccurred(kind);
+      else tg.HapticFeedback.impactOccurred(kind || 'light');
+    }catch(e){ /* versiones viejas de Telegram no tienen todos los métodos */ }
+  }
+
+  function resolveTgId(){
+    if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id){
+      return String(tg.initDataUnsafe.user.id);
+    }
+    let dev = localStorage.getItem('dev_tg_id');
+    if(!dev){
+      dev = 'dev-' + Math.random().toString(36).slice(2, 9);
+      localStorage.setItem('dev_tg_id', dev);
+    }
+    return dev;
+  }
+  const TG_ID = resolveTgId();
+
   /* ============================================================
-     UTILIDADES & UI
+     TOASTS
      ============================================================ */
   function showToast(msg, kind){
     const wrap = document.getElementById('toastWrap');
     const el = document.createElement('div');
-    const icon = kind === 'error' ? '❌ ' : kind === 'success' ? '✅ ' : kind === 'ext' ? '🔌 ' : 'ℹ️ ';
-    el.className = 'toast ' + (kind ? 'is-'+kind : '');
-    el.textContent = icon + msg;
+    el.className = 'toast' + (kind === 'error' ? ' is-error' : kind === 'success' ? ' is-success' : '');
+    el.textContent = msg;
     wrap.appendChild(el);
-    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
-  }
-
-  function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-  function formatRemaining(ms){
-    const m = Math.max(1, Math.ceil(ms/60000));
-    return m > 60 ? `${Math.floor(m/60)}h ${m%60}m` : `${m}m`;
-  }
-  
-  function computeStatus(acc){
-    if(!acc.enabled) return { key:'disabled', label:'Desactivada', remainingMs:0 };
-    if(!acc.lastUsed || !acc.limitResetHours || !acc.limitCount) return { key:'available', label:'Disponible', remainingMs:0 };
-    const resetAt = new Date(acc.lastUsed).getTime() + acc.limitResetHours * 3600 * 1000;
-    const remaining = resetAt - Date.now();
-    if(remaining <= 0) return { key:'available', label:'Disponible', remainingMs:0 };
-    return { key:'cooldown', label:'En cooldown', remainingMs:remaining };
+    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 220); }, 2800);
   }
 
   /* ============================================================
-     RENDERIZADO NÚCLEO
+     SISTEMA DE CONFIRMACIÓN ADAPTADO PARA TELEGRAM (EVITA BUGS)
+     ============================================================ */
+  function safeConfirm(msg, onConfirm) {
+    if (tg && tg.showConfirm) {
+      tg.showConfirm(msg, (approved) => {
+        if (approved) onConfirm();
+      });
+    } else {
+      if (confirm(msg)) {
+        onConfirm();
+      }
+    }
+  }
+
+  /* ============================================================
+     API
+     ============================================================ */
+  async function apiFetch(path, options){
+    options = options || {};
+    const res = await fetch(path, {
+      headers: { 'Content-Type': 'application/json' },
+      ...options
+    });
+    if(!res.ok){
+      let msg = 'Error de red (' + res.status + ')';
+      try{ const j = await res.json(); if(j && j.error) msg = j.error; }catch(e){}
+      throw new Error(msg);
+    }
+    return res.json();
+  }
+  const qs = (params) => '?' + new URLSearchParams(params).toString();
+
+  /* ============================================================
+     ICONOS
+     ============================================================ */
+  const ICONS = {
+    chev:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>`,
+    pencil: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`,
+    trash:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>`,
+    clock:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
+    power:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg>`,
+    back:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>`
+  };
+
+  /* ============================================================
+     CATÁLOGO DE PRESETS POR IA Y PALETA DE COLORES DE PERFILES
+     ============================================================ */
+  const AI_PRESETS = {
+    'ChatGPT':    { plan:'Plus', limitCount:40, limitResetHours:3 },
+    'Claude':     { plan:'Pro',  limitCount:45, limitResetHours:5 },
+    'Gemini':     { plan:'Free', limitCount:60, limitResetHours:24 },
+    'Perplexity': { plan:'Free', limitCount:30, limitResetHours:1 },
+    'Grok':       { plan:'Free', limitCount:20, limitResetHours:2 },
+    'DeepSeek':   { plan:'Free', limitCount:50, limitResetHours:1 },
+    'Mistral':    { plan:'Free', limitCount:50, limitResetHours:24 },
+    'Copilot':    { plan:'Free', limitCount:30, limitResetHours:24 },
+    'Midjourney': { plan:'Pro',  limitCount:null, limitResetHours:null },
+    'Suno':       { plan:'Free', limitCount:10, limitResetHours:24 },
+    'Meta AI':    { plan:'Free', limitCount:null, limitResetHours:null }
+  };
+
+  const AI_COLORS = {
+    'ChatGPT': '#10a37f',      
+    'Claude': '#d97757',       
+    'Gemini': '#1a73e8',       
+    'Perplexity': '#22d3ee',   
+    'Grok': '#f4f4f5',         
+    'DeepSeek': '#0ea5e9',     
+    'Mistral': '#f97316',      
+    'Copilot': '#8b5cf6',      
+    'Midjourney': '#c084fc',   
+    'Suno': '#facc15',         
+    'Meta AI': '#06b6d4'       
+  };
+
+  const PROFILE_COLORS = ['#9b7bff', '#3ddc97', '#f0c419', '#ff6fae', '#00e5ff', '#ff9100', '#ea4335'];
+
+  function getAiColor(serviceName) {
+    return AI_COLORS[serviceName] || 'var(--muted)';
+  }
+
+  function getProfileColor(profileId) {
+    const idx = state.profiles.findIndex(p => p.id === profileId);
+    if(idx === -1) return 'var(--text)';
+    return PROFILE_COLORS[idx % PROFILE_COLORS.length];
+  }
+
+  /* ============================================================
+     ESTADO
+     ============================================================ */
+  let state = { profiles: [], accounts: [] };
+  const ui = { search:'', filterAI:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false };
+
+  async function loadState(){
+    state = await apiFetch('/api/state' + qs({ tg_id: TG_ID }));
+  }
+
+  function getLocalLegacyData(){
+    const raw = localStorage.getItem('ia_multiperfil_v3');
+    if(!raw) return null;
+    try{
+      const parsed = JSON.parse(raw);
+      if(parsed && Array.isArray(parsed.profiles) && parsed.profiles.length) return parsed;
+    }catch(e){}
+    return null;
+  }
+
+  async function maybeOfferMigration(){
+    if(state.profiles.length > 0) return;
+    const local = getLocalLegacyData();
+    if(!local) return;
+    const banner = document.getElementById('migrationBanner');
+    banner.style.display = 'flex';
+    banner.innerHTML = `
+      <span>Encontré ${local.profiles.length} perfil(es) guardados en este navegador. ¿Los subo?</span>
+      <button class="btn primary sm" type="button" id="migrateNowBtn">Migrar ahora</button>
+      <button class="btn ghost sm" type="button" id="migrateDismissBtn">Ignorar</button>
+    `;
+    document.getElementById('migrateNowBtn').addEventListener('click', async () => {
+      try{
+        await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, mode:'merge', profiles:local.profiles, accounts:local.accounts }) });
+        banner.style.display = 'none';
+        haptic('success');
+        showToast('Datos migrados al servidor', 'success');
+        await loadState();
+        renderAll();
+      }catch(e){
+        haptic('error');
+        showToast('No se pudo migrar: ' + e.message, 'error');
+      }
+    });
+    document.getElementById('migrateDismissBtn').addEventListener('click', () => { banner.style.display = 'none'; });
+  }
+
+  /* ============================================================
+     DISPONIBILIDAD
+     ============================================================ */
+  function computeStatus(acc){
+    if(!acc.enabled) return { key:'disabled', label:'Desactivada', sub:'apagada a mano', remainingMs:0 };
+    if(!acc.lastUsed) return { key:'neutral', label:'Nunca usada', sub:'', remainingMs:0 };
+    if(!acc.limitResetHours || !acc.limitCount) return { key:'neutral', label:'Sin límite definido', sub:'', remainingMs:0 };
+    const last = new Date(acc.lastUsed).getTime();
+    if(Number.isNaN(last)) return { key:'neutral', label:'Sin límite definido', sub:'', remainingMs:0 };
+    const resetAt = last + acc.limitResetHours*3600*1000;
+    const now = Date.now();
+    if(now >= resetAt) return { key:'available', label:'Disponible', sub:'', remainingMs:0 };
+    const remaining = resetAt - now;
+    return { key:'cooldown', label:'En cooldown', sub:'vuelve en ' + formatRemaining(remaining), remainingMs:remaining };
+  }
+  function formatRemaining(ms){
+    const totalMin = Math.max(1, Math.ceil(ms/60000));
+    const h = Math.floor(totalMin/60), m = totalMin%60;
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  }
+  function formatRelative(iso){
+    if(!iso) return 'nunca';
+    const ms = Date.now() - new Date(iso).getTime();
+    if(ms < 60000) return 'ahora mismo';
+    const min = Math.floor(ms/60000);
+    if(min < 60) return `hace ${min}m`;
+    const h = Math.floor(min/60);
+    if(h < 24) return `hace ${h}h`;
+    return `hace ${Math.floor(h/24)}d`;
+  }
+  function escapeHtml(s){
+    return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+  const PLAN_CLASS = { Free:'plan-free', Plus:'plan-plus', Pro:'plan-pro', Team:'plan-team' };
+  function planClass(plan){ return PLAN_CLASS[plan] || 'plan-otro'; }
+
+  /* ============================================================
+     HELPERS DE DATOS
+     ============================================================ */
+  function getProfile(id){ return state.profiles.find(p => p.id === id); }
+  function getAccount(id){ return state.accounts.find(a => a.id === id); }
+  function accountsOf(profileId){ return state.accounts.filter(a => a.profileId === profileId); }
+  function statusCounts(accounts){
+    return {
+      available: accounts.filter(a => computeStatus(a).key === 'available').length,
+      cooldown: accounts.filter(a => computeStatus(a).key === 'cooldown').length
+    };
+  }
+  function nextProfileNumber(){
+    let max = 0;
+    state.profiles.forEach(p => { const m = /^Perfil (\d+)$/.exec(p.name.trim()); if(m) max = Math.max(max, parseInt(m[1],10)); });
+    return max + 1;
+  }
+  function matchesFilters(acc){
+    const status = computeStatus(acc).key;
+    if(ui.filterAI && acc.service !== ui.filterAI) return false;
+    if(ui.filterStatus && status !== ui.filterStatus) return false;
+    if(ui.search){
+      const hay = `${acc.service} ${acc.email} ${acc.notes} ${acc.plan}`.toLowerCase();
+      if(!hay.includes(ui.search)) return false;
+    }
+    return true;
+  }
+
+  /* ============================================================
+     RENDER 
      ============================================================ */
   function renderAll(){
-    renderReadyStrip(); renderRail(); renderToolbar(); renderForm(); renderMain();
+    refreshFilterOptions();
+    renderStats();
+    renderReadyStrip();
+    renderRail();
+    renderForm();
+    renderMain();
+  }
+
+  function renderStats(){
+    const total = state.accounts.length;
+    const { available, cooldown } = statusCounts(state.accounts);
+    document.getElementById('statsRow').innerHTML = `
+      <div class="stat-pill"><b>${state.profiles.length}</b>perfiles</div>
+      <div class="stat-pill"><b>${total}</b>cuentas</div>
+      <div class="stat-pill is-mint"><b>${available}</b>disponibles</div>
+      <div class="stat-pill is-gold"><b>${cooldown}</b>en cooldown</div>
+    `;
   }
 
   function renderReadyStrip(){
     const el = document.getElementById('readyStrip');
-    const available = state.accounts.filter(a => computeStatus(a).key === 'available').map(a => ({ acc:a, profile: state.profiles.find(p=>p.id===a.profileId) }));
+    const available = state.accounts.filter(a => computeStatus(a).key === 'available').map(a => ({ acc:a, profile:getProfile(a.profileId) }));
     if(available.length){
-      el.innerHTML = `<span class="ready-label">🟢 Disponibles Ahora</span><div class="ready-chips">` + 
-        available.map(({acc,profile}) => `
-          <span class="ready-chip"><span class="dot" style="background:var(--mint)"></span>
-          <b>${escapeHtml(acc.service)}</b> <span style="font-size:10px; color:var(--muted)">(${escapeHtml(profile?.name||'—')})</span></span>
-        `).join('') + `</div>`;
+      el.innerHTML = `
+        <span class="ready-label">Disponible ahora</span>
+        <div class="ready-chips">
+          ${available.map(({acc,profile}) => `
+            <span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}">
+              <span class="dot"></span>${escapeHtml(acc.service)}<span class="pname">· ${escapeHtml(profile ? profile.name : '—')}</span>
+            </span>`).join('')}
+        </div>`;
+      return;
+    }
+    const cooling = state.accounts.map(computeStatus).filter(s => s.key === 'cooldown').sort((a,b)=>a.remainingMs-b.remainingMs)[0];
+    if(state.accounts.length === 0){
+      el.innerHTML = `<span class="ready-empty">Aún no registraste ninguna cuenta. Creá un perfil y agregá la primera con "+ Cuenta IA".</span>`;
+    } else if(cooling){
+      el.innerHTML = `<span class="ready-empty">Todo en cooldown — la próxima vuelve en <b>${formatRemaining(cooling.remainingMs)}</b>.</span>`;
     } else {
-      el.innerHTML = `<div class="empty-state" style="padding:10px; border:none;">Todo en orden. Agrega herramientas para rastrear límites.</div>`;
+      el.innerHTML = `<span class="ready-empty">Nada con disponibilidad calculable todavía.</span>`;
     }
   }
 
   function renderRail(){
     const rail = document.getElementById('profileRail');
-    const chips = [`<button class="rail-chip ${!ui.activeProfile?'is-active':''}" data-action="set-profile" data-id=""><span class="rdot"></span>Global</button>`];
+    const chips = [`
+      <button class="rail-chip ${ui.activeProfile===null?'is-active':''}" type="button" data-action="select-profile" data-id="">
+        <span class="rdot" style="background:var(--purple)"></span>Todos<span class="rcount">${state.accounts.length}</span>
+      </button>`];
     state.profiles.forEach(p => {
-      chips.push(`<button class="rail-chip ${ui.activeProfile===p.id?'is-active':''}" data-action="set-profile" data-id="${p.id}"><span class="rdot"></span>${escapeHtml(p.name)}</button>`);
+      const accs = accountsOf(p.id);
+      const { available, cooldown } = statusCounts(accs);
+      const dot = available ? 'var(--mint)' : cooldown ? 'var(--gold)' : 'var(--muted-dim)';
+      const pColor = getProfileColor(p.id);
+      const isAct = ui.activeProfile === p.id;
+      
+      chips.push(`
+        <button class="rail-chip ${isAct?'is-active':''}" type="button" data-action="select-profile" data-id="${p.id}" style="${isAct ? `background:${pColor}; border-color:${pColor}; color:#0b0612; font-weight:700;` : `color:${pColor}; border-color:${pColor}30;`}">
+          <span class="rdot" style="background:${dot}"></span>${escapeHtml(p.name)}<span class="rcount">${accs.length}</span>
+        </button>`);
     });
     rail.innerHTML = chips.join('');
   }
 
-  function renderToolbar(){
-    const tb = document.getElementById('toolbarArea');
-    if(ui.activeTab === 'accounts'){
-      tb.innerHTML = `
-        <label class="search-box"><input id="searchInput" type="text" placeholder="Buscar cuenta o IA..." value="${ui.search}"></label>
-        <select id="filterAI"><option value="">Todas las IAs</option></select>
-        <div style="flex:1"></div>
-        <button class="btn success" data-action="open-form" data-type="account">+ Añadir Herramienta IA</button>
-      `;
-      // Listener para búsqueda
-      tb.querySelector('#searchInput').addEventListener('input', e => { ui.search = e.target.value.toLowerCase(); renderMain(); });
-    } else {
-      tb.innerHTML = `
-        <label class="search-box"><input id="searchInput" type="text" placeholder="Buscar prompt por título o tag..." value="${ui.search}"></label>
-        <div style="flex:1"></div>
-        <button class="btn primary" data-action="open-form" data-type="prompt">+ Crear Prompt</button>
-      `;
-      tb.querySelector('#searchInput').addEventListener('input', e => { ui.search = e.target.value.toLowerCase(); renderMain(); });
-    }
+  function refreshFilterOptions(){
+    const aiSel = document.getElementById('filterAI');
+    const current = ui.filterAI;
+    const services = [...new Set(state.accounts.map(a => a.service.trim()).filter(Boolean))].sort();
+    aiSel.innerHTML = '<option value="">Todas las IAs</option>' + services.map(s => `<option value="${escapeHtml(s)}" ${s===current?'selected':''}>${escapeHtml(s)}</option>`).join('');
   }
 
   function renderMain(){
     const zone = document.getElementById('mainZone');
-    if(ui.activeTab === 'accounts') renderAccountsView(zone);
-    else renderPromptsView(zone);
+    if(state.profiles.length === 0){
+      zone.innerHTML = `<div class="empty-state"><b>Todavía no hay perfiles</b>Creá el primero con "+ Perfil".</div>`;
+      return;
+    }
+    if(ui.activeProfile === null){
+      zone.innerHTML = `<div class="profiles-list">${state.profiles.map(renderProfileCard).join('')}</div>`;
+    } else {
+      const profile = getProfile(ui.activeProfile);
+      if(!profile){ ui.activeProfile = null; return renderMain(); }
+      zone.innerHTML = renderFocused(profile);
+    }
   }
 
-  /* --- VISTA CUENTAS --- */
-  function renderAccountsView(zone){
-    let profilesToShow = ui.activeProfile ? [state.profiles.find(p=>p.id===ui.activeProfile)] : state.profiles;
-    if(!profilesToShow.length || !profilesToShow[0]){ zone.innerHTML = `<div class="empty-state">No hay perfiles creados.</div>`; return; }
-    
-    zone.innerHTML = `<div class="profiles-list">` + profilesToShow.map(p => {
-      const accs = state.accounts.filter(a => a.profileId === p.id && (!ui.search || a.service.toLowerCase().includes(ui.search)));
-      let body = accs.length ? accs.map(renderAccountRow).join('') : `<div class="empty-state" style="padding:15px; border:none;">Sin cuentas.</div>`;
-      return `
-        <div class="profile-card">
-          <div class="profile-head">
-            <span class="profile-name">${escapeHtml(p.name)}</span>
-            <span class="meta-pill">${accs.length} herramientas</span>
+  function renderProfileCard(profile){
+    const all = accountsOf(profile.id);
+    const visible = all.filter(matchesFilters);
+    const { available, cooldown } = statusCounts(all);
+    const pColor = getProfileColor(profile.id);
+    let body;
+    if(all.length === 0) body = `<div class="profile-empty">Sin cuentas todavía.</div>`;
+    else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
+    else body = visible.map(renderAccountRow).join('');
+    return `
+      <div class="profile-card" data-profile-id="${profile.id}" style="border-color: ${pColor}30;">
+        <div class="profile-head" data-action="toggle-collapse" data-id="${profile.id}">
+          <span class="chev">${ICONS.chev}</span>
+          <span class="profile-name" style="color: ${pColor}; text-shadow: 0 0 10px ${pColor}30;">${escapeHtml(profile.name)}</span>
+          <div class="profile-meta">
+            <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
+            ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
+            ${cooldown ? `<span class="meta-pill is-gold">${cooldown} en cooldown</span>` : ''}
           </div>
-          <div class="profile-body"><div style="padding: 0 20px 20px;">${body}</div></div>
-        </div>`;
-    }).join('') + `</div>`;
+          <div class="profile-head-actions">
+            <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar perfil">${ICONS.pencil}</button>
+            <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil y sus cuentas">${ICONS.trash}</button>
+          </div>
+        </div>
+        <div class="profile-body"><div class="accounts-wrap">${body}</div></div>
+      </div>`;
+  }
+
+  function renderFocused(profile){
+    const all = accountsOf(profile.id);
+    const visible = all.filter(matchesFilters);
+    const { available, cooldown } = statusCounts(all);
+    const pColor = getProfileColor(profile.id);
+    let body;
+    if(all.length === 0) body = `<div class="profile-empty">Este perfil todavía no tiene cuentas.</div>`;
+    else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
+    else body = `<div class="accounts-wrap">${visible.map(renderAccountRow).join('')}</div>`;
+    return `
+      <div class="focused-head">
+        <span class="back-link" data-action="select-profile" data-id="">${ICONS.back} Todos los perfiles</span>
+        <h2 style="color: ${pColor}; text-shadow: 0 0 10px ${pColor}40;">${escapeHtml(profile.name)}</h2>
+        <div class="profile-meta">
+          <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
+          ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
+          ${cooldown ? `<span class="meta-pill is-gold">${cooldown} en cooldown</span>` : ''}
+        </div>
+        <div class="focused-actions">
+          <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar perfil">${ICONS.pencil}</button>
+          <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil">${ICONS.trash}</button>
+        </div>
+      </div>
+      ${body}`;
   }
 
   function renderAccountRow(acc){
-    const st = computeStatus(acc);
-    const dot = st.key === 'available' ? 'var(--mint)' : st.key === 'cooldown' ? 'var(--gold)' : 'var(--muted)';
+    const status = computeStatus(acc);
+    const dotColor = status.key === 'available' ? 'var(--mint)' : status.key === 'cooldown' ? 'var(--gold)' : status.key === 'disabled' ? 'var(--pink)' : 'var(--muted-dim)';
+    const brandColor = getAiColor(acc.service);
+    const notesPreview = acc.notes || '';
+    
     return `
-      <div class="account-row">
-        <span class="acc-dot" style="background:${dot}; width:10px; height:10px; border-radius:50%; box-shadow:0 0 10px ${dot}"></span>
-        <div class="acc-service"><span class="svc-name">${escapeHtml(acc.service)}</span><span class="svc-email">${escapeHtml(acc.email||'—')}</span></div>
-        <span class="plan-badge">${escapeHtml(acc.plan||'Free')}</span>
-        <div class="status-badge"><span class="s-label" style="color:${dot}">${st.label}</span></div>
+      <div class="account-row" data-account-id="${acc.id}">
+        <span class="acc-dot" style="background:${dotColor}; box-shadow: 0 0 8px ${dotColor}80;"></span>
+        <div class="acc-service">
+          <span class="svc-name" style="color: ${brandColor}; text-shadow: 0 0 10px ${brandColor}40;">${escapeHtml(acc.service)}</span>
+          <span class="svc-email">${escapeHtml(acc.email || 'sin correo')}</span>
+        </div>
+        <span class="plan-badge ${planClass(acc.plan)}">${escapeHtml(acc.plan || 'Otro')}</span>
+        <div class="status-badge st-${status.key}">
+          <span class="s-label">${status.label}</span>
+          ${status.sub ? `<span class="s-sub">${status.sub}</span>` : ''}
+        </div>
+        <span class="acc-lastused">${formatRelative(acc.lastUsed)}</span>
+        <span class="acc-notes" title="${escapeHtml(notesPreview)}">${escapeHtml(notesPreview) || '—'}</span>
         <div class="acc-actions">
-          <button class="icon-btn action" data-action="inject-ext" data-service="${acc.service}" title="Auto-Login Extensión">🔌</button>
-          <button class="icon-btn" data-action="mark-used" data-id="${acc.id}" title="Marcar Uso (Cooldown)">⏳</button>
+          <button class="icon-btn ${acc.enabled ? 'is-on' : 'is-off'}" type="button" data-action="toggle-enabled" data-id="${acc.id}" title="${acc.enabled ? 'Desactivar cuenta' : 'Activar cuenta'}">${ICONS.power}</button>
+          <button class="icon-btn" type="button" data-action="mark-used" data-id="${acc.id}" title="Marcar usada ahora">${ICONS.clock}</button>
+          <button class="icon-btn" type="button" data-action="edit-account" data-id="${acc.id}" title="Editar cuenta">${ICONS.pencil}</button>
+          <button class="icon-btn danger" type="button" data-action="delete-account" data-id="${acc.id}" title="Eliminar cuenta">${ICONS.trash}</button>
         </div>
       </div>`;
   }
 
-  /* --- VISTA PROMPTS --- */
-  function renderPromptsView(zone){
-    let filtered = state.prompts;
-    if(ui.activeProfile) filtered = filtered.filter(p => p.profileId === ui.activeProfile || !p.profileId);
-    if(ui.search) filtered = filtered.filter(p => p.title.toLowerCase().includes(ui.search) || p.tags.toLowerCase().includes(ui.search));
+  function updateAccountRowVisual(acc){
+    const row = document.querySelector(`.account-row[data-account-id="${acc.id}"]`);
+    if(!row) return false;
+    const status = computeStatus(acc);
+    const dotColor = status.key === 'available' ? 'var(--mint)' : status.key === 'cooldown' ? 'var(--gold)' : status.key === 'disabled' ? 'var(--pink)' : 'var(--muted-dim)';
+    
+    const dotEl = row.querySelector('.acc-dot');
+    dotEl.style.background = dotColor;
+    dotEl.style.boxShadow = `0 0 8px ${dotColor}80`;
 
-    if(!filtered.length){
-      zone.innerHTML = `<div class="empty-state"><b>No hay Prompts aquí</b><br>Crea tu primer prompt para tenerlo a un clic.</div>`;
-      return;
+    const badge = row.querySelector('.status-badge');
+    badge.className = `status-badge st-${status.key}`;
+    badge.innerHTML = `<span class="s-label">${status.label}</span>${status.sub ? `<span class="s-sub">${status.sub}</span>` : ''}`;
+    row.querySelector('.acc-lastused').textContent = formatRelative(acc.lastUsed);
+    const powerBtn = row.querySelector('[data-action="toggle-enabled"]');
+    if(powerBtn){
+      powerBtn.classList.toggle('is-on', acc.enabled);
+      powerBtn.classList.toggle('is-off', !acc.enabled);
+      powerBtn.title = acc.enabled ? 'Desactivar cuenta' : 'Activar cuenta';
     }
-
-    zone.innerHTML = `<div class="prompts-grid">` + filtered.map(p => `
-      <div class="prompt-card">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <h4 class="prompt-title">${escapeHtml(p.title)}</h4>
-          <button class="icon-btn danger" style="width:24px;height:24px;font-size:10px;" data-action="delete-prompt" data-id="${p.id}">✖</button>
-        </div>
-        <div class="prompt-tags">${(p.tags||'').split(',').map(t=> t.trim() ? `<span class="p-tag">${escapeHtml(t)}</span>`:'').join('')}</div>
-        <div class="prompt-body" id="pcontent-${p.id}">${escapeHtml(p.content)}</div>
-        <div class="prompt-actions">
-          <span style="font-size:10px; color:var(--muted)">${p.profileId ? 'Perfil Específico' : '🌐 Global'}</span>
-          <button class="copy-btn" data-action="copy-prompt" data-target="pcontent-${p.id}">📋 Copiar</button>
-        </div>
-      </div>
-    `).join('') + `</div>`;
+    return true;
   }
 
-  /* --- FORMULARIOS --- */
-  function renderForm(){
-    const zone = document.getElementById('formZone');
-    if(!ui.showForm){ zone.innerHTML = ''; return; }
-    
-    if(ui.showForm === 'profile'){
-      zone.innerHTML = `
-        <form class="glass-panel form-panel" id="formProfile" style="margin-bottom:20px;">
-          <h3>✨ Nuevo Perfil</h3>
-          <div class="form-grid"><input name="name" placeholder="Nombre (Ej. Chrome Trabajo)" required></div>
-          <div class="form-actions">
-            <button type="button" class="btn ghost" data-action="close-form">Cancelar</button>
-            <button type="submit" class="btn primary">Crear Perfil</button>
-          </div>
-        </form>`;
-    } 
-    else if(ui.showForm === 'account'){
-      zone.innerHTML = `
-        <form class="glass-panel form-panel" id="formAccount" style="margin-bottom:20px;">
-          <h3>🤖 Añadir Herramienta IA</h3>
-          <div class="form-grid">
-            <select name="profileId">${state.profiles.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select>
-            <input name="service" placeholder="IA (ChatGPT, Claude...)" required>
-            <input name="email" placeholder="Correo de cuenta">
-          </div>
-          <div class="form-actions"><button type="button" class="btn ghost" data-action="close-form">Cancelar</button><button type="submit" class="btn success">Guardar</button></div>
-        </form>`;
-    }
-    else if(ui.showForm === 'prompt'){
-      zone.innerHTML = `
-        <form class="glass-panel form-panel" id="formPrompt" style="margin-bottom:20px; border-top-color:var(--purple);">
-          <h3>📝 Crear Prompt Mágico</h3>
-          <div class="form-grid">
-            <input name="title" placeholder="Título (Ej. Revisor de Código)" required>
-            <input name="tags" placeholder="Etiquetas separadas por coma (Ej. Code, Python)">
-            <select name="profileId"><option value="">🌐 Visible en Todos los Perfiles</option>${state.profiles.map(p=>`<option value="${p.id}" ${ui.activeProfile===p.id?'selected':''}>Solo para: ${p.name}</option>`).join('')}</select>
-          </div>
-          <textarea name="content" placeholder="Escribe tu prompt aquí..." style="margin-top:14px;" required></textarea>
-          <div class="form-actions"><button type="button" class="btn ghost" data-action="close-form">Cancelar</button><button type="submit" class="btn primary">Guardar Prompt</button></div>
-        </form>`;
-    }
-    window.scrollTo({top:0, behavior:'smooth'});
+  function refreshComputedVisuals(){
+    state.accounts.forEach(updateAccountRowVisual);
+    renderStats(); renderReadyStrip(); renderRail();
   }
 
   /* ============================================================
-     INTERACCIONES Y EVENTOS
+     FORMULARIOS
      ============================================================ */
-  document.addEventListener('click', async e => {
-    const t = e.target.closest('[data-action]'); if(!t) return;
-    const act = t.dataset.action;
+  function renderForm(){
+    const zone = document.getElementById('formZone');
+    if(ui.showForm === 'profile'){
+      const editing = ui.editingId ? getProfile(ui.editingId) : null;
+      if(editing || !ui.bulkProfileMode){
+        zone.innerHTML = `
+          <form class="form-panel" id="profileForm">
+            <h3>${editing ? 'Renombrar perfil' : 'Nuevo perfil'}</h3>
+            <div class="form-grid">
+              <input name="name" type="text" placeholder="Nombre del perfil" value="${editing ? escapeHtml(editing.name) : 'Perfil ' + nextProfileNumber()}" required autocomplete="off">
+            </div>
+            <div class="form-actions">
+              ${editing ? '' : `<button type="button" class="form-toggle-link" data-action="toggle-bulk">Crear varios numerados →</button>`}
+              <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
+              <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Crear perfil'}</button>
+            </div>
+          </form>`;
+      } else {
+        const start = nextProfileNumber();
+        zone.innerHTML = `
+          <form class="form-panel" id="profileBulkForm">
+            <h3>Crear varios perfiles numerados</h3>
+            <p class="form-sub">Por ejemplo: del 1 al 20 crea "Perfil 1" … "Perfil 20".</p>
+            <div class="form-grid cols-3">
+              <input name="prefix" type="text" placeholder="Prefijo" value="Perfil" autocomplete="off">
+              <input name="from" type="number" min="1" placeholder="Desde" value="${start}">
+              <input name="to" type="number" min="1" placeholder="Hasta" value="${start + 9}">
+            </div>
+            <div class="form-actions">
+              <button type="button" class="form-toggle-link" data-action="toggle-bulk">← Crear uno solo</button>
+              <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
+              <button type="submit" class="btn primary">Crear perfiles</button>
+            </div>
+          </form>`;
+      }
+      const input = zone.querySelector('input[name="name"], input[name="prefix"]');
+      if(input) input.focus();
+    } else if(ui.showForm === 'account'){
+      if(state.profiles.length === 0){
+        zone.innerHTML = `
+          <div class="form-panel">
+            <p class="form-empty-note">☝️ Primero creá un perfil.</p>
+            <div class="form-actions"><button type="button" class="btn ghost" data-action="cancel-form">Cerrar</button></div>
+          </div>`;
+        return;
+      }
+      const editing = ui.editingId ? getAccount(ui.editingId) : null;
+      const defaultProfileId = editing ? editing.profileId : (ui.activeProfile || state.profiles[0].id);
+      const lastUsedLocal = editing && editing.lastUsed ? toLocalInputValue(editing.lastUsed) : '';
+      zone.innerHTML = `
+        <form class="form-panel" id="accountForm">
+          <h3>${editing ? 'Editar cuenta' : 'Nueva cuenta IA'}</h3>
+          <div class="form-grid">
+            <select name="profileId" required>
+              ${state.profiles.map(p => `<option value="${p.id}" ${defaultProfileId===p.id ? 'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
+            </select>
+            <input name="service" id="serviceInput" list="serviceSuggestions" placeholder="IA (ChatGPT, Claude…)" value="${editing ? escapeHtml(editing.service) : ''}" required autocomplete="off">
+            <input name="email" type="text" placeholder="Correo usado" value="${editing ? escapeHtml(editing.email) : ''}" autocomplete="off">
+            <input name="plan" list="planSuggestions" placeholder="Plan" value="${editing ? escapeHtml(editing.plan) : ''}" autocomplete="off">
+          </div>
+          <div class="form-grid cols-3" style="margin-top:10px">
+            <input name="limitCount" type="number" min="0" placeholder="Mensajes" value="${editing && editing.limitCount ? editing.limitCount : ''}">
+            <input name="limitResetHours" type="number" min="0" placeholder="Cada cuántas horas" value="${editing && editing.limitResetHours ? editing.limitResetHours : ''}">
+            <input name="lastUsed" type="datetime-local" value="${lastUsedLocal}">
+          </div>
+          <p class="form-hint">¿No sabés los límites exactos? Dejalos vacíos.</p>
+          <div class="form-grid" style="margin-top:6px"><textarea name="notes" placeholder="Notas…">${editing ? escapeHtml(editing.notes) : ''}</textarea></div>
+          <div class="form-actions">
+            <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
+            <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Agregar cuenta'}</button>
+          </div>
+        </form>
+        <datalist id="serviceSuggestions">${Object.keys(AI_PRESETS).map(s => `<option value="${s}">`).join('')}</datalist>
+        <datalist id="planSuggestions"><option value="Free"><option value="Plus"><option value="Pro"><option value="Team"><option value="Max"><option value="Advanced"></datalist>`;
+      if(!editing){
+        zone.querySelector('#serviceInput').addEventListener('change', e => {
+          const preset = AI_PRESETS[e.target.value];
+          if(!preset) return;
+          const form = e.target.closest('form');
+          const planEl = form.querySelector('input[name="plan"]'), cEl = form.querySelector('input[name="limitCount"]'), rEl = form.querySelector('input[name="limitResetHours"]');
+          if(!planEl.value) planEl.value = preset.plan || '';
+          if(!cEl.value && preset.limitCount) cEl.value = preset.limitCount;
+          if(!rEl.value && preset.limitResetHours) rEl.value = preset.limitResetHours;
+        });
+      }
+      zone.querySelector('#serviceInput').focus();
+    } else {
+      zone.innerHTML = '';
+    }
+  }
 
-    // Navegación Tabs
-    if(e.target.closest('.tab-btn')){
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      e.target.closest('.tab-btn').classList.add('active');
-      ui.activeTab = e.target.closest('.tab-btn').dataset.tab;
-      ui.search = ''; renderAll();
-    }
-    
-    // Acciones simples
-    if(act === 'set-profile'){ ui.activeProfile = t.dataset.id || null; renderAll(); }
-    if(act === 'open-form'){ ui.showForm = t.dataset.type; renderForm(); }
-    if(act === 'close-form'){ ui.showForm = null; renderForm(); }
-    
-    // Extensión Mock
-    if(act === 'inject-ext'){
-      const svc = t.dataset.service;
-      showToast(`Inyectando sesión de ${svc} vía extensión...`, 'ext');
-    }
-    
-    // Copiar Prompt
-    if(act === 'copy-prompt'){
-      const text = document.getElementById(t.dataset.target).innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        const original = t.innerHTML; t.innerHTML = '✅ Copiado'; t.style.background = 'var(--mint)'; t.style.color = '#fff';
-        setTimeout(()=>{ t.innerHTML = original; t.style.background=''; t.style.color=''; }, 2000);
-      });
-    }
+  function toLocalInputValue(iso){
+    const d = new Date(iso);
+    if(Number.isNaN(d.getTime())) return '';
+    const pad = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
 
-    // Borrar Prompt
-    if(act === 'delete-prompt'){
-      await apiFetch(`/api/prompts/${t.dataset.id}`, { method:'DELETE' });
-      showToast('Prompt borrado', 'success'); renderMain();
+  /* ============================================================
+     ACCIONES 
+     ============================================================ */
+  function openForm(kind, editingId){ ui.showForm = kind; ui.editingId = editingId || null; ui.bulkProfileMode = false; renderForm(); }
+  function closeForm(){ ui.showForm = null; ui.editingId = null; ui.bulkProfileMode = false; renderForm(); }
+
+  function selectProfile(id){ ui.activeProfile = id || null; renderRail(); renderMain(); }
+  function toggleCollapse(id){ const card = document.querySelector(`.profile-card[data-profile-id="${id}"]`); if(card) card.classList.toggle('is-collapsed'); }
+
+  function deleteProfile(id){
+    const profile = getProfile(id);
+    if(!profile) return;
+    safeConfirm(`¿Eliminar el perfil "${profile.name}" y todas sus cuentas?`, async () => {
+      try{
+        await apiFetch(`/api/profiles/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
+        if(ui.activeProfile === id) ui.activeProfile = null;
+        haptic('success');
+        await loadState();
+        renderAll();
+        showToast('Perfil eliminado', 'success');
+      }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+    });
+  }
+
+  function deleteAccount(id){
+    const acc = getAccount(id);
+    if(!acc) return;
+    safeConfirm(`¿Eliminar la cuenta de ${acc.service}?`, async () => {
+      try{
+        await apiFetch(`/api/accounts/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
+        haptic('success');
+        await loadState();
+        renderAll();
+        showToast('Cuenta eliminada', 'success');
+      }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+    });
+  }
+
+  async function markUsedNow(id){
+    const acc = getAccount(id);
+    if(!acc) return;
+    const prev = acc.lastUsed;
+    acc.lastUsed = new Date().toISOString(); 
+    const stillMatches = !ui.filterStatus || ui.filterStatus === computeStatus(acc).key;
+    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); }
+    else { renderAll(); }
+    haptic();
+    try{
+      const res = await apiFetch(`/api/accounts/${id}/mark-used`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) });
+      Object.assign(acc, res.account);
+    }catch(e){
+      acc.lastUsed = prev;
+      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail();
+      showToast('No se pudo guardar: ' + e.message, 'error');
+    }
+  }
+
+  async function toggleEnabled(id){
+    const acc = getAccount(id);
+    if(!acc) return;
+    const prev = acc.enabled;
+    acc.enabled = !acc.enabled; 
+    const stillMatches = !ui.filterStatus || ui.filterStatus === computeStatus(acc).key;
+    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); }
+    else { renderAll(); }
+    haptic();
+    try{
+      const res = await apiFetch(`/api/accounts/${id}/toggle-enabled`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) });
+      Object.assign(acc, res.account);
+    }catch(e){
+      acc.enabled = prev;
+      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail();
+      showToast('No se pudo guardar: ' + e.message, 'error');
+    }
+  }
+
+  async function submitProfileForm(name){
+    name = (name || '').trim();
+    if(!name) return;
+    try{
+      if(ui.editingId){
+        await apiFetch(`/api/profiles/${ui.editingId}`, { method:'PATCH', body: JSON.stringify({ tg_id:TG_ID, name }) });
+      } else {
+        const res = await apiFetch('/api/profiles', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, name }) });
+        ui.activeProfile = res.profile.id;
+      }
+      haptic('success');
+      closeForm();
+      await loadState();
+      renderAll();
+      showToast(ui.editingId ? 'Perfil actualizado' : 'Perfil creado', 'success');
+    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function submitBulkProfiles(prefix, from, to){
+    try{
+      const res = await apiFetch('/api/profiles/bulk', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, prefix, from, to }) });
+      haptic('success');
+      closeForm();
+      await loadState();
+      renderAll();
+      showToast(`${res.profiles.length} perfiles creados`, 'success');
+    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function submitAccountForm(fd){
+    const profileId = fd.get('profileId');
+    const service = (fd.get('service') || '').trim();
+    if(!profileId || !service) return;
+    const payload = {
+      tg_id: TG_ID, profileId, service,
+      email: (fd.get('email')||'').trim(),
+      plan: (fd.get('plan')||'Free').trim() || 'Free',
+      limitCount: fd.get('limitCount') ? Number(fd.get('limitCount')) : null,
+      limitResetHours: fd.get('limitResetHours') ? Number(fd.get('limitResetHours')) : null,
+      notes: fd.get('notes') || ''
+    };
+    const lastUsedRaw = fd.get('lastUsed');
+    if(lastUsedRaw) payload.lastUsed = new Date(lastUsedRaw).toISOString();
+
+    try{
+      if(ui.editingId){
+        await apiFetch(`/api/accounts/${ui.editingId}`, { method:'PATCH', body: JSON.stringify(payload) });
+      } else {
+        await apiFetch('/api/accounts', { method:'POST', body: JSON.stringify(payload) });
+      }
+      haptic('success');
+      closeForm();
+      await loadState();
+      renderAll();
+      showToast(ui.editingId ? 'Cuenta actualizada' : 'Cuenta agregada', 'success');
+    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function exportData(){
+    try{
+      const data = await apiFetch('/api/export' + qs({ tg_id:TG_ID }));
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'multiperfil_ia_backup.json';
+      a.click();
+    }catch(e){ showToast('Error exportando: ' + e.message, 'error'); }
+  }
+
+  async function importData(){
+    const json = prompt('Pegá aquí tu JSON exportado (esto reemplaza todos tus datos actuales):');
+    if(!json) return;
+    try{
+      const parsed = JSON.parse(json);
+      if(!parsed || !Array.isArray(parsed.profiles) || !Array.isArray(parsed.accounts)) throw new Error('formato no reconocido');
+      await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, mode:'replace', profiles:parsed.profiles, accounts:parsed.accounts }) });
+      haptic('success');
+      await loadState();
+      renderAll();
+      showToast('Datos importados', 'success');
+    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+  }
+
+  function resetAll(){
+    safeConfirm('¿Seguro que querés borrar todos los perfiles y cuentas del servidor?', async () => {
+      try{
+        await apiFetch('/api/reset' + qs({ tg_id:TG_ID }), { method:'DELETE' });
+        ui.activeProfile = null;
+        haptic('warning');
+        await loadState();
+        renderAll();
+        showToast('Todo borrado', 'success');
+      }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
+    });
+  }
+
+  /* ============================================================
+     REFRESCO EN SEGUNDO PLANO
+     ============================================================ */
+  async function backgroundPoll(){
+    if(ui.showForm) return; 
+    try{
+      const fresh = await apiFetch('/api/state' + qs({ tg_id:TG_ID }));
+      if(JSON.stringify(fresh) !== JSON.stringify(state)){
+        state = fresh;
+        renderAll();
+      }
+    }catch(e){ }
+  }
+
+  /* ============================================================
+     LISTENERS
+     ============================================================ */
+  document.getElementById('searchInput').addEventListener('input', e => { ui.search = e.target.value.toLowerCase(); renderMain(); });
+  document.getElementById('filterAI').addEventListener('change', e => { ui.filterAI = e.target.value; renderMain(); });
+  document.getElementById('filterStatus').addEventListener('change', e => { ui.filterStatus = e.target.value; renderMain(); });
+
+  document.addEventListener('click', e => {
+    const target = e.target.closest('[data-action]');
+    if(!target) return;
+    const action = target.dataset.action, id = target.dataset.id;
+    switch(action){
+      case 'new-profile': haptic(); openForm('profile', null); break;
+      case 'new-account': haptic(); openForm('account', null); break;
+      case 'edit-profile': haptic(); openForm('profile', id); break;
+      case 'edit-account': haptic(); openForm('account', id); break;
+      case 'cancel-form': haptic(); closeForm(); break;
+      case 'toggle-bulk': ui.bulkProfileMode = !ui.bulkProfileMode; renderForm(); break;
+      case 'select-profile': haptic(); selectProfile(id); break;
+      case 'jump-profile': if(id){ haptic(); selectProfile(id); } break;
+      case 'toggle-collapse': toggleCollapse(id); break;
+      case 'delete-profile': deleteProfile(id); break;
+      case 'delete-account': deleteAccount(id); break;
+      case 'mark-used': markUsedNow(id); break;
+      case 'toggle-enabled': toggleEnabled(id); break;
+      case 'export': exportData(); break;
+      case 'import': importData(); break;
+      case 'reset': resetAll(); break;
     }
   });
 
-  // Formularios
-  document.addEventListener('submit', async e => {
-    e.preventDefault(); const fd = new FormData(e.target);
-    const body = Object.fromEntries(fd.entries());
-    
-    if(e.target.id === 'formProfile'){
-      await apiFetch('/api/profiles', { method:'POST', body: JSON.stringify(body) }); showToast('Perfil Creado', 'success');
-    } else if(e.target.id === 'formAccount'){
-      await apiFetch('/api/accounts', { method:'POST', body: JSON.stringify(body) }); showToast('Cuenta Creada', 'success');
-    } else if(e.target.id === 'formPrompt'){
-      await apiFetch('/api/prompts', { method:'POST', body: JSON.stringify(body) }); showToast('Prompt Guardado', 'success');
+  document.addEventListener('submit', e => {
+    if(e.target.id === 'profileForm'){
+      e.preventDefault();
+      submitProfileForm(new FormData(e.target).get('name'));
+    } else if(e.target.id === 'profileBulkForm'){
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      submitBulkProfiles(fd.get('prefix'), fd.get('from'), fd.get('to'));
+    } else if(e.target.id === 'accountForm'){
+      e.preventDefault();
+      submitAccountForm(new FormData(e.target));
     }
-    ui.showForm = null; renderAll();
   });
 
-  /* INICIO */
-  apiFetch('/api/state').then(s => { state = s; renderAll(); });
+  document.addEventListener('keydown', e => {
+    if(document.activeElement && ['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const order = [null, ...state.profiles.map(p => p.id)];
+    const idx = order.indexOf(ui.activeProfile);
+    if(idx === -1) return;
+    if(e.key === 'ArrowRight' && idx < order.length-1){ e.preventDefault(); selectProfile(order[idx+1]); }
+    if(e.key === 'ArrowLeft' && idx > 0){ e.preventDefault(); selectProfile(order[idx-1]); }
+  });
 
+  /* ============================================================
+     ARRANQUE
+     ============================================================ */
+  async function boot(){
+    try{
+      await loadState();
+    }catch(e){
+      document.getElementById('mainZone').innerHTML = `<div class="empty-state"><b>No se pudo conectar</b>${escapeHtml(e.message)}</div>`;
+      showToast('Sin conexión con el servidor', 'error');
+      return;
+    }
+    renderAll();
+    maybeOfferMigration();
+    setInterval(backgroundPoll, 30000);
+    setInterval(refreshComputedVisuals, 60000);
+  }
+  boot();
 })();
 </script>
 </body>
