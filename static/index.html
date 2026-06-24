@@ -26,7 +26,7 @@
   ::-webkit-scrollbar{width:10px;height:10px;}
   ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:6px;}
 
-  header.topbar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);background:rgba(11,12,20,.6);backdrop-filter:blur(10px);position:sticky;top:0;z-index:10;}
+  header.topbar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding:calc(18px + var(--safe-top, 0px)) 22px 18px;border-bottom:1px solid var(--border);background:rgba(11,12,20,.6);backdrop-filter:blur(10px);position:sticky;top:0;z-index:10;}
   .brand{display:flex;align-items:center;gap:12px;}
   .brand-mark{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--purple),var(--mint));font-family:var(--font-display);font-weight:800;color:#04050a;font-size:15px;flex-shrink:0;}
   .brand h1{font-family:var(--font-display);font-size:17px;font-weight:700;margin:0;}
@@ -109,31 +109,38 @@
   }
   @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
   
+  /* Cabecera de cada perfil: SIEMPRE 2 filas fijas.
+     Fila 1 = chevron + nombre (se trunca con … si no entra) + botones — nunca se aprietan ni se tapan entre sí.
+     Fila 2 = píldoras de estado, envuelven libremente por su cuenta sin afectar a la fila 1. */
   .profile-head{
-    display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;
+    display:flex;flex-direction:column;gap:8px;padding:14px 16px;cursor:pointer;user-select:none;
     background: linear-gradient(135deg, hsla(var(--neon-hue, 210), 100%, 65%, 0.18), transparent 70%);
     border-bottom: 1px solid hsla(var(--neon-hue, 210), 100%, 65%, 0.15);
   }
+  .profile-head-row{display:flex;align-items:center;gap:10px;width:100%;min-width:0;}
   .profile-head .chev{color:hsl(var(--neon-hue, 210), 100%, 75%); flex-shrink:0; transition:transform .25s;}
   .profile-card.is-collapsed .chev{transform:rotate(-90deg);}
   .profile-name{
     font-family:var(--font-display); font-size:14.5px; font-weight:700;
     color:hsl(var(--neon-hue, 210), 100%, 75%);
     text-shadow: 0 0 12px hsla(var(--neon-hue, 210), 100%, 75%, 0.5);
+    flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
   }
   
   .focused-head{
-    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    display:flex;flex-direction:column;gap:10px;
     background: linear-gradient(135deg, hsla(var(--neon-hue, 210), 100%, 65%, 0.18), transparent 70%);
     border: 1px solid hsla(var(--neon-hue, 210), 100%, 65%, 0.25);
     border-radius: 14px;
     padding: 16px;
     box-shadow: 0 4px 20px -10px hsla(var(--neon-hue, 210), 100%, 65%, 0.15);
   }
+  .focused-head-row{display:flex;align-items:center;gap:10px;width:100%;min-width:0;}
   .focused-head h2{
     font-family:var(--font-display);font-size:18px;margin:0;
     color:hsl(var(--neon-hue, 210), 100%, 75%);
     text-shadow: 0 0 12px hsla(var(--neon-hue, 210), 100%, 75%, 0.5);
+    flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
   }
   
   .account-row{
@@ -151,19 +158,19 @@
   }
   /* ---------------------------------- */
 
-  .profile-meta{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;}
+  .profile-meta{display:flex;gap:6px;flex-wrap:wrap;}
   .meta-pill{font-size:10.5px;padding:4px 9px;border-radius:20px;border:1px solid var(--border);color:var(--muted);white-space:nowrap; background:var(--panel);}
   .meta-pill.is-mint{color:var(--mint);border-color:rgba(61,220,151,.35);background:rgba(61,220,151,.08);}
   .meta-pill.is-gold{color:var(--gold);border-color:rgba(240,196,25,.35);background:rgba(240,196,25,.08);}
-  .profile-head-actions{display:flex;gap:6px;}
+  .profile-head-actions{display:flex;gap:6px;flex-shrink:0;}
   .profile-body{max-height:3000px;transition:max-height .3s ease;overflow:hidden;}
   .profile-card.is-collapsed .profile-body{max-height:0;}
   .accounts-wrap{padding:14px 16px;display:flex;flex-direction:column;gap:8px;}
   .profile-empty{font-size:12px;color:var(--muted-dim);padding:14px 16px;}
 
-  .back-link{font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;width:100%;}
+  .back-link{font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;}
   .back-link:hover{color:var(--text);}
-  .focused-actions{display:flex;gap:6px;margin-left:auto;}
+  .focused-actions{display:flex;gap:6px;flex-shrink:0;}
 
   .acc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background-color .25s ease;}
   .acc-service{display:flex;flex-direction:column;gap:2px;min-width:0;}
@@ -198,12 +205,21 @@
 
   .help-card{border:1px solid var(--border);background:var(--panel);border-radius:14px;padding:18px 20px;font-size:12.5px;color:var(--muted);line-height:1.6;}
   .help-card b{color:var(--text);}
-  footer{text-align:center;padding:16px;font-size:10px;color:var(--muted-dim);}
+  footer{text-align:center;padding:16px 16px calc(16px + var(--safe-bottom, 0px));font-size:10px;color:var(--muted-dim);}
 
-  .toast-wrap{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:100%;padding:0 16px;}
+  .toast-wrap{position:fixed;bottom:calc(16px + var(--safe-bottom, 0px));left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:100%;padding:0 16px;}
   .toast{background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.45);transition:opacity .2s ease;max-width:340px;text-align:center;}
   .toast.is-error{border-color:rgba(255,111,174,.45);color:var(--pink);}
   .toast.is-success{border-color:rgba(61,220,151,.45);}
+
+  .modal-overlay{position:fixed;inset:0;z-index:60;background:rgba(2,2,6,.65);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:18px;}
+  .modal-overlay.is-open{display:flex;}
+  .modal-box{width:100%;max-width:480px;background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:18px;animation:formIn .18s ease both;}
+  .modal-box h3{margin:0 0 4px;font-family:var(--font-display);font-size:14px;}
+  .modal-box p{margin:0 0 10px;font-size:11.5px;color:var(--muted);}
+  .modal-box textarea{width:100%;min-height:140px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:12px;padding:10px;outline:none;resize:vertical;}
+  .modal-box textarea:focus{border-color:var(--purple);}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;}
 
   @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
@@ -264,6 +280,18 @@
 <footer>Multi-Perfil IA · datos guardados en servidor, separados por tu cuenta de Telegram</footer>
 <div class="toast-wrap" id="toastWrap"></div>
 
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3 id="modalTitle">Importar datos</h3>
+    <p id="modalDesc">Pegá aquí tu JSON exportado. Esto reemplaza todos tus datos actuales.</p>
+    <textarea id="modalTextarea" placeholder="{ &quot;profiles&quot;: [...], &quot;accounts&quot;: [...] }"></textarea>
+    <div class="modal-actions">
+      <button type="button" class="btn ghost" id="modalCancelBtn">Cancelar</button>
+      <button type="button" class="btn primary" id="modalOkBtn">Aceptar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   'use strict';
@@ -272,10 +300,31 @@
      TELEGRAM MINI APP
      ============================================================ */
   const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+
+  function applySafeArea(){
+    if(!tg) return;
+    const sa = tg.safeAreaInset || {};
+    const csa = tg.contentSafeAreaInset || {};
+    const top = Math.max(sa.top || 0, csa.top || 0);
+    const bottom = Math.max(sa.bottom || 0, csa.bottom || 0);
+    document.documentElement.style.setProperty('--safe-top', top + 'px');
+    document.documentElement.style.setProperty('--safe-bottom', bottom + 'px');
+  }
+
   if(tg){
-    try{ tg.ready(); tg.expand(); }catch(e){}
+    try{ tg.ready(); }catch(e){}
+    try{ tg.expand && tg.expand(); }catch(e){}
+    // Pantalla completa real (Bot API 8.0+) como mejora sobre el expand() de toda la vida.
+    try{ tg.requestFullscreen && tg.requestFullscreen(); }catch(e){}
+    try{ tg.disableVerticalSwipes && tg.disableVerticalSwipes(); }catch(e){}
     try{ tg.setBackgroundColor && tg.setBackgroundColor('#030308'); }catch(e){}
     try{ tg.setHeaderColor && tg.setHeaderColor('#0b0c14'); }catch(e){}
+    try{
+      tg.onEvent && tg.onEvent('safeAreaChanged', applySafeArea);
+      tg.onEvent && tg.onEvent('contentSafeAreaChanged', applySafeArea);
+      tg.onEvent && tg.onEvent('fullscreenChanged', applySafeArea);
+    }catch(e){}
+    applySafeArea();
   }
 
   function haptic(kind){
@@ -284,6 +333,51 @@
       if(kind === 'success' || kind === 'error' || kind === 'warning') tg.HapticFeedback.notificationOccurred(kind);
       else tg.HapticFeedback.impactOccurred(kind || 'light');
     }catch(e){ }
+  }
+
+  /* Diálogos nativos de Telegram: dentro de la app, window.confirm/prompt no son
+     confiables (algunos clientes los bloquean o los ignoran). Usamos los popups
+     propios de Telegram y sólo caemos a los nativos del navegador fuera de Telegram. */
+  function tgConfirmDelete(message, confirmText){
+    confirmText = confirmText || 'Eliminar';
+    return new Promise(resolve => {
+      if(tg && typeof tg.showPopup === 'function'){
+        try{
+          tg.showPopup({ message, buttons: [ { id:'cancel', type:'cancel' }, { id:'ok', type:'destructive', text: confirmText } ] }, id => resolve(id === 'ok'));
+          return;
+        }catch(e){}
+      }
+      if(tg && typeof tg.showConfirm === 'function'){
+        try{ tg.showConfirm(message, ok => resolve(!!ok)); return; }catch(e){}
+      }
+      resolve(window.confirm(message));
+    });
+  }
+
+  let modalResolve = null;
+  function showImportModal(){
+    return new Promise(resolve => {
+      modalResolve = resolve;
+      document.getElementById('modalTextarea').value = '';
+      document.getElementById('modalOverlay').classList.add('is-open');
+      document.getElementById('modalTextarea').focus();
+    });
+  }
+  function closeImportModal(value){
+    document.getElementById('modalOverlay').classList.remove('is-open');
+    if(modalResolve){ modalResolve(value); modalResolve = null; }
+  }
+  document.getElementById('modalOkBtn').addEventListener('click', () => closeImportModal(document.getElementById('modalTextarea').value));
+  document.getElementById('modalCancelBtn').addEventListener('click', () => closeImportModal(null));
+  document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target.id === 'modalOverlay') closeImportModal(null); });
+
+  /* Botón "atrás" nativo de Telegram cuando estamos viendo el detalle de un perfil. */
+  function syncBackButton(){
+    if(!tg || !tg.BackButton) return;
+    if(ui.activeProfile){ tg.BackButton.show(); } else { tg.BackButton.hide(); }
+  }
+  if(tg && tg.BackButton){
+    try{ tg.BackButton.onClick(() => selectProfile(null)); }catch(e){}
   }
 
   function resolveTgId(){
@@ -555,6 +649,7 @@
   }
 
   function renderMain(){
+    syncBackButton();
     const zone = document.getElementById('mainZone');
     if(state.profiles.length === 0){
       zone.innerHTML = `<div class="empty-state"><b>Todavía no hay perfiles</b>Creá el primero con "+ Perfil".</div>`;
@@ -583,16 +678,18 @@
     return `
       <div class="profile-card ${isCollapsed ? 'is-collapsed' : ''}" data-profile-id="${profile.id}" style="--neon-hue: ${getNeonHue(profile.name)}">
         <div class="profile-head" data-action="toggle-collapse" data-id="${profile.id}">
-          <span class="chev">${ICONS.chev}</span>
-          <span class="profile-name">${escapeHtml(profile.name)}</span>
+          <div class="profile-head-row">
+            <span class="chev">${ICONS.chev}</span>
+            <span class="profile-name">${escapeHtml(profile.name)}</span>
+            <div class="profile-head-actions" data-action="noop">
+              <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar perfil">${ICONS.pencil}</button>
+              <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil y sus cuentas">${ICONS.trash}</button>
+            </div>
+          </div>
           <div class="profile-meta">
             <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
             ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
             ${cooldown ? `<span class="meta-pill is-gold">${cooldown} en cooldown</span>` : ''}
-          </div>
-          <div class="profile-head-actions" onclick="event.stopPropagation()">
-            <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar perfil">${ICONS.pencil}</button>
-            <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil y sus cuentas">${ICONS.trash}</button>
           </div>
         </div>
         <div class="profile-body"><div class="accounts-wrap">${body}</div></div>
@@ -612,15 +709,17 @@
     return `
       <div class="focused-head" style="--neon-hue: ${getNeonHue(profile.name)}">
         <span class="back-link" data-action="select-profile" data-id="">${ICONS.back} Todos los perfiles</span>
-        <h2>${escapeHtml(profile.name)}</h2>
+        <div class="focused-head-row">
+          <h2>${escapeHtml(profile.name)}</h2>
+          <div class="focused-actions">
+            <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar perfil">${ICONS.pencil}</button>
+            <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil">${ICONS.trash}</button>
+          </div>
+        </div>
         <div class="profile-meta">
           <span class="meta-pill">${all.length} cuenta${all.length===1?'':'s'}</span>
           ${available ? `<span class="meta-pill is-mint">${available} disponible${available===1?'':'s'}</span>` : ''}
           ${cooldown ? `<span class="meta-pill is-gold">${cooldown} en cooldown</span>` : ''}
-        </div>
-        <div class="focused-actions">
-          <button class="icon-btn" type="button" data-action="edit-profile" data-id="${profile.id}" title="Renombrar perfil">${ICONS.pencil}</button>
-          <button class="icon-btn danger" type="button" data-action="delete-profile" data-id="${profile.id}" title="Eliminar perfil">${ICONS.trash}</button>
         </div>
       </div>
       <div class="accounts-wrap" style="margin-top: 16px; padding: 0;">${body}</div>`;
@@ -801,7 +900,8 @@
   async function deleteProfile(id){
     const profile = getProfile(id);
     if(!profile) return;
-    if(!confirm(`¿Eliminar el perfil "${profile.name}" y todas sus cuentas?`)) return;
+    const ok = await tgConfirmDelete(`¿Eliminar el perfil "${profile.name}" y todas sus cuentas?`, 'Eliminar perfil');
+    if(!ok) return;
     try{
       await apiFetch(`/api/profiles/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
       if(ui.activeProfile === id) ui.activeProfile = null;
@@ -815,7 +915,8 @@
   async function deleteAccount(id){
     const acc = getAccount(id);
     if(!acc) return;
-    if(!confirm(`¿Eliminar la cuenta de ${acc.service}?`)) return;
+    const ok = await tgConfirmDelete(`¿Eliminar la cuenta de ${acc.service}?`, 'Eliminar cuenta');
+    if(!ok) return;
     try{
       await apiFetch(`/api/accounts/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
       haptic('success');
@@ -933,8 +1034,8 @@
   }
 
   async function importData(){
-    const json = prompt('Pegá aquí tu JSON exportado (esto reemplaza todos tus datos actuales):');
-    if(!json) return;
+    const json = await showImportModal();
+    if(!json || !json.trim()) return;
     try{
       const parsed = JSON.parse(json);
       if(!parsed || !Array.isArray(parsed.profiles) || !Array.isArray(parsed.accounts)) throw new Error('formato no reconocido');
@@ -947,7 +1048,8 @@
   }
 
   async function resetAll(){
-    if(!confirm('¿Seguro que querés borrar todos los perfiles y cuentas del servidor?')) return;
+    const ok = await tgConfirmDelete('¿Seguro que querés borrar todos los perfiles y cuentas del servidor?', 'Borrar todo');
+    if(!ok) return;
     try{
       await apiFetch('/api/reset' + qs({ tg_id:TG_ID }), { method:'DELETE' });
       ui.activeProfile = null;
