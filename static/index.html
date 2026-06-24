@@ -114,9 +114,6 @@
   }
   @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
   
-  /* Cabecera de cada perfil: SIEMPRE 2 filas fijas.
-     Fila 1 = chevron + nombre (se trunca con … si no entra) + botones — nunca se aprietan ni se tapan entre sí.
-     Fila 2 = píldoras de estado, envuelven libremente por su cuenta sin afectar a la fila 1. */
   .profile-head{
     display:flex;flex-direction:column;gap:8px;padding:14px 16px;cursor:pointer;user-select:none;
     background: linear-gradient(135deg, hsla(var(--neon-hue, 210), 100%, 65%, 0.18), transparent 70%);
@@ -161,7 +158,6 @@
     color:hsl(var(--neon-hue, 210), 100%, 75%);
     text-shadow: 0 0 8px hsla(var(--neon-hue, 210), 100%, 65%, 0.4);
   }
-  /* ---------------------------------- */
 
   .profile-meta{display:flex;gap:6px;flex-wrap:wrap;}
   .meta-pill{font-size:10.5px;padding:4px 9px;border-radius:20px;border:1px solid var(--border);color:var(--muted);white-space:nowrap; background:var(--panel);}
@@ -226,7 +222,7 @@
   .modal-box textarea:focus{border-color:var(--purple);}
   .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;}
 
-  /* ---- CATEGORÍAS DE IA (en qué es mejor cada una) ---- */
+  /* ---- CATEGORÍAS DE IA ---- */
   .cat-chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:10.5px;line-height:1.3;padding:4px 9px;border-radius:20px;white-space:nowrap;
     border:1px solid hsla(var(--neon-hue,210),100%,65%,.3);
     background:hsla(var(--neon-hue,210),100%,65%,.08);
@@ -349,7 +345,6 @@
   if(tg){
     try{ tg.ready(); }catch(e){}
     try{ tg.expand && tg.expand(); }catch(e){}
-    // Pantalla completa real (Bot API 8.0+) como mejora sobre el expand() de toda la vida.
     try{ tg.requestFullscreen && tg.requestFullscreen(); }catch(e){}
     try{ tg.disableVerticalSwipes && tg.disableVerticalSwipes(); }catch(e){}
     try{ tg.setBackgroundColor && tg.setBackgroundColor('#030308'); }catch(e){}
@@ -370,9 +365,6 @@
     }catch(e){ }
   }
 
-  /* Diálogos nativos de Telegram: dentro de la app, window.confirm/prompt no son
-     confiables (algunos clientes los bloquean o los ignoran). Usamos los popups
-     propios de Telegram y sólo caemos a los nativos del navegador fuera de Telegram. */
   function tgConfirmDelete(message, confirmText){
     confirmText = confirmText || 'Eliminar';
     return new Promise(resolve => {
@@ -406,7 +398,6 @@
   document.getElementById('modalCancelBtn').addEventListener('click', () => closeImportModal(null));
   document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target.id === 'modalOverlay') closeImportModal(null); });
 
-  /* Botón "atrás" nativo de Telegram cuando estamos viendo el detalle de un perfil. */
   function syncBackButton(){
     if(!tg || !tg.BackButton) return;
     if(ui.activeProfile){ tg.BackButton.show(); } else { tg.BackButton.hide(); }
@@ -473,10 +464,8 @@
     eyeOff: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>`
   };
 
-  /* Este algoritmo convierte texto en un número de la rueda de color (0 a 360). 
-     Es hiper-sensible: "Perfil 1" y "Perfil 2" arrojarán colores MUY distintos. */
   function getNeonHue(str) {
-    if (!str) return 210; // Azul oscuro por defecto
+    if (!str) return 210;
     let h = 0x811c9dc5;
     for (let i = 0; i < str.length; i++) {
       h ^= str.charCodeAt(i);
@@ -486,7 +475,7 @@
   }
 
   /* ============================================================
-     CATEGORÍAS DE IA — en qué es mejor cada una
+     CATEGORÍAS DE IA
      ============================================================ */
   const AI_CATEGORIES = {
     programming:  { label:'Programación',          icon:'💻' },
@@ -501,9 +490,6 @@
     productivity: { label:'Productividad',          icon:'🤖' }
   };
 
-  /* ============================================================
-     CATÁLOGO DE PRESETS POR IA
-     ============================================================ */
   const AI_PRESETS = {
     'ChatGPT':      { plan:'Plus', limitCount:40,    limitResetHours:3,  categories:['chat','writing','programming'],   bestFor:'Asistente todo-terreno: texto, código y razonamiento general.' },
     'Claude':       { plan:'Pro',  limitCount:45,    limitResetHours:5,  categories:['programming','writing','analysis'], bestFor:'Código complejo, documentos largos y razonamiento cuidadoso.' },
@@ -526,13 +512,6 @@
     'Meta AI':      { plan:'Free', limitCount:null,  limitResetHours:null, categories:['chat','engagement'],            bestFor:'Integrado en Instagram/WhatsApp para contenido social.' }
   };
 
-  /* ============================================================
-     DETECCIÓN DE CATEGORÍA POR IA (+ overrides manuales locales)
-     Las categorías son una propiedad de la IA (no de cada cuenta),
-     así que se guardan en este navegador y se reaplican a cualquier
-     cuenta que use ese mismo nombre de servicio. No se envían al
-     servidor: no tocan tu API ni el formato de datos existente.
-     ============================================================ */
   const CUSTOM_CATS_KEY = 'ia_categorias_custom_v1';
   function loadCustomCategoryMap(){
     try{ const v = JSON.parse(localStorage.getItem(CUSTOM_CATS_KEY)); return (v && typeof v === 'object') ? v : {}; }catch(e){ return {}; }
@@ -895,7 +874,7 @@
   }
 
   /* ============================================================
-     CATÁLOGO DE IAs POR CATEGORÍA (panel de referencia)
+     CATÁLOGO DE IAs POR CATEGORÍA
      ============================================================ */
   function renderCatalog(){
     const panel = document.getElementById('catalogPanel');
@@ -975,6 +954,10 @@
       const defaultProfileId = editing ? editing.profileId : (ui.activeProfile || state.profiles[0].id);
       const lastUsedLocal = editing && editing.lastUsed ? toLocalInputValue(editing.lastUsed) : '';
       ui.formCategories = editing ? getServiceCategories(editing.service).slice() : [];
+      
+      // EXTRACCIÓN DINÁMICA DE CORREOS PARA AUTOCOMPLETADO NATIVO
+      const uniqueEmails = [...new Set(state.accounts.map(a => (a.email || '').trim()).filter(Boolean))].sort();
+
       zone.innerHTML = `
         <form class="form-panel" id="accountForm">
           <h3>${editing ? 'Editar cuenta' : 'Nueva cuenta IA'}</h3>
@@ -983,7 +966,7 @@
               ${state.profiles.map(p => `<option value="${p.id}" ${defaultProfileId===p.id ? 'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
             </select>
             <input name="service" id="serviceInput" list="serviceSuggestions" placeholder="IA (ChatGPT, Claude…)" value="${editing ? escapeHtml(editing.service) : ''}" required autocomplete="off">
-            <input name="email" type="text" placeholder="Correo usado" value="${editing ? escapeHtml(editing.email) : ''}" autocomplete="off">
+            <input name="email" list="emailSuggestions" type="text" placeholder="Correo usado" value="${editing ? escapeHtml(editing.email) : ''}" autocomplete="off">
             <input name="plan" list="planSuggestions" placeholder="Plan" value="${editing ? escapeHtml(editing.plan) : ''}" autocomplete="off">
           </div>
           <p class="form-hint" id="serviceBestForHint"></p>
@@ -1013,7 +996,9 @@
           </div>
         </form>
         <datalist id="serviceSuggestions">${Object.keys(AI_PRESETS).map(s => `<option value="${s}">`).join('')}</datalist>
-        <datalist id="planSuggestions"><option value="Free"><option value="Plus"><option value="Pro"><option value="Team"><option value="Max"><option value="Advanced"></datalist>`;
+        <datalist id="planSuggestions"><option value="Free"><option value="Plus"><option value="Pro"><option value="Team"><option value="Max"><option value="Advanced"></datalist>
+        <datalist id="emailSuggestions">${uniqueEmails.map(e => `<option value="${escapeHtml(e)}">`).join('')}</datalist>`;
+      
       zone.querySelector('#apiKeyToggleBtn').addEventListener('click', () => {
         const input = zone.querySelector('#apiKeyInput');
         const btn = zone.querySelector('#apiKeyToggleBtn');
