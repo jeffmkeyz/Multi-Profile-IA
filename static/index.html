@@ -286,6 +286,47 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 });
 </script>
+
+<style id="atum-fun-upgrade">
+:root{
+  --glass:rgba(255,255,255,.06);
+}
+body::after{
+ content:'';
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ background:
+ radial-gradient(circle at 20% 20%, rgba(61,220,151,.05), transparent 30%),
+ radial-gradient(circle at 80% 10%, rgba(155,123,255,.06), transparent 35%),
+ radial-gradient(circle at 50% 100%, rgba(255,111,174,.04), transparent 35%);
+}
+.profile-card:hover,
+.cat-card:hover{
+ transform:translateY(-2px);
+ transition:.25s ease;
+}
+.brand-mark{
+ box-shadow:0 0 25px rgba(155,123,255,.45);
+}
+.stat-pill,
+.ready-chip,
+.rail-chip,
+.btn{
+ backdrop-filter:blur(10px);
+}
+.btn.primary{
+ box-shadow:0 0 20px rgba(155,123,255,.35);
+}
+.account-row:hover{
+ background:rgba(255,255,255,.03);
+}
+.profile-name,
+.focused-head h2{
+ letter-spacing:.04em;
+}
+</style>
+
 </head>
 
 <body>
