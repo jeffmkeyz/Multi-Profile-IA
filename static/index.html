@@ -36,6 +36,7 @@
   .stat-pill b{font-family:var(--font-display);font-size:15px;color:var(--text);font-weight:700;}
   .stat-pill.is-mint b{color:var(--mint);}
   .stat-pill.is-gold b{color:var(--gold);}
+  .stat-pill.is-purple b{color:var(--purple);}
 
   main.container{max-width:1180px;margin:0 auto;padding:18px 18px 70px;display:flex;flex-direction:column;gap:16px;}
 
@@ -48,8 +49,48 @@
   .ready-chip:hover{border-color:var(--mint);}
   .ready-chip .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0; background:hsl(var(--neon-hue, 210), 100%, 65%); box-shadow:0 0 8px hsl(var(--neon-hue, 210), 100%, 65%);}
   .ready-chip .pname{color:var(--muted);}
+  .ready-chip .ai-icon-sm{font-size:10px;opacity:.8;}
   .ready-empty{font-size:12.5px;color:var(--muted);}
   .ready-empty b{color:var(--gold);font-weight:700;}
+
+  /* ==========================================
+     CATÁLOGO DE CATEGORÍAS DE IA
+     ========================================== */
+  .catalog-section{border:1px solid var(--border);background:var(--panel);border-radius:14px;overflow:hidden;}
+  .catalog-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;user-select:none;transition:background .15s;}
+  .catalog-header:hover{background:var(--panel-2);}
+  .catalog-title{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--text);}
+  .catalog-sub{font-size:11px;color:var(--muted);flex:1;}
+  .catalog-chev{color:var(--muted);transition:transform .25s;display:flex;align-items:center;flex-shrink:0;}
+  .catalog-chev.is-open{transform:rotate(180deg);}
+
+  .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;padding:0 14px 14px;animation:formIn .2s ease both;}
+
+  .cat-card{background:var(--panel-2);border-radius:12px;padding:12px 14px;border:1px solid var(--border-soft);border-left:3px solid var(--cat-color, var(--purple));transition:border-color .2s,box-shadow .2s;}
+  .cat-card:hover{border-color:var(--cat-color, var(--purple));box-shadow:0 4px 20px -8px var(--cat-color, var(--purple));}
+  .cat-card-header{display:flex;align-items:center;gap:7px;margin-bottom:3px;}
+  .cat-card-emoji{font-size:15px;line-height:1;}
+  .cat-card-label{font-family:var(--font-display);font-size:12.5px;font-weight:700;color:var(--text);}
+  .cat-card-desc{font-size:10.5px;color:var(--muted);margin-bottom:9px;}
+
+  .cat-ais{display:flex;flex-wrap:wrap;gap:5px;}
+  .cat-ai-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:11px;color:var(--muted);cursor:pointer;font-family:var(--font-mono);transition:all .15s;white-space:nowrap;}
+  .cat-ai-pill:hover{border-color:var(--cat-color, var(--purple));color:var(--text);background:rgba(255,255,255,.07);}
+  .cat-ai-pill.is-top{border-color:var(--cat-color, var(--purple));color:var(--text);}
+  .cat-ai-icon{font-size:9px;font-style:normal;opacity:.7;}
+  .cat-ai-count{background:rgba(61,220,151,.12);border-radius:20px;padding:0 5px;font-size:9px;color:var(--mint);border:1px solid rgba(61,220,151,.25);}
+  .cat-top-star{color:var(--cat-color, var(--purple));font-size:9px;line-height:1;}
+
+  /* Badges de categoría en filas de cuentas */
+  .cat-tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px;}
+  .cat-tag{font-size:9px;padding:1px 6px;border-radius:20px;background:rgba(155,123,255,.08);border:1px solid rgba(155,123,255,.2);color:var(--purple);white-space:nowrap;letter-spacing:.01em;}
+
+  /* Nota de fortalezas de IA en el formulario */
+  .ai-strengths-note{background:rgba(61,220,151,.05);border:1px solid rgba(61,220,151,.18);border-radius:8px;padding:10px 12px;font-size:11.5px;color:var(--text);line-height:1.55;display:none;animation:formIn .2s ease both;margin-top:8px;}
+  .ai-strengths-note.is-visible{display:block;}
+  .ai-note-cats{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
+  .ai-note-tag{font-size:9.5px;padding:2px 7px;border-radius:20px;background:rgba(61,220,151,.1);border:1px solid rgba(61,220,151,.25);color:var(--mint);}
+  /* ========================================== */
 
   .rail-wrap{display:flex;align-items:center;gap:8px;}
   .profile-rail{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;flex:1;scrollbar-width:thin;}
@@ -93,6 +134,11 @@
   .form-panel textarea{grid-column:1/-1;min-height:50px;resize:vertical;}
   .form-hint{grid-column:1/-1;font-size:10.5px;color:var(--muted-dim);}
   .form-actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end;align-items:center;}
+  .field-key{grid-column:1/-1;display:flex;gap:6px;align-items:center;}
+  .field-key input{font-family:var(--font-mono);letter-spacing:.02em;}
+  .field-key .icon-btn{flex-shrink:0;}
+  .icon-btn.is-empty{opacity:.4;}
+  .icon-btn.is-empty:hover{color:var(--muted);border-color:var(--border);}
   .form-toggle-link{font-size:11px;color:var(--purple);cursor:pointer;text-decoration:underline;margin-right:auto;background:none;border:none;font-family:var(--font-mono);padding:0;}
   .form-empty-note{font-size:12px;color:var(--gold);margin:0 0 10px;}
 
@@ -109,9 +155,6 @@
   }
   @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
   
-  /* Cabecera de cada perfil: SIEMPRE 2 filas fijas.
-     Fila 1 = chevron + nombre (se trunca con … si no entra) + botones — nunca se aprietan ni se tapan entre sí.
-     Fila 2 = píldoras de estado, envuelven libremente por su cuenta sin afectar a la fila 1. */
   .profile-head{
     display:flex;flex-direction:column;gap:8px;padding:14px 16px;cursor:pointer;user-select:none;
     background: linear-gradient(135deg, hsla(var(--neon-hue, 210), 100%, 65%, 0.18), transparent 70%);
@@ -156,7 +199,6 @@
     color:hsl(var(--neon-hue, 210), 100%, 75%);
     text-shadow: 0 0 8px hsla(var(--neon-hue, 210), 100%, 65%, 0.4);
   }
-  /* ---------------------------------- */
 
   .profile-meta{display:flex;gap:6px;flex-wrap:wrap;}
   .meta-pill{font-size:10.5px;padding:4px 9px;border-radius:20px;border:1px solid var(--border);color:var(--muted);white-space:nowrap; background:var(--panel);}
@@ -242,6 +284,9 @@
 
   <section class="ready-strip" id="readyStrip"><div class="loading-state">Cargando…</div></section>
 
+  <!-- NUEVO: Catálogo de categorías de IA -->
+  <section id="catalogSection" class="catalog-section"></section>
+
   <section class="rail-wrap">
     <div class="profile-rail" id="profileRail"></div>
     <button class="btn primary" type="button" data-action="new-profile" title="Crear perfil">+ Perfil</button>
@@ -253,6 +298,19 @@
       <input id="searchInput" type="text" placeholder="Buscar IA, correo, notas…" autocomplete="off">
     </label>
     <select id="filterAI"><option value="">Todas las IAs</option></select>
+    <select id="filterCategory">
+      <option value="">Todas las categorías</option>
+      <option value="Programación">💻 Programación</option>
+      <option value="Diseño">🎨 Diseño</option>
+      <option value="Escritura">✍️ Escritura</option>
+      <option value="Investigación">🔬 Investigación</option>
+      <option value="Conversación">💬 Engagement</option>
+      <option value="Análisis">📊 Análisis</option>
+      <option value="Matemáticas">🧮 Matemáticas</option>
+      <option value="Música">🎵 Música</option>
+      <option value="Video">🎬 Video</option>
+      <option value="Multimodal">🖼️ Multimodal</option>
+    </select>
     <select id="filterStatus">
       <option value="">Cualquier estado</option>
       <option value="available">Disponible</option>
@@ -272,7 +330,7 @@
 
   <section class="help-card">
     <b>📌 Cómo funciona</b><br>
-    Cada <b>perfil</b> = un perfil de tu navegador. Adentro registrás las cuentas de IA que usás ahí. Si le decís cuántos mensajes tiene cada una y cada cuántas horas resetea, esta pantalla calcula sola si ya podés volver a usarla — y arriba siempre ves qué tenés <b>disponible ahora</b> en todos tus perfiles. Todo vive en el servidor, no en este navegador: podés abrirlo desde cualquier dispositivo con tu mismo Telegram.
+    Cada <b>perfil</b> = un perfil de tu navegador. Adentro registrás las cuentas de IA que usás ahí. Si le decís cuántos mensajes tiene cada una y cada cuántas horas resetea, esta pantalla calcula sola si ya podés volver a usarla — y arriba siempre ves qué tenés <b>disponible ahora</b>. El panel <b>Categorías de IA</b> te muestra para qué destaca cada herramienta y te permite filtrar por categoría. Todo vive en el servidor, no en este navegador: podés abrirlo desde cualquier dispositivo con tu mismo Telegram.
   </section>
 
 </main>
@@ -314,7 +372,6 @@
   if(tg){
     try{ tg.ready(); }catch(e){}
     try{ tg.expand && tg.expand(); }catch(e){}
-    // Pantalla completa real (Bot API 8.0+) como mejora sobre el expand() de toda la vida.
     try{ tg.requestFullscreen && tg.requestFullscreen(); }catch(e){}
     try{ tg.disableVerticalSwipes && tg.disableVerticalSwipes(); }catch(e){}
     try{ tg.setBackgroundColor && tg.setBackgroundColor('#030308'); }catch(e){}
@@ -335,9 +392,6 @@
     }catch(e){ }
   }
 
-  /* Diálogos nativos de Telegram: dentro de la app, window.confirm/prompt no son
-     confiables (algunos clientes los bloquean o los ignoran). Usamos los popups
-     propios de Telegram y sólo caemos a los nativos del navegador fuera de Telegram. */
   function tgConfirmDelete(message, confirmText){
     confirmText = confirmText || 'Eliminar';
     return new Promise(resolve => {
@@ -371,7 +425,6 @@
   document.getElementById('modalCancelBtn').addEventListener('click', () => closeImportModal(null));
   document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target.id === 'modalOverlay') closeImportModal(null); });
 
-  /* Botón "atrás" nativo de Telegram cuando estamos viendo el detalle de un perfil. */
   function syncBackButton(){
     if(!tg || !tg.BackButton) return;
     if(ui.activeProfile){ tg.BackButton.show(); } else { tg.BackButton.hide(); }
@@ -432,13 +485,14 @@
     trash:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>`,
     clock:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
     power:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg>`,
-    back:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>`
+    back:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>`,
+    key:    `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="15" r="4"/><path d="M10.5 11.5L20 2"/><path d="M16 6l3 3"/><path d="M13 9l2.5 2.5"/></svg>`,
+    eye:    `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>`,
+    eyeOff: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>`
   };
 
-  /* Este algoritmo convierte texto en un número de la rueda de color (0 a 360). 
-     Es hiper-sensible: "Perfil 1" y "Perfil 2" arrojarán colores MUY distintos. */
   function getNeonHue(str) {
-    if (!str) return 210; // Azul oscuro por defecto
+    if (!str) return 210;
     let h = 0x811c9dc5;
     for (let i = 0; i < str.length; i++) {
       h ^= str.charCodeAt(i);
@@ -448,27 +502,52 @@
   }
 
   /* ============================================================
-     CATÁLOGO DE PRESETS POR IA
+     CATÁLOGO DE PRESETS POR IA — CON CATEGORÍAS Y FORTALEZAS
      ============================================================ */
   const AI_PRESETS = {
-    'ChatGPT':    { plan:'Plus', limitCount:40, limitResetHours:3 },
-    'Claude':     { plan:'Pro',  limitCount:45, limitResetHours:5 },
-    'Gemini':     { plan:'Free', limitCount:60, limitResetHours:24 },
-    'Perplexity': { plan:'Free', limitCount:30, limitResetHours:1 },
-    'Grok':       { plan:'Free', limitCount:20, limitResetHours:2 },
-    'DeepSeek':   { plan:'Free', limitCount:50, limitResetHours:1 },
-    'Mistral':    { plan:'Free', limitCount:50, limitResetHours:24 },
-    'Copilot':    { plan:'Free', limitCount:30, limitResetHours:24 },
-    'Midjourney': { plan:'Pro',  limitCount:null, limitResetHours:null },
-    'Suno':       { plan:'Free', limitCount:10, limitResetHours:24 },
-    'Meta AI':    { plan:'Free', limitCount:null, limitResetHours:null }
+    'ChatGPT':    { plan:'Plus', limitCount:40,   limitResetHours:3,    icon:'✦', categories:['Programación','Escritura','Análisis','Conversación'],    strengths:'Versátil y potente para casi cualquier tarea. Excelente en código, redacción creativa y análisis complejos.' },
+    'Claude':     { plan:'Pro',  limitCount:45,   limitResetHours:5,    icon:'◆', categories:['Programación','Escritura','Razonamiento','Análisis'],     strengths:'Superior en razonamiento profundo, textos largos y código complejo. Muy preciso, fiable y seguro.' },
+    'Gemini':     { plan:'Free', limitCount:60,   limitResetHours:24,   icon:'⬡', categories:['Investigación','Multimodal','Integración'],              strengths:'Integrado con Google. Ideal para búsquedas, Google Docs/Drive y tareas que combinan texto con imagen.' },
+    'Perplexity': { plan:'Free', limitCount:30,   limitResetHours:1,    icon:'◎', categories:['Investigación','Búsqueda','Noticias'],                   strengths:'El mejor para investigar con fuentes reales en tiempo real. Respuestas citadas y verificables.' },
+    'Grok':       { plan:'Free', limitCount:20,   limitResetHours:2,    icon:'✕', categories:['Conversación','Noticias','Análisis'],                   strengths:'Acceso a X/Twitter en tiempo real. Directo, sin filtros excesivos y siempre actualizado.' },
+    'DeepSeek':   { plan:'Free', limitCount:50,   limitResetHours:1,    icon:'◈', categories:['Programación','Matemáticas','Razonamiento'],            strengths:'Extraordinario en código y matemáticas. Open-source con rendimiento top-tier a coste cero.' },
+    'Mistral':    { plan:'Free', limitCount:50,   limitResetHours:24,   icon:'◇', categories:['Programación','Privacidad','Open Source'],             strengths:'Rápido, eficiente y open-source. Ideal para uso privado y tareas de programación ágil.' },
+    'Copilot':    { plan:'Free', limitCount:30,   limitResetHours:24,   icon:'⊞', categories:['Programación','Productividad','Integración'],          strengths:'Integrado en Microsoft 365 y VS Code. El compañero ideal para trabajo en Office y código.' },
+    'Midjourney': { plan:'Pro',  limitCount:null, limitResetHours:null, icon:'◑', categories:['Diseño','Imágenes','Arte'],                            strengths:'El estándar de oro en generación de imágenes. Resultados artísticos y fotorrealistas de élite.' },
+    'Suno':       { plan:'Free', limitCount:10,   limitResetHours:24,   icon:'♪', categories:['Música','Creatividad','Audio'],                        strengths:'Genera canciones completas con letra, voz y música. La IA musical más avanzada del mercado.' },
+    'Meta AI':    { plan:'Free', limitCount:null, limitResetHours:null, icon:'◬', categories:['Conversación','Multimodal','Redes Sociales'],          strengths:'Integrado en WhatsApp, Instagram y Facebook. Accesible, multimodal y completamente gratuito.' },
+    'Runway':     { plan:'Plus', limitCount:null, limitResetHours:null, icon:'▶', categories:['Video','Diseño','Creatividad'],                        strengths:'Generación y edición de video con IA. El estudio de producción virtual más potente del mercado.' },
+    'Ideogram':   { plan:'Free', limitCount:20,   limitResetHours:24,   icon:'◐', categories:['Diseño','Imágenes','Tipografía'],                      strengths:'Especialista en imágenes con texto integrado. Ideal para logos, banners y diseño con tipografía.' },
+    'Kling':      { plan:'Plus', limitCount:null, limitResetHours:null, icon:'▷', categories:['Video','Creatividad','Imágenes'],                     strengths:'Generación de video de alta calidad con coherencia visual excepcional.' },
+    'Pika':       { plan:'Free', limitCount:15,   limitResetHours:24,   icon:'⚡', categories:['Video','Creatividad'],                               strengths:'Clips de video cortos desde texto o imagen. Fácil de usar y con excelentes resultados.' },
   };
+
+  /* ============================================================
+     CATEGORÍAS DE IA — REFERENCIA VISUAL
+     ============================================================ */
+  const AI_CATEGORIES = [
+    { id:'Programación', emoji:'💻', label:'Programación',  color:'#3ddc97', desc:'Código, debugging y arquitectura',    top:['Claude','DeepSeek','ChatGPT','Copilot','Mistral'] },
+    { id:'Diseño',       emoji:'🎨', label:'Diseño',        color:'#ff6fae', desc:'Imágenes, arte visual y gráficos',    top:['Midjourney','Ideogram'] },
+    { id:'Escritura',    emoji:'✍️', label:'Escritura',     color:'#9b7bff', desc:'Redacción, copywriting y contenido',  top:['Claude','ChatGPT'] },
+    { id:'Investigación',emoji:'🔬', label:'Investigación', color:'#f0c419', desc:'Búsqueda y síntesis de información',  top:['Perplexity','Gemini','ChatGPT'] },
+    { id:'Conversación', emoji:'💬', label:'Engagement',    color:'#4fc3f7', desc:'Chatbots, asistentes interactivos',   top:['ChatGPT','Grok','Meta AI','Claude'] },
+    { id:'Análisis',     emoji:'📊', label:'Análisis',      color:'#ff9800', desc:'Datos, reportes y razonamiento',      top:['Claude','ChatGPT','Grok'] },
+    { id:'Matemáticas',  emoji:'🧮', label:'Matemáticas',   color:'#e040fb', desc:'Cálculo, álgebra y lógica formal',   top:['DeepSeek','ChatGPT','Claude'] },
+    { id:'Música',       emoji:'🎵', label:'Música',        color:'#26c6da', desc:'Composición y generación de audio',   top:['Suno'] },
+    { id:'Video',        emoji:'🎬', label:'Video',         color:'#ff5722', desc:'Generación y edición de video IA',    top:['Runway','Kling','Pika'] },
+    { id:'Multimodal',   emoji:'🖼️', label:'Multimodal',   color:'#66bb6a', desc:'Texto + imagen + voz combinados',    top:['Gemini','ChatGPT','Meta AI'] },
+  ];
 
   /* ============================================================
      ESTADO
      ============================================================ */
   let state = { profiles: [], accounts: [] };
-  const ui = { search:'', filterAI:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false, collapsedProfiles: new Set() };
+  const ui = {
+    search:'', filterAI:'', filterStatus:'', filterCategory:'',
+    activeProfile:null, showForm:null, editingId:null,
+    bulkProfileMode:false, collapsedProfiles: new Set(),
+    catalogOpen: false
+  };
 
   async function loadState(){
     state = await apiFetch('/api/state' + qs({ tg_id: TG_ID }));
@@ -568,6 +647,10 @@
     const status = computeStatus(acc).key;
     if(ui.filterAI && acc.service !== ui.filterAI) return false;
     if(ui.filterStatus && status !== ui.filterStatus) return false;
+    if(ui.filterCategory){
+      const preset = AI_PRESETS[acc.service];
+      if(!preset || !preset.categories.includes(ui.filterCategory)) return false;
+    }
     if(ui.search){
       const hay = `${acc.service} ${acc.email} ${acc.notes} ${acc.plan}`.toLowerCase();
       if(!hay.includes(ui.search)) return false;
@@ -582,6 +665,7 @@
     refreshFilterOptions();
     renderStats();
     renderReadyStrip();
+    renderCatalog();
     renderRail();
     renderForm();
     renderMain();
@@ -590,11 +674,13 @@
   function renderStats(){
     const total = state.accounts.length;
     const { available, cooldown } = statusCounts(state.accounts);
+    const uniqueCategories = new Set(state.accounts.flatMap(a => (AI_PRESETS[a.service] && AI_PRESETS[a.service].categories) ? AI_PRESETS[a.service].categories : []));
     document.getElementById('statsRow').innerHTML = `
       <div class="stat-pill"><b>${state.profiles.length}</b>perfiles</div>
       <div class="stat-pill"><b>${total}</b>cuentas</div>
       <div class="stat-pill is-mint"><b>${available}</b>disponibles</div>
       <div class="stat-pill is-gold"><b>${cooldown}</b>en cooldown</div>
+      ${uniqueCategories.size > 0 ? `<div class="stat-pill is-purple"><b>${uniqueCategories.size}</b>categorías</div>` : ''}
     `;
   }
 
@@ -605,11 +691,14 @@
       el.innerHTML = `
         <span class="ready-label">Disponible ahora</span>
         <div class="ready-chips">
-          ${available.map(({acc,profile}) => `
-            <span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}" style="--neon-hue: ${getNeonHue(acc.service)}">
+          ${available.map(({acc,profile}) => {
+            const preset = AI_PRESETS[acc.service];
+            const icon = preset ? `<span class="ai-icon-sm">${preset.icon}</span>` : '';
+            return `<span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}" style="--neon-hue: ${getNeonHue(acc.service)}">
               <span class="dot"></span>
-              ${escapeHtml(acc.service)}<span class="pname">· ${escapeHtml(profile ? profile.name : '—')}</span>
-            </span>`).join('')}
+              ${icon}${escapeHtml(acc.service)}<span class="pname">· ${escapeHtml(profile ? profile.name : '—')}</span>
+            </span>`;
+          }).join('')}
         </div>`;
       return;
     }
@@ -621,6 +710,41 @@
     } else {
       el.innerHTML = `<span class="ready-empty">Nada con disponibilidad calculable todavía.</span>`;
     }
+  }
+
+  /* ============================================================
+     CATÁLOGO DE CATEGORÍAS — NUEVO
+     ============================================================ */
+  function renderCatalog(){
+    const el = document.getElementById('catalogSection');
+    if(!el) return;
+
+    const cardsHtml = AI_CATEGORIES.map(cat => {
+      const topAis = cat.top.filter(ai => AI_PRESETS[ai]);
+      return `
+        <div class="cat-card" style="--cat-color:${cat.color}">
+          <div class="cat-card-header">
+            <span class="cat-card-emoji">${cat.emoji}</span>
+            <span class="cat-card-label">${cat.label}</span>
+          </div>
+          <div class="cat-card-desc">${cat.desc}</div>
+          <div class="cat-ais">
+            ${topAis.map((ai, idx) => {
+              const preset = AI_PRESETS[ai];
+              const count = state.accounts.filter(a => a.service === ai).length;
+              return `<button class="cat-ai-pill${idx===0?' is-top':''}" type="button" data-action="filter-by-ai" data-ai="${escapeHtml(ai)}" title="${escapeHtml(preset.strengths)}">${idx===0?`<span class="cat-top-star">★</span>`:''}<span class="cat-ai-icon">${preset.icon}</span>${escapeHtml(ai)}${count?`<span class="cat-ai-count">${count}</span>`:''}</button>`;
+            }).join('')}
+          </div>
+        </div>`;
+    }).join('');
+
+    el.innerHTML = `
+      <div class="catalog-header" data-action="toggle-catalog">
+        <span class="catalog-title">📚 Categorías de IA</span>
+        <span class="catalog-sub">¿Para qué destaca cada herramienta? · Clic para explorar</span>
+        <span class="catalog-chev ${ui.catalogOpen?'is-open':''}">${ICONS.chev}</span>
+      </div>
+      ${ui.catalogOpen ? `<div class="cat-grid">${cardsHtml}</div>` : ''}`;
   }
 
   function renderRail(){
@@ -729,13 +853,18 @@
     const status = computeStatus(acc);
     const dotColor = status.key === 'available' ? 'var(--mint)' : status.key === 'cooldown' ? 'var(--gold)' : status.key === 'disabled' ? 'var(--pink)' : 'var(--muted-dim)';
     const notesPreview = acc.notes || '';
+    const preset = AI_PRESETS[acc.service];
+    const aiIcon = preset ? preset.icon + ' ' : '';
+    const aiTooltip = preset ? preset.strengths : '';
+    const catTags = (preset && preset.categories) ? preset.categories.slice(0,2).map(c => `<span class="cat-tag">${escapeHtml(c)}</span>`).join('') : '';
 
     return `
       <div class="account-row" data-account-id="${acc.id}" style="--neon-hue: ${getNeonHue(acc.service)}">
         <span class="acc-dot" style="background:${dotColor}"></span>
         <div class="acc-service">
-          <span class="svc-name">${escapeHtml(acc.service)}</span>
+          <span class="svc-name" title="${escapeHtml(aiTooltip)}">${aiIcon}${escapeHtml(acc.service)}</span>
           <span class="svc-email">${escapeHtml(acc.email || 'sin correo')}</span>
+          ${catTags ? `<div class="cat-tags">${catTags}</div>` : ''}
         </div>
         <span class="plan-badge ${planClass(acc.plan)}">${escapeHtml(acc.plan || 'Otro')}</span>
         <div class="status-badge st-${status.key}">
@@ -745,6 +874,7 @@
         <span class="acc-lastused">${formatRelative(acc.lastUsed)}</span>
         <span class="acc-notes" title="${escapeHtml(notesPreview)}">${escapeHtml(notesPreview) || '—'}</span>
         <div class="acc-actions">
+          <button class="icon-btn ${acc.apiKey ? 'is-on' : 'is-empty'}" type="button" data-action="copy-apikey" data-id="${acc.id}" title="${acc.apiKey ? 'Copiar API key' : 'Sin API key guardada — editá la cuenta para agregarla'}">${ICONS.key}</button>
           <button class="icon-btn ${acc.enabled ? 'is-on' : 'is-off'}" type="button" data-action="toggle-enabled" data-id="${acc.id}" title="${acc.enabled ? 'Desactivar cuenta' : 'Activar cuenta'}">${ICONS.power}</button>
           <button class="icon-btn" type="button" data-action="mark-used" data-id="${acc.id}" title="Marcar usada ahora">${ICONS.clock}</button>
           <button class="icon-btn" type="button" data-action="edit-account" data-id="${acc.id}" title="Editar cuenta">${ICONS.pencil}</button>
@@ -781,6 +911,19 @@
   /* ============================================================
      FORMULARIOS
      ============================================================ */
+  function showAiStrengthsNote(zone, serviceName){
+    const preset = AI_PRESETS[serviceName];
+    const noteEl = zone.querySelector('#aiStrengthsNote');
+    if(!noteEl) return;
+    if(preset){
+      const cats = (preset.categories || []).map(c => `<span class="ai-note-tag">${escapeHtml(c)}</span>`).join('');
+      noteEl.innerHTML = `<b style="color:var(--mint)">${preset.icon || ''} ${escapeHtml(serviceName)}</b> — ${escapeHtml(preset.strengths)}<div class="ai-note-cats">${cats}</div>`;
+      noteEl.classList.add('is-visible');
+    } else {
+      noteEl.classList.remove('is-visible');
+    }
+  }
+
   function renderForm(){
     const zone = document.getElementById('formZone');
     if(ui.showForm === 'profile'){
@@ -841,12 +984,20 @@
             <input name="email" type="text" placeholder="Correo usado" value="${editing ? escapeHtml(editing.email) : ''}" autocomplete="off">
             <input name="plan" list="planSuggestions" placeholder="Plan" value="${editing ? escapeHtml(editing.plan) : ''}" autocomplete="off">
           </div>
+          <div id="aiStrengthsNote" class="ai-strengths-note"></div>
           <div class="form-grid cols-3" style="margin-top:10px">
             <input name="limitCount" type="number" min="0" placeholder="Mensajes" value="${editing && editing.limitCount ? editing.limitCount : ''}">
             <input name="limitResetHours" type="number" min="0" placeholder="Cada cuántas horas" value="${editing && editing.limitResetHours ? editing.limitResetHours : ''}">
             <input name="lastUsed" type="datetime-local" value="${lastUsedLocal}">
           </div>
           <p class="form-hint">¿No sabés los límites exactos? Dejalos vacíos.</p>
+          <div class="form-grid" style="margin-top:6px">
+            <div class="field-key">
+              <input name="apiKey" id="apiKeyInput" type="password" placeholder="API Key / Token (opcional)" value="${editing ? escapeHtml(editing.apiKey || '') : ''}" autocomplete="off" spellcheck="false">
+              <button type="button" class="icon-btn" id="apiKeyToggleBtn" title="Mostrar/ocultar">${ICONS.eye}</button>
+            </div>
+          </div>
+          <p class="form-hint">🔒 Se guarda junto con la cuenta para tenerla recopilada y a mano más adelante.</p>
           <div class="form-grid" style="margin-top:6px"><textarea name="notes" placeholder="Notas…">${editing ? escapeHtml(editing.notes) : ''}</textarea></div>
           <div class="form-actions">
             <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
@@ -855,18 +1006,41 @@
         </form>
         <datalist id="serviceSuggestions">${Object.keys(AI_PRESETS).map(s => `<option value="${s}">`).join('')}</datalist>
         <datalist id="planSuggestions"><option value="Free"><option value="Plus"><option value="Pro"><option value="Team"><option value="Max"><option value="Advanced"></datalist>`;
-      if(!editing){
-        zone.querySelector('#serviceInput').addEventListener('change', e => {
-          const preset = AI_PRESETS[e.target.value];
-          if(!preset) return;
-          const form = e.target.closest('form');
-          const planEl = form.querySelector('input[name="plan"]'), cEl = form.querySelector('input[name="limitCount"]'), rEl = form.querySelector('input[name="limitResetHours"]');
+
+      zone.querySelector('#apiKeyToggleBtn').addEventListener('click', () => {
+        const input = zone.querySelector('#apiKeyInput');
+        const btn = zone.querySelector('#apiKeyToggleBtn');
+        const reveal = input.type === 'password';
+        input.type = reveal ? 'text' : 'password';
+        btn.innerHTML = reveal ? ICONS.eyeOff : ICONS.eye;
+      });
+
+      // Si es edición y el servicio tiene preset, mostrar nota inmediatamente
+      if(editing && editing.service){
+        showAiStrengthsNote(zone, editing.service);
+      }
+
+      const serviceInputEl = zone.querySelector('#serviceInput');
+      function handleServiceChange(val){
+        const preset = AI_PRESETS[val];
+        if(!preset) { showAiStrengthsNote(zone, ''); return; }
+        const form = serviceInputEl.closest('form');
+        const planEl = form.querySelector('input[name="plan"]');
+        const cEl = form.querySelector('input[name="limitCount"]');
+        const rEl = form.querySelector('input[name="limitResetHours"]');
+        if(!editing){
           if(!planEl.value) planEl.value = preset.plan || '';
           if(!cEl.value && preset.limitCount) cEl.value = preset.limitCount;
           if(!rEl.value && preset.limitResetHours) rEl.value = preset.limitResetHours;
-        });
+        }
+        showAiStrengthsNote(zone, val);
       }
-      zone.querySelector('#serviceInput').focus();
+      serviceInputEl.addEventListener('change', e => handleServiceChange(e.target.value));
+      serviceInputEl.addEventListener('input', e => {
+        // Mostrar nota al escribir si coincide exacto con un preset
+        if(AI_PRESETS[e.target.value]) handleServiceChange(e.target.value);
+      });
+      serviceInputEl.focus();
     } else {
       zone.innerHTML = '';
     }
@@ -945,6 +1119,35 @@
     }
   }
 
+  async function copyApiKey(id){
+    const acc = getAccount(id);
+    if(!acc) return;
+    if(!acc.apiKey){
+      haptic('error');
+      showToast('Esta cuenta no tiene API key guardada', 'error');
+      return;
+    }
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(acc.apiKey);
+      } else {
+        const tmp = document.createElement('textarea');
+        tmp.value = acc.apiKey;
+        tmp.style.position = 'fixed';
+        tmp.style.opacity = '0';
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand('copy');
+        tmp.remove();
+      }
+      haptic('success');
+      showToast(`API key de ${acc.service} copiada`, 'success');
+    }catch(e){
+      haptic('error');
+      showToast('No se pudo copiar: ' + e.message, 'error');
+    }
+  }
+
   async function toggleEnabled(id){
     const acc = getAccount(id);
     if(!acc) return;
@@ -1003,6 +1206,7 @@
       plan: (fd.get('plan')||'Free').trim() || 'Free',
       limitCount: fd.get('limitCount') ? Number(fd.get('limitCount')) : null,
       limitResetHours: fd.get('limitResetHours') ? Number(fd.get('limitResetHours')) : null,
+      apiKey: (fd.get('apiKey')||'').trim(),
       notes: fd.get('notes') || ''
     };
     const lastUsedRaw = fd.get('lastUsed');
@@ -1080,6 +1284,7 @@
   document.getElementById('searchInput').addEventListener('input', e => { ui.search = e.target.value.toLowerCase(); renderMain(); });
   document.getElementById('filterAI').addEventListener('change', e => { ui.filterAI = e.target.value; renderMain(); });
   document.getElementById('filterStatus').addEventListener('change', e => { ui.filterStatus = e.target.value; renderMain(); });
+  document.getElementById('filterCategory').addEventListener('change', e => { ui.filterCategory = e.target.value; renderMain(); });
 
   document.addEventListener('click', e => {
     const target = e.target.closest('[data-action]');
@@ -1099,9 +1304,30 @@
       case 'delete-account': deleteAccount(id); break;
       case 'mark-used': markUsedNow(id); break;
       case 'toggle-enabled': toggleEnabled(id); break;
+      case 'copy-apikey': copyApiKey(id); break;
       case 'export': exportData(); break;
       case 'import': importData(); break;
       case 'reset': resetAll(); break;
+      case 'toggle-catalog':
+        ui.catalogOpen = !ui.catalogOpen;
+        renderCatalog();
+        break;
+      case 'filter-by-ai': {
+        const aiName = target.dataset.ai;
+        const hasAI = state.accounts.some(a => a.service === aiName);
+        if(!hasAI){
+          haptic('error');
+          showToast(`No tenés cuentas de ${aiName} todavía`, 'error');
+          break;
+        }
+        ui.filterAI = (ui.filterAI === aiName) ? '' : aiName;
+        refreshFilterOptions();
+        const aiEl = document.getElementById('filterAI');
+        if(aiEl) aiEl.value = ui.filterAI;
+        haptic('light');
+        renderMain();
+        break;
+      }
     }
   });
 
