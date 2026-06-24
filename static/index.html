@@ -36,7 +36,6 @@
   .stat-pill b{font-family:var(--font-display);font-size:15px;color:var(--text);font-weight:700;}
   .stat-pill.is-mint b{color:var(--mint);}
   .stat-pill.is-gold b{color:var(--gold);}
-  .stat-pill.is-purple b{color:var(--purple);}
 
   main.container{max-width:1180px;margin:0 auto;padding:18px 18px 70px;display:flex;flex-direction:column;gap:16px;}
 
@@ -49,48 +48,8 @@
   .ready-chip:hover{border-color:var(--mint);}
   .ready-chip .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0; background:hsl(var(--neon-hue, 210), 100%, 65%); box-shadow:0 0 8px hsl(var(--neon-hue, 210), 100%, 65%);}
   .ready-chip .pname{color:var(--muted);}
-  .ready-chip .ai-icon-sm{font-size:10px;opacity:.8;}
   .ready-empty{font-size:12.5px;color:var(--muted);}
   .ready-empty b{color:var(--gold);font-weight:700;}
-
-  /* ==========================================
-     CATÁLOGO DE CATEGORÍAS DE IA
-     ========================================== */
-  .catalog-section{border:1px solid var(--border);background:var(--panel);border-radius:14px;overflow:hidden;}
-  .catalog-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;user-select:none;transition:background .15s;}
-  .catalog-header:hover{background:var(--panel-2);}
-  .catalog-title{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--text);}
-  .catalog-sub{font-size:11px;color:var(--muted);flex:1;}
-  .catalog-chev{color:var(--muted);transition:transform .25s;display:flex;align-items:center;flex-shrink:0;}
-  .catalog-chev.is-open{transform:rotate(180deg);}
-
-  .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;padding:0 14px 14px;animation:formIn .2s ease both;}
-
-  .cat-card{background:var(--panel-2);border-radius:12px;padding:12px 14px;border:1px solid var(--border-soft);border-left:3px solid var(--cat-color, var(--purple));transition:border-color .2s,box-shadow .2s;}
-  .cat-card:hover{border-color:var(--cat-color, var(--purple));box-shadow:0 4px 20px -8px var(--cat-color, var(--purple));}
-  .cat-card-header{display:flex;align-items:center;gap:7px;margin-bottom:3px;}
-  .cat-card-emoji{font-size:15px;line-height:1;}
-  .cat-card-label{font-family:var(--font-display);font-size:12.5px;font-weight:700;color:var(--text);}
-  .cat-card-desc{font-size:10.5px;color:var(--muted);margin-bottom:9px;}
-
-  .cat-ais{display:flex;flex-wrap:wrap;gap:5px;}
-  .cat-ai-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:11px;color:var(--muted);cursor:pointer;font-family:var(--font-mono);transition:all .15s;white-space:nowrap;}
-  .cat-ai-pill:hover{border-color:var(--cat-color, var(--purple));color:var(--text);background:rgba(255,255,255,.07);}
-  .cat-ai-pill.is-top{border-color:var(--cat-color, var(--purple));color:var(--text);}
-  .cat-ai-icon{font-size:9px;font-style:normal;opacity:.7;}
-  .cat-ai-count{background:rgba(61,220,151,.12);border-radius:20px;padding:0 5px;font-size:9px;color:var(--mint);border:1px solid rgba(61,220,151,.25);}
-  .cat-top-star{color:var(--cat-color, var(--purple));font-size:9px;line-height:1;}
-
-  /* Badges de categoría en filas de cuentas */
-  .cat-tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px;}
-  .cat-tag{font-size:9px;padding:1px 6px;border-radius:20px;background:rgba(155,123,255,.08);border:1px solid rgba(155,123,255,.2);color:var(--purple);white-space:nowrap;letter-spacing:.01em;}
-
-  /* Nota de fortalezas de IA en el formulario */
-  .ai-strengths-note{background:rgba(61,220,151,.05);border:1px solid rgba(61,220,151,.18);border-radius:8px;padding:10px 12px;font-size:11.5px;color:var(--text);line-height:1.55;display:none;animation:formIn .2s ease both;margin-top:8px;}
-  .ai-strengths-note.is-visible{display:block;}
-  .ai-note-cats{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
-  .ai-note-tag{font-size:9.5px;padding:2px 7px;border-radius:20px;background:rgba(61,220,151,.1);border:1px solid rgba(61,220,151,.25);color:var(--mint);}
-  /* ========================================== */
 
   .rail-wrap{display:flex;align-items:center;gap:8px;}
   .profile-rail{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;flex:1;scrollbar-width:thin;}
@@ -155,6 +114,9 @@
   }
   @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
   
+  /* Cabecera de cada perfil: SIEMPRE 2 filas fijas.
+     Fila 1 = chevron + nombre (se trunca con … si no entra) + botones — nunca se aprietan ni se tapan entre sí.
+     Fila 2 = píldoras de estado, envuelven libremente por su cuenta sin afectar a la fila 1. */
   .profile-head{
     display:flex;flex-direction:column;gap:8px;padding:14px 16px;cursor:pointer;user-select:none;
     background: linear-gradient(135deg, hsla(var(--neon-hue, 210), 100%, 65%, 0.18), transparent 70%);
@@ -199,6 +161,7 @@
     color:hsl(var(--neon-hue, 210), 100%, 75%);
     text-shadow: 0 0 8px hsla(var(--neon-hue, 210), 100%, 65%, 0.4);
   }
+  /* ---------------------------------- */
 
   .profile-meta{display:flex;gap:6px;flex-wrap:wrap;}
   .meta-pill{font-size:10.5px;padding:4px 9px;border-radius:20px;border:1px solid var(--border);color:var(--muted);white-space:nowrap; background:var(--panel);}
@@ -263,72 +226,33 @@
   .modal-box textarea:focus{border-color:var(--purple);}
   .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;}
 
+  /* ---- CATEGORÍAS DE IA (en qué es mejor cada una) ---- */
+  .cat-chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:10.5px;line-height:1.3;padding:4px 9px;border-radius:20px;white-space:nowrap;
+    border:1px solid hsla(var(--neon-hue,210),100%,65%,.3);
+    background:hsla(var(--neon-hue,210),100%,65%,.08);
+    color:hsl(var(--neon-hue,210),100%,78%);}
+  .svc-categories{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px;}
+  .svc-categories .cat-chip{font-size:9px;padding:2px 7px;}
+  .cat-picker-wrap{margin-top:10px;}
+  .cat-picker-label{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;}
+  .cat-picker{display:flex;flex-wrap:wrap;gap:6px;}
+  .cat-chip.cat-pick{cursor:pointer;opacity:.5;background:transparent;transition:opacity .15s,background .15s;}
+  .cat-chip.cat-pick:hover{opacity:.85;}
+  .cat-chip.cat-pick.is-selected{opacity:1;background:hsla(var(--neon-hue,210),100%,65%,.18);}
+
+  .catalog-section{display:flex;flex-direction:column;gap:12px;}
+  .catalog-panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+  .catalog-panel[hidden]{display:none;}
+  .catalog-group{border:1px solid var(--border);background:var(--panel);border-radius:12px;padding:12px 14px;}
+  .catalog-group-title{font-family:var(--font-display);font-weight:700;font-size:12.5px;margin-bottom:9px;color:hsl(var(--neon-hue,210),100%,75%);}
+  .catalog-items{display:flex;flex-direction:column;gap:9px;}
+  .catalog-ai-top{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);}
+  .catalog-have{font-size:9px;color:var(--mint);border:1px solid rgba(61,220,151,.35);background:rgba(61,220,151,.08);padding:1px 7px;border-radius:20px;white-space:nowrap;}
+  .catalog-ai p{margin:2px 0 0;font-size:11px;color:var(--muted);}
+
   @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
-
-<style id="performance-patch">
-html{scroll-behavior:smooth}
-.profile-card,.cat-card,.account-row{will-change:transform}
-.profile-body{contain:layout paint}
-.account-row:hover{transform:translateY(-1px)}
-</style>
-<script>
-document.addEventListener('DOMContentLoaded',()=>{
-  const input=document.getElementById('searchInput');
-  if(input){
-    let t;
-    input.addEventListener('input',e=>{
-      clearTimeout(t);
-      t=setTimeout(()=>{
-        input.dispatchEvent(new Event('optimized-search'));
-      },120);
-    });
-  }
-});
-</script>
-
-<style id="atum-fun-upgrade">
-:root{
-  --glass:rgba(255,255,255,.06);
-}
-body::after{
- content:'';
- position:fixed;
- inset:0;
- pointer-events:none;
- background:
- radial-gradient(circle at 20% 20%, rgba(61,220,151,.05), transparent 30%),
- radial-gradient(circle at 80% 10%, rgba(155,123,255,.06), transparent 35%),
- radial-gradient(circle at 50% 100%, rgba(255,111,174,.04), transparent 35%);
-}
-.profile-card:hover,
-.cat-card:hover{
- transform:translateY(-2px);
- transition:.25s ease;
-}
-.brand-mark{
- box-shadow:0 0 25px rgba(155,123,255,.45);
-}
-.stat-pill,
-.ready-chip,
-.rail-chip,
-.btn{
- backdrop-filter:blur(10px);
-}
-.btn.primary{
- box-shadow:0 0 20px rgba(155,123,255,.35);
-}
-.account-row:hover{
- background:rgba(255,255,255,.03);
-}
-.profile-name,
-.focused-head h2{
- letter-spacing:.04em;
-}
-</style>
-
 </head>
-
 <body>
 
 <div class="bg-glow"></div>
@@ -347,9 +271,6 @@ body::after{
 
   <section class="ready-strip" id="readyStrip"><div class="loading-state">Cargando…</div></section>
 
-  <!-- NUEVO: Catálogo de categorías de IA -->
-  <section id="catalogSection" class="catalog-section"></section>
-
   <section class="rail-wrap">
     <div class="profile-rail" id="profileRail"></div>
     <button class="btn primary" type="button" data-action="new-profile" title="Crear perfil">+ Perfil</button>
@@ -361,19 +282,7 @@ body::after{
       <input id="searchInput" type="text" placeholder="Buscar IA, correo, notas…" autocomplete="off">
     </label>
     <select id="filterAI"><option value="">Todas las IAs</option></select>
-    <select id="filterCategory">
-      <option value="">Todas las categorías</option>
-      <option value="Programación">💻 Programación</option>
-      <option value="Diseño">🎨 Diseño</option>
-      <option value="Escritura">✍️ Escritura</option>
-      <option value="Investigación">🔬 Investigación</option>
-      <option value="Conversación">💬 Engagement</option>
-      <option value="Análisis">📊 Análisis</option>
-      <option value="Matemáticas">🧮 Matemáticas</option>
-      <option value="Música">🎵 Música</option>
-      <option value="Video">🎬 Video</option>
-      <option value="Multimodal">🖼️ Multimodal</option>
-    </select>
+    <select id="filterCategory"><option value="">Todas las categorías</option></select>
     <select id="filterStatus">
       <option value="">Cualquier estado</option>
       <option value="available">Disponible</option>
@@ -391,9 +300,14 @@ body::after{
 
   <section id="mainZone"><div class="loading-state">Conectando con el servidor…</div></section>
 
+  <section class="catalog-section">
+    <button class="btn ghost" type="button" id="catalogToggleBtn">📚 Catálogo de IAs por categoría</button>
+    <div class="catalog-panel" id="catalogPanel" hidden></div>
+  </section>
+
   <section class="help-card">
     <b>📌 Cómo funciona</b><br>
-    Cada <b>perfil</b> = un perfil de tu navegador. Adentro registrás las cuentas de IA que usás ahí. Si le decís cuántos mensajes tiene cada una y cada cuántas horas resetea, esta pantalla calcula sola si ya podés volver a usarla — y arriba siempre ves qué tenés <b>disponible ahora</b>. El panel <b>Categorías de IA</b> te muestra para qué destaca cada herramienta y te permite filtrar por categoría. Todo vive en el servidor, no en este navegador: podés abrirlo desde cualquier dispositivo con tu mismo Telegram.
+    Cada <b>perfil</b> = un perfil de tu navegador. Adentro registrás las cuentas de IA que usás ahí. Si le decís cuántos mensajes tiene cada una y cada cuántas horas resetea, esta pantalla calcula sola si ya podés volver a usarla — y arriba siempre ves qué tenés <b>disponible ahora</b> en todos tus perfiles. Cada cuenta también muestra <b>en qué es mejor esa IA</b> (programación, diseño, video, escritura, etc.) y podés filtrar o buscar por categoría. Todo vive en el servidor, no en este navegador: podés abrirlo desde cualquier dispositivo con tu mismo Telegram.
   </section>
 
 </main>
@@ -435,6 +349,7 @@ body::after{
   if(tg){
     try{ tg.ready(); }catch(e){}
     try{ tg.expand && tg.expand(); }catch(e){}
+    // Pantalla completa real (Bot API 8.0+) como mejora sobre el expand() de toda la vida.
     try{ tg.requestFullscreen && tg.requestFullscreen(); }catch(e){}
     try{ tg.disableVerticalSwipes && tg.disableVerticalSwipes(); }catch(e){}
     try{ tg.setBackgroundColor && tg.setBackgroundColor('#030308'); }catch(e){}
@@ -455,6 +370,9 @@ body::after{
     }catch(e){ }
   }
 
+  /* Diálogos nativos de Telegram: dentro de la app, window.confirm/prompt no son
+     confiables (algunos clientes los bloquean o los ignoran). Usamos los popups
+     propios de Telegram y sólo caemos a los nativos del navegador fuera de Telegram. */
   function tgConfirmDelete(message, confirmText){
     confirmText = confirmText || 'Eliminar';
     return new Promise(resolve => {
@@ -488,6 +406,7 @@ body::after{
   document.getElementById('modalCancelBtn').addEventListener('click', () => closeImportModal(null));
   document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target.id === 'modalOverlay') closeImportModal(null); });
 
+  /* Botón "atrás" nativo de Telegram cuando estamos viendo el detalle de un perfil. */
   function syncBackButton(){
     if(!tg || !tg.BackButton) return;
     if(ui.activeProfile){ tg.BackButton.show(); } else { tg.BackButton.hide(); }
@@ -554,8 +473,10 @@ body::after{
     eyeOff: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>`
   };
 
+  /* Este algoritmo convierte texto en un número de la rueda de color (0 a 360). 
+     Es hiper-sensible: "Perfil 1" y "Perfil 2" arrojarán colores MUY distintos. */
   function getNeonHue(str) {
-    if (!str) return 210;
+    if (!str) return 210; // Azul oscuro por defecto
     let h = 0x811c9dc5;
     for (let i = 0; i < str.length; i++) {
       h ^= str.charCodeAt(i);
@@ -565,52 +486,96 @@ body::after{
   }
 
   /* ============================================================
-     CATÁLOGO DE PRESETS POR IA — CON CATEGORÍAS Y FORTALEZAS
+     CATEGORÍAS DE IA — en qué es mejor cada una
      ============================================================ */
-  const AI_PRESETS = {
-    'ChatGPT':    { plan:'Plus', limitCount:40,   limitResetHours:3,    icon:'✦', categories:['Programación','Escritura','Análisis','Conversación'],    strengths:'Versátil y potente para casi cualquier tarea. Excelente en código, redacción creativa y análisis complejos.' },
-    'Claude':     { plan:'Pro',  limitCount:45,   limitResetHours:5,    icon:'◆', categories:['Programación','Escritura','Razonamiento','Análisis'],     strengths:'Superior en razonamiento profundo, textos largos y código complejo. Muy preciso, fiable y seguro.' },
-    'Gemini':     { plan:'Free', limitCount:60,   limitResetHours:24,   icon:'⬡', categories:['Investigación','Multimodal','Integración'],              strengths:'Integrado con Google. Ideal para búsquedas, Google Docs/Drive y tareas que combinan texto con imagen.' },
-    'Perplexity': { plan:'Free', limitCount:30,   limitResetHours:1,    icon:'◎', categories:['Investigación','Búsqueda','Noticias'],                   strengths:'El mejor para investigar con fuentes reales en tiempo real. Respuestas citadas y verificables.' },
-    'Grok':       { plan:'Free', limitCount:20,   limitResetHours:2,    icon:'✕', categories:['Conversación','Noticias','Análisis'],                   strengths:'Acceso a X/Twitter en tiempo real. Directo, sin filtros excesivos y siempre actualizado.' },
-    'DeepSeek':   { plan:'Free', limitCount:50,   limitResetHours:1,    icon:'◈', categories:['Programación','Matemáticas','Razonamiento'],            strengths:'Extraordinario en código y matemáticas. Open-source con rendimiento top-tier a coste cero.' },
-    'Mistral':    { plan:'Free', limitCount:50,   limitResetHours:24,   icon:'◇', categories:['Programación','Privacidad','Open Source'],             strengths:'Rápido, eficiente y open-source. Ideal para uso privado y tareas de programación ágil.' },
-    'Copilot':    { plan:'Free', limitCount:30,   limitResetHours:24,   icon:'⊞', categories:['Programación','Productividad','Integración'],          strengths:'Integrado en Microsoft 365 y VS Code. El compañero ideal para trabajo en Office y código.' },
-    'Midjourney': { plan:'Pro',  limitCount:null, limitResetHours:null, icon:'◑', categories:['Diseño','Imágenes','Arte'],                            strengths:'El estándar de oro en generación de imágenes. Resultados artísticos y fotorrealistas de élite.' },
-    'Suno':       { plan:'Free', limitCount:10,   limitResetHours:24,   icon:'♪', categories:['Música','Creatividad','Audio'],                        strengths:'Genera canciones completas con letra, voz y música. La IA musical más avanzada del mercado.' },
-    'Meta AI':    { plan:'Free', limitCount:null, limitResetHours:null, icon:'◬', categories:['Conversación','Multimodal','Redes Sociales'],          strengths:'Integrado en WhatsApp, Instagram y Facebook. Accesible, multimodal y completamente gratuito.' },
-    'Runway':     { plan:'Plus', limitCount:null, limitResetHours:null, icon:'▶', categories:['Video','Diseño','Creatividad'],                        strengths:'Generación y edición de video con IA. El estudio de producción virtual más potente del mercado.' },
-    'Ideogram':   { plan:'Free', limitCount:20,   limitResetHours:24,   icon:'◐', categories:['Diseño','Imágenes','Tipografía'],                      strengths:'Especialista en imágenes con texto integrado. Ideal para logos, banners y diseño con tipografía.' },
-    'Kling':      { plan:'Plus', limitCount:null, limitResetHours:null, icon:'▷', categories:['Video','Creatividad','Imágenes'],                     strengths:'Generación de video de alta calidad con coherencia visual excepcional.' },
-    'Pika':       { plan:'Free', limitCount:15,   limitResetHours:24,   icon:'⚡', categories:['Video','Creatividad'],                               strengths:'Clips de video cortos desde texto o imagen. Fácil de usar y con excelentes resultados.' },
+  const AI_CATEGORIES = {
+    programming:  { label:'Programación',          icon:'💻' },
+    design:       { label:'Diseño',                 icon:'🎨' },
+    video:        { label:'Video',                  icon:'🎬' },
+    audio:        { label:'Música y audio',         icon:'🎵' },
+    writing:      { label:'Escritura',              icon:'✍️' },
+    research:     { label:'Investigación',          icon:'🔍' },
+    analysis:     { label:'Análisis de datos',      icon:'📊' },
+    chat:         { label:'Conversación',           icon:'💬' },
+    engagement:   { label:'Engagement y marketing', icon:'📣' },
+    productivity: { label:'Productividad',          icon:'🤖' }
   };
 
   /* ============================================================
-     CATEGORÍAS DE IA — REFERENCIA VISUAL
+     CATÁLOGO DE PRESETS POR IA
      ============================================================ */
-  const AI_CATEGORIES = [
-    { id:'Programación', emoji:'💻', label:'Programación',  color:'#3ddc97', desc:'Código, debugging y arquitectura',    top:['Claude','DeepSeek','ChatGPT','Copilot','Mistral'] },
-    { id:'Diseño',       emoji:'🎨', label:'Diseño',        color:'#ff6fae', desc:'Imágenes, arte visual y gráficos',    top:['Midjourney','Ideogram'] },
-    { id:'Escritura',    emoji:'✍️', label:'Escritura',     color:'#9b7bff', desc:'Redacción, copywriting y contenido',  top:['Claude','ChatGPT'] },
-    { id:'Investigación',emoji:'🔬', label:'Investigación', color:'#f0c419', desc:'Búsqueda y síntesis de información',  top:['Perplexity','Gemini','ChatGPT'] },
-    { id:'Conversación', emoji:'💬', label:'Engagement',    color:'#4fc3f7', desc:'Chatbots, asistentes interactivos',   top:['ChatGPT','Grok','Meta AI','Claude'] },
-    { id:'Análisis',     emoji:'📊', label:'Análisis',      color:'#ff9800', desc:'Datos, reportes y razonamiento',      top:['Claude','ChatGPT','Grok'] },
-    { id:'Matemáticas',  emoji:'🧮', label:'Matemáticas',   color:'#e040fb', desc:'Cálculo, álgebra y lógica formal',   top:['DeepSeek','ChatGPT','Claude'] },
-    { id:'Música',       emoji:'🎵', label:'Música',        color:'#26c6da', desc:'Composición y generación de audio',   top:['Suno'] },
-    { id:'Video',        emoji:'🎬', label:'Video',         color:'#ff5722', desc:'Generación y edición de video IA',    top:['Runway','Kling','Pika'] },
-    { id:'Multimodal',   emoji:'🖼️', label:'Multimodal',   color:'#66bb6a', desc:'Texto + imagen + voz combinados',    top:['Gemini','ChatGPT','Meta AI'] },
-  ];
+  const AI_PRESETS = {
+    'ChatGPT':      { plan:'Plus', limitCount:40,    limitResetHours:3,  categories:['chat','writing','programming'],   bestFor:'Asistente todo-terreno: texto, código y razonamiento general.' },
+    'Claude':       { plan:'Pro',  limitCount:45,    limitResetHours:5,  categories:['programming','writing','analysis'], bestFor:'Código complejo, documentos largos y razonamiento cuidadoso.' },
+    'Gemini':       { plan:'Free', limitCount:60,    limitResetHours:24, categories:['research','chat','analysis'],     bestFor:'Multimodal, búsqueda en tiempo real e integración con Google.' },
+    'Perplexity':   { plan:'Free', limitCount:30,    limitResetHours:1,  categories:['research'],                       bestFor:'Respuestas con fuentes citadas, ideal para investigar rápido.' },
+    'Grok':         { plan:'Free', limitCount:20,    limitResetHours:2,  categories:['chat','engagement'],              bestFor:'Tendencias en tiempo real y tono desenfadado.' },
+    'DeepSeek':     { plan:'Free', limitCount:50,    limitResetHours:1,  categories:['programming','analysis'],         bestFor:'Código y razonamiento matemático muy económico.' },
+    'Mistral':      { plan:'Free', limitCount:50,    limitResetHours:24, categories:['programming'],                    bestFor:'Modelos abiertos, rápidos y eficientes.' },
+    'Copilot':      { plan:'Free', limitCount:30,    limitResetHours:24, categories:['programming'],                    bestFor:'Autocompletado de código integrado en el editor.' },
+    'Midjourney':   { plan:'Pro',  limitCount:null,  limitResetHours:null, categories:['design'],                       bestFor:'Imágenes con la estética más artística y pulida.' },
+    'Leonardo AI':  { plan:'Free', limitCount:150,   limitResetHours:24, categories:['design'],                         bestFor:'Control fino de estilo para arte e ilustración.' },
+    'Canva AI':     { plan:'Free', limitCount:50,    limitResetHours:24, categories:['design','engagement'],            bestFor:'Diseño gráfico rápido para redes y presentaciones.' },
+    'Suno':         { plan:'Free', limitCount:10,    limitResetHours:24, categories:['audio'],                          bestFor:'Canciones completas con letra a partir de un prompt.' },
+    'ElevenLabs':   { plan:'Free', limitCount:10000, limitResetHours:24, categories:['audio'],                          bestFor:'Voces realistas y clonación de voz.' },
+    'Runway':       { plan:'Free', limitCount:null,  limitResetHours:null, categories:['video','design'],               bestFor:'Edición y generación de video con IA.' },
+    'HeyGen':       { plan:'Free', limitCount:null,  limitResetHours:null, categories:['video','engagement'],           bestFor:'Videos con avatares IA, ideal para contenido y ads.' },
+    'Jasper':       { plan:'Free', limitCount:null,  limitResetHours:null, categories:['engagement','writing'],         bestFor:'Copys de marketing y campañas a escala.' },
+    'Notion AI':    { plan:'Free', limitCount:null,  limitResetHours:null, categories:['writing','productivity'],       bestFor:'Resumir y redactar directamente en tus notas.' },
+    'Character.AI': { plan:'Free', limitCount:null,  limitResetHours:null, categories:['chat'],                        bestFor:'Personajes conversacionales y rol.' },
+    'Meta AI':      { plan:'Free', limitCount:null,  limitResetHours:null, categories:['chat','engagement'],            bestFor:'Integrado en Instagram/WhatsApp para contenido social.' }
+  };
+
+  /* ============================================================
+     DETECCIÓN DE CATEGORÍA POR IA (+ overrides manuales locales)
+     Las categorías son una propiedad de la IA (no de cada cuenta),
+     así que se guardan en este navegador y se reaplican a cualquier
+     cuenta que use ese mismo nombre de servicio. No se envían al
+     servidor: no tocan tu API ni el formato de datos existente.
+     ============================================================ */
+  const CUSTOM_CATS_KEY = 'ia_categorias_custom_v1';
+  function loadCustomCategoryMap(){
+    try{ const v = JSON.parse(localStorage.getItem(CUSTOM_CATS_KEY)); return (v && typeof v === 'object') ? v : {}; }catch(e){ return {}; }
+  }
+  function saveCustomCategoryMap(map){
+    try{ localStorage.setItem(CUSTOM_CATS_KEY, JSON.stringify(map)); }catch(e){}
+  }
+  let customCategoryMap = loadCustomCategoryMap();
+
+  function findPreset(service){
+    const key = Object.keys(AI_PRESETS).find(k => k.toLowerCase() === (service || '').trim().toLowerCase());
+    return key ? AI_PRESETS[key] : null;
+  }
+  function getServiceCategories(service){
+    const norm = (service || '').trim().toLowerCase();
+    if(!norm) return [];
+    if(customCategoryMap[norm] && customCategoryMap[norm].length) return customCategoryMap[norm];
+    const preset = findPreset(service);
+    return preset && preset.categories ? preset.categories : [];
+  }
+  function setServiceCategories(service, cats){
+    const norm = (service || '').trim().toLowerCase();
+    if(!norm) return;
+    if(cats && cats.length) customCategoryMap[norm] = cats;
+    else delete customCategoryMap[norm];
+    saveCustomCategoryMap(customCategoryMap);
+  }
+  function categoryChipHtml(catId, extraClass){
+    const cat = AI_CATEGORIES[catId];
+    if(!cat) return '';
+    return `<span class="cat-chip ${extraClass||''}" style="--neon-hue:${getNeonHue('cat:'+catId)}" title="${escapeHtml(cat.label)}">${cat.icon}<span class="cat-label">${escapeHtml(cat.label)}</span></span>`;
+  }
+  function categoryChipsHtml(service){
+    const cats = getServiceCategories(service);
+    if(!cats.length) return '';
+    return `<div class="svc-categories">${cats.map(c => categoryChipHtml(c)).join('')}</div>`;
+  }
 
   /* ============================================================
      ESTADO
      ============================================================ */
   let state = { profiles: [], accounts: [] };
-  const ui = {
-    search:'', filterAI:'', filterStatus:'', filterCategory:'',
-    activeProfile:null, showForm:null, editingId:null,
-    bulkProfileMode:false, collapsedProfiles: new Set(),
-    catalogOpen: false
-  };
+  const ui = { search:'', filterAI:'', filterCategory:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false, collapsedProfiles: new Set(), formCategories:[], catalogOpen:false };
 
   async function loadState(){
     state = await apiFetch('/api/state' + qs({ tg_id: TG_ID }));
@@ -710,12 +675,10 @@ body::after{
     const status = computeStatus(acc).key;
     if(ui.filterAI && acc.service !== ui.filterAI) return false;
     if(ui.filterStatus && status !== ui.filterStatus) return false;
-    if(ui.filterCategory){
-      const preset = AI_PRESETS[acc.service];
-      if(!preset || !preset.categories.includes(ui.filterCategory)) return false;
-    }
+    if(ui.filterCategory && !getServiceCategories(acc.service).includes(ui.filterCategory)) return false;
     if(ui.search){
-      const hay = `${acc.service} ${acc.email} ${acc.notes} ${acc.plan}`.toLowerCase();
+      const catLabels = getServiceCategories(acc.service).map(c => AI_CATEGORIES[c] ? AI_CATEGORIES[c].label : '').join(' ');
+      const hay = `${acc.service} ${acc.email} ${acc.notes} ${acc.plan} ${catLabels}`.toLowerCase();
       if(!hay.includes(ui.search)) return false;
     }
     return true;
@@ -728,22 +691,20 @@ body::after{
     refreshFilterOptions();
     renderStats();
     renderReadyStrip();
-    renderCatalog();
     renderRail();
     renderForm();
     renderMain();
+    renderCatalog();
   }
 
   function renderStats(){
     const total = state.accounts.length;
     const { available, cooldown } = statusCounts(state.accounts);
-    const uniqueCategories = new Set(state.accounts.flatMap(a => (AI_PRESETS[a.service] && AI_PRESETS[a.service].categories) ? AI_PRESETS[a.service].categories : []));
     document.getElementById('statsRow').innerHTML = `
       <div class="stat-pill"><b>${state.profiles.length}</b>perfiles</div>
       <div class="stat-pill"><b>${total}</b>cuentas</div>
       <div class="stat-pill is-mint"><b>${available}</b>disponibles</div>
       <div class="stat-pill is-gold"><b>${cooldown}</b>en cooldown</div>
-      ${uniqueCategories.size > 0 ? `<div class="stat-pill is-purple"><b>${uniqueCategories.size}</b>categorías</div>` : ''}
     `;
   }
 
@@ -754,14 +715,11 @@ body::after{
       el.innerHTML = `
         <span class="ready-label">Disponible ahora</span>
         <div class="ready-chips">
-          ${available.map(({acc,profile}) => {
-            const preset = AI_PRESETS[acc.service];
-            const icon = preset ? `<span class="ai-icon-sm">${preset.icon}</span>` : '';
-            return `<span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}" style="--neon-hue: ${getNeonHue(acc.service)}">
+          ${available.map(({acc,profile}) => `
+            <span class="ready-chip" data-action="jump-profile" data-id="${profile ? profile.id : ''}" style="--neon-hue: ${getNeonHue(acc.service)}">
               <span class="dot"></span>
-              ${icon}${escapeHtml(acc.service)}<span class="pname">· ${escapeHtml(profile ? profile.name : '—')}</span>
-            </span>`;
-          }).join('')}
+              ${getServiceCategories(acc.service).map(c => AI_CATEGORIES[c] ? AI_CATEGORIES[c].icon : '').join('')} ${escapeHtml(acc.service)}<span class="pname">· ${escapeHtml(profile ? profile.name : '—')}</span>
+            </span>`).join('')}
         </div>`;
       return;
     }
@@ -773,41 +731,6 @@ body::after{
     } else {
       el.innerHTML = `<span class="ready-empty">Nada con disponibilidad calculable todavía.</span>`;
     }
-  }
-
-  /* ============================================================
-     CATÁLOGO DE CATEGORÍAS — NUEVO
-     ============================================================ */
-  function renderCatalog(){
-    const el = document.getElementById('catalogSection');
-    if(!el) return;
-
-    const cardsHtml = AI_CATEGORIES.map(cat => {
-      const topAis = cat.top.filter(ai => AI_PRESETS[ai]);
-      return `
-        <div class="cat-card" style="--cat-color:${cat.color}">
-          <div class="cat-card-header">
-            <span class="cat-card-emoji">${cat.emoji}</span>
-            <span class="cat-card-label">${cat.label}</span>
-          </div>
-          <div class="cat-card-desc">${cat.desc}</div>
-          <div class="cat-ais">
-            ${topAis.map((ai, idx) => {
-              const preset = AI_PRESETS[ai];
-              const count = state.accounts.filter(a => a.service === ai).length;
-              return `<button class="cat-ai-pill${idx===0?' is-top':''}" type="button" data-action="filter-by-ai" data-ai="${escapeHtml(ai)}" title="${escapeHtml(preset.strengths)}">${idx===0?`<span class="cat-top-star">★</span>`:''}<span class="cat-ai-icon">${preset.icon}</span>${escapeHtml(ai)}${count?`<span class="cat-ai-count">${count}</span>`:''}</button>`;
-            }).join('')}
-          </div>
-        </div>`;
-    }).join('');
-
-    el.innerHTML = `
-      <div class="catalog-header" data-action="toggle-catalog">
-        <span class="catalog-title">📚 Categorías de IA</span>
-        <span class="catalog-sub">¿Para qué destaca cada herramienta? · Clic para explorar</span>
-        <span class="catalog-chev ${ui.catalogOpen?'is-open':''}">${ICONS.chev}</span>
-      </div>
-      ${ui.catalogOpen ? `<div class="cat-grid">${cardsHtml}</div>` : ''}`;
   }
 
   function renderRail(){
@@ -833,6 +756,10 @@ body::after{
     const current = ui.filterAI;
     const services = [...new Set(state.accounts.map(a => a.service.trim()).filter(Boolean))].sort();
     aiSel.innerHTML = '<option value="">Todas las IAs</option>' + services.map(s => `<option value="${escapeHtml(s)}" ${s===current?'selected':''}>${escapeHtml(s)}</option>`).join('');
+
+    const catSel = document.getElementById('filterCategory');
+    const currentCat = ui.filterCategory;
+    catSel.innerHTML = '<option value="">Todas las categorías</option>' + Object.entries(AI_CATEGORIES).map(([id,c]) => `<option value="${id}" ${id===currentCat?'selected':''}>${c.icon} ${escapeHtml(c.label)}</option>`).join('');
   }
 
   function renderMain(){
@@ -916,18 +843,14 @@ body::after{
     const status = computeStatus(acc);
     const dotColor = status.key === 'available' ? 'var(--mint)' : status.key === 'cooldown' ? 'var(--gold)' : status.key === 'disabled' ? 'var(--pink)' : 'var(--muted-dim)';
     const notesPreview = acc.notes || '';
-    const preset = AI_PRESETS[acc.service];
-    const aiIcon = preset ? preset.icon + ' ' : '';
-    const aiTooltip = preset ? preset.strengths : '';
-    const catTags = (preset && preset.categories) ? preset.categories.slice(0,2).map(c => `<span class="cat-tag">${escapeHtml(c)}</span>`).join('') : '';
 
     return `
       <div class="account-row" data-account-id="${acc.id}" style="--neon-hue: ${getNeonHue(acc.service)}">
         <span class="acc-dot" style="background:${dotColor}"></span>
         <div class="acc-service">
-          <span class="svc-name" title="${escapeHtml(aiTooltip)}">${aiIcon}${escapeHtml(acc.service)}</span>
+          <span class="svc-name">${escapeHtml(acc.service)}</span>
           <span class="svc-email">${escapeHtml(acc.email || 'sin correo')}</span>
-          ${catTags ? `<div class="cat-tags">${catTags}</div>` : ''}
+          ${categoryChipsHtml(acc.service)}
         </div>
         <span class="plan-badge ${planClass(acc.plan)}">${escapeHtml(acc.plan || 'Otro')}</span>
         <div class="status-badge st-${status.key}">
@@ -972,21 +895,36 @@ body::after{
   }
 
   /* ============================================================
-     FORMULARIOS
+     CATÁLOGO DE IAs POR CATEGORÍA (panel de referencia)
      ============================================================ */
-  function showAiStrengthsNote(zone, serviceName){
-    const preset = AI_PRESETS[serviceName];
-    const noteEl = zone.querySelector('#aiStrengthsNote');
-    if(!noteEl) return;
-    if(preset){
-      const cats = (preset.categories || []).map(c => `<span class="ai-note-tag">${escapeHtml(c)}</span>`).join('');
-      noteEl.innerHTML = `<b style="color:var(--mint)">${preset.icon || ''} ${escapeHtml(serviceName)}</b> — ${escapeHtml(preset.strengths)}<div class="ai-note-cats">${cats}</div>`;
-      noteEl.classList.add('is-visible');
-    } else {
-      noteEl.classList.remove('is-visible');
-    }
+  function renderCatalog(){
+    const panel = document.getElementById('catalogPanel');
+    const btn = document.getElementById('catalogToggleBtn');
+    if(!panel || !btn) return;
+    panel.hidden = !ui.catalogOpen;
+    btn.textContent = ui.catalogOpen ? '📚 Ocultar catálogo de IAs' : '📚 Catálogo de IAs por categoría';
+    if(!ui.catalogOpen) return;
+    const have = new Set(state.accounts.map(a => a.service.trim().toLowerCase()));
+    panel.innerHTML = Object.entries(AI_CATEGORIES).map(([catId, cat]) => {
+      const items = Object.entries(AI_PRESETS).filter(([, p]) => (p.categories || []).includes(catId));
+      if(!items.length) return '';
+      return `
+        <div class="catalog-group">
+          <div class="catalog-group-title" style="--neon-hue:${getNeonHue('cat:'+catId)}">${cat.icon} ${escapeHtml(cat.label)}</div>
+          <div class="catalog-items">
+            ${items.map(([name, p]) => `
+              <div class="catalog-ai">
+                <div class="catalog-ai-top"><b>${escapeHtml(name)}</b>${have.has(name.toLowerCase()) ? '<span class="catalog-have">✓ ya la tenés</span>' : ''}</div>
+                <p>${escapeHtml(p.bestFor || '')}</p>
+              </div>`).join('')}
+          </div>
+        </div>`;
+    }).join('');
   }
 
+  /* ============================================================
+     FORMULARIOS
+     ============================================================ */
   function renderForm(){
     const zone = document.getElementById('formZone');
     if(ui.showForm === 'profile'){
@@ -1036,6 +974,7 @@ body::after{
       const editing = ui.editingId ? getAccount(ui.editingId) : null;
       const defaultProfileId = editing ? editing.profileId : (ui.activeProfile || state.profiles[0].id);
       const lastUsedLocal = editing && editing.lastUsed ? toLocalInputValue(editing.lastUsed) : '';
+      ui.formCategories = editing ? getServiceCategories(editing.service).slice() : [];
       zone.innerHTML = `
         <form class="form-panel" id="accountForm">
           <h3>${editing ? 'Editar cuenta' : 'Nueva cuenta IA'}</h3>
@@ -1047,7 +986,13 @@ body::after{
             <input name="email" type="text" placeholder="Correo usado" value="${editing ? escapeHtml(editing.email) : ''}" autocomplete="off">
             <input name="plan" list="planSuggestions" placeholder="Plan" value="${editing ? escapeHtml(editing.plan) : ''}" autocomplete="off">
           </div>
-          <div id="aiStrengthsNote" class="ai-strengths-note"></div>
+          <p class="form-hint" id="serviceBestForHint"></p>
+          <div class="cat-picker-wrap">
+            <span class="cat-picker-label">¿En qué es mejor esta IA? (programación, diseño, engagement…)</span>
+            <div class="cat-picker" id="categoryPicker">
+              ${Object.entries(AI_CATEGORIES).map(([id,c]) => `<button type="button" class="cat-chip cat-pick ${ui.formCategories.includes(id)?'is-selected':''}" data-cat="${id}" style="--neon-hue:${getNeonHue('cat:'+id)}">${c.icon}<span class="cat-label">${escapeHtml(c.label)}</span></button>`).join('')}
+            </div>
+          </div>
           <div class="form-grid cols-3" style="margin-top:10px">
             <input name="limitCount" type="number" min="0" placeholder="Mensajes" value="${editing && editing.limitCount ? editing.limitCount : ''}">
             <input name="limitResetHours" type="number" min="0" placeholder="Cada cuántas horas" value="${editing && editing.limitResetHours ? editing.limitResetHours : ''}">
@@ -1069,7 +1014,6 @@ body::after{
         </form>
         <datalist id="serviceSuggestions">${Object.keys(AI_PRESETS).map(s => `<option value="${s}">`).join('')}</datalist>
         <datalist id="planSuggestions"><option value="Free"><option value="Plus"><option value="Pro"><option value="Team"><option value="Max"><option value="Advanced"></datalist>`;
-
       zone.querySelector('#apiKeyToggleBtn').addEventListener('click', () => {
         const input = zone.querySelector('#apiKeyInput');
         const btn = zone.querySelector('#apiKeyToggleBtn');
@@ -1077,33 +1021,42 @@ body::after{
         input.type = reveal ? 'text' : 'password';
         btn.innerHTML = reveal ? ICONS.eyeOff : ICONS.eye;
       });
-
-      // Si es edición y el servicio tiene preset, mostrar nota inmediatamente
-      if(editing && editing.service){
-        showAiStrengthsNote(zone, editing.service);
-      }
-
-      const serviceInputEl = zone.querySelector('#serviceInput');
-      function handleServiceChange(val){
-        const preset = AI_PRESETS[val];
-        if(!preset) { showAiStrengthsNote(zone, ''); return; }
-        const form = serviceInputEl.closest('form');
-        const planEl = form.querySelector('input[name="plan"]');
-        const cEl = form.querySelector('input[name="limitCount"]');
-        const rEl = form.querySelector('input[name="limitResetHours"]');
-        if(!editing){
-          if(!planEl.value) planEl.value = preset.plan || '';
-          if(!cEl.value && preset.limitCount) cEl.value = preset.limitCount;
-          if(!rEl.value && preset.limitResetHours) rEl.value = preset.limitResetHours;
-        }
-        showAiStrengthsNote(zone, val);
-      }
-      serviceInputEl.addEventListener('change', e => handleServiceChange(e.target.value));
-      serviceInputEl.addEventListener('input', e => {
-        // Mostrar nota al escribir si coincide exacto con un preset
-        if(AI_PRESETS[e.target.value]) handleServiceChange(e.target.value);
+      const categoryPicker = zone.querySelector('#categoryPicker');
+      categoryPicker.addEventListener('click', e => {
+        const chip = e.target.closest('.cat-pick');
+        if(!chip) return;
+        const cat = chip.dataset.cat;
+        const idx = ui.formCategories.indexOf(cat);
+        if(idx === -1) ui.formCategories.push(cat); else ui.formCategories.splice(idx, 1);
+        chip.classList.toggle('is-selected');
       });
-      serviceInputEl.focus();
+      function updateBestForHint(serviceVal){
+        const hintEl = zone.querySelector('#serviceBestForHint');
+        const preset = findPreset(serviceVal);
+        hintEl.textContent = preset && preset.bestFor ? `💡 ${preset.bestFor}` : '';
+      }
+      updateBestForHint(editing ? editing.service : '');
+      zone.querySelector('#serviceInput').addEventListener('input', e => updateBestForHint(e.target.value));
+      if(!editing){
+        zone.querySelector('#serviceInput').addEventListener('change', e => {
+          const preset = AI_PRESETS[e.target.value];
+          if(preset){
+            const form = e.target.closest('form');
+            const planEl = form.querySelector('input[name="plan"]'), cEl = form.querySelector('input[name="limitCount"]'), rEl = form.querySelector('input[name="limitResetHours"]');
+            if(!planEl.value) planEl.value = preset.plan || '';
+            if(!cEl.value && preset.limitCount) cEl.value = preset.limitCount;
+            if(!rEl.value && preset.limitResetHours) rEl.value = preset.limitResetHours;
+          }
+          if(ui.formCategories.length === 0){
+            const suggested = getServiceCategories(e.target.value);
+            if(suggested.length){
+              ui.formCategories = suggested.slice();
+              zone.querySelectorAll('.cat-pick').forEach(b => b.classList.toggle('is-selected', suggested.includes(b.dataset.cat)));
+            }
+          }
+        });
+      }
+      zone.querySelector('#serviceInput').focus();
     } else {
       zone.innerHTML = '';
     }
@@ -1120,7 +1073,7 @@ body::after{
      ACCIONES Y COLAPSO PERMANENTE
      ============================================================ */
   function openForm(kind, editingId){ ui.showForm = kind; ui.editingId = editingId || null; ui.bulkProfileMode = false; renderForm(); }
-  function closeForm(){ ui.showForm = null; ui.editingId = null; ui.bulkProfileMode = false; renderForm(); }
+  function closeForm(){ ui.showForm = null; ui.editingId = null; ui.bulkProfileMode = false; ui.formCategories = []; renderForm(); }
 
   function selectProfile(id){ ui.activeProfile = id || null; renderRail(); renderMain(); }
   
@@ -1274,6 +1227,7 @@ body::after{
     };
     const lastUsedRaw = fd.get('lastUsed');
     if(lastUsedRaw) payload.lastUsed = new Date(lastUsedRaw).toISOString();
+    const chosenCategories = ui.formCategories.slice();
 
     try{
       if(ui.editingId){
@@ -1281,6 +1235,7 @@ body::after{
       } else {
         await apiFetch('/api/accounts', { method:'POST', body: JSON.stringify(payload) });
       }
+      setServiceCategories(service, chosenCategories);
       haptic('success');
       closeForm();
       await loadState();
@@ -1346,8 +1301,9 @@ body::after{
      ============================================================ */
   document.getElementById('searchInput').addEventListener('input', e => { ui.search = e.target.value.toLowerCase(); renderMain(); });
   document.getElementById('filterAI').addEventListener('change', e => { ui.filterAI = e.target.value; renderMain(); });
-  document.getElementById('filterStatus').addEventListener('change', e => { ui.filterStatus = e.target.value; renderMain(); });
   document.getElementById('filterCategory').addEventListener('change', e => { ui.filterCategory = e.target.value; renderMain(); });
+  document.getElementById('filterStatus').addEventListener('change', e => { ui.filterStatus = e.target.value; renderMain(); });
+  document.getElementById('catalogToggleBtn').addEventListener('click', () => { ui.catalogOpen = !ui.catalogOpen; renderCatalog(); });
 
   document.addEventListener('click', e => {
     const target = e.target.closest('[data-action]');
@@ -1371,26 +1327,6 @@ body::after{
       case 'export': exportData(); break;
       case 'import': importData(); break;
       case 'reset': resetAll(); break;
-      case 'toggle-catalog':
-        ui.catalogOpen = !ui.catalogOpen;
-        renderCatalog();
-        break;
-      case 'filter-by-ai': {
-        const aiName = target.dataset.ai;
-        const hasAI = state.accounts.some(a => a.service === aiName);
-        if(!hasAI){
-          haptic('error');
-          showToast(`No tenés cuentas de ${aiName} todavía`, 'error');
-          break;
-        }
-        ui.filterAI = (ui.filterAI === aiName) ? '' : aiName;
-        refreshFilterOptions();
-        const aiEl = document.getElementById('filterAI');
-        if(aiEl) aiEl.value = ui.filterAI;
-        haptic('light');
-        renderMain();
-        break;
-      }
     }
   });
 
