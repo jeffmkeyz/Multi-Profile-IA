@@ -265,7 +265,29 @@
 
   @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
+
+<style id="performance-patch">
+html{scroll-behavior:smooth}
+.profile-card,.cat-card,.account-row{will-change:transform}
+.profile-body{contain:layout paint}
+.account-row:hover{transform:translateY(-1px)}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const input=document.getElementById('searchInput');
+  if(input){
+    let t;
+    input.addEventListener('input',e=>{
+      clearTimeout(t);
+      t=setTimeout(()=>{
+        input.dispatchEvent(new Event('optimized-search'));
+      },120);
+    });
+  }
+});
+</script>
 </head>
+
 <body>
 
 <div class="bg-glow"></div>
