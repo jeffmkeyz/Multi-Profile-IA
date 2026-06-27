@@ -260,6 +260,26 @@
   .catalog-have{font-size:9px;color:var(--mint);border:1px solid rgba(61,220,151,.35);background:rgba(61,220,151,.08);padding:1px 7px;border-radius:20px;white-space:nowrap;}
   .catalog-ai p{margin:2px 0 0;font-size:11px;color:var(--muted);}
 
+  /* ---- VAULT DE PROMPTS ---- */
+  .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .section-head h2{font-family:var(--font-display);font-size:15px;font-weight:700;margin:0;}
+  .prompts-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+  .prompts-grid{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+  .prompt-card{border:1px solid var(--border);background:var(--panel);border-radius:12px;padding:14px 16px;}
+  .prompt-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+  .prompt-title-wrap{display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:wrap;}
+  .prompt-title{font-family:var(--font-display);font-weight:700;font-size:13.5px;color:var(--text);}
+  .prompt-service{font-size:10px;color:var(--muted);padding:2px 8px;border:1px solid var(--border);border-radius:20px;white-space:nowrap;}
+  .prompt-cats{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 0;}
+  .prompt-body{font-size:11.5px;color:var(--muted);white-space:pre-wrap;line-height:1.55;margin:8px 0 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .prompt-body.is-expanded{-webkit-line-clamp:unset;display:block;}
+  .prompt-expand-btn{font-size:10.5px;color:var(--purple);background:none;border:none;cursor:pointer;padding:6px 0 0;font-family:var(--font-mono);}
+  .prompt-expand-btn:hover{color:var(--mint);}
+  .prompt-notes{font-size:10.5px;color:var(--muted-dim);margin-top:8px;font-style:italic;}
+  .prompt-actions{display:flex;gap:5px;flex-shrink:0;}
+  .icon-btn.is-fav{color:var(--gold);border-color:rgba(240,196,25,.4);background:rgba(240,196,25,.1);}
+  .prompts-empty{font-size:12px;color:var(--muted-dim);padding:22px 16px;text-align:center;border:1px dashed var(--border);border-radius:12px;margin-top:12px;}
+
   @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
 </head>
@@ -310,6 +330,23 @@
 
   <section id="mainZone"><div class="loading-state">Conectando con el servidor…</div></section>
 
+  <section class="prompts-section">
+    <div class="section-head">
+      <h2>💡 Vault de Prompts</h2>
+      <button class="btn accent" type="button" data-action="new-prompt">+ Prompt</button>
+    </div>
+    <div class="prompts-toolbar">
+      <label class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="promptSearchInput" type="text" placeholder="Buscar prompt, IA, notas…" autocomplete="off">
+      </label>
+      <select id="promptFilterCategory"><option value="">Todas las categorías</option></select>
+      <select id="promptFilterService"><option value="">Todas las IAs</option></select>
+    </div>
+    <section id="promptFormZone"></section>
+    <div id="promptsZone"></div>
+  </section>
+
   <section class="catalog-section">
     <button class="btn ghost" type="button" id="catalogToggleBtn">📚 Catálogo de IAs por categoría</button>
     <div class="catalog-panel" id="catalogPanel" hidden></div>
@@ -317,7 +354,7 @@
 
   <section class="help-card">
     <b>📌 Cómo funciona</b><br>
-    Cada <b>perfil</b> = un perfil de tu navegador. Adentro registrás las cuentas de IA que usás ahí. Si le decís cuántos mensajes tiene cada una y cada cuántas horas resetea, esta pantalla calcula sola si ya podés volver a usarla — y arriba siempre ves qué tenés <b>disponible ahora</b> en todos tus perfiles. Cada cuenta también muestra <b>en qué es mejor esa IA</b> (programación, diseño, video, escritura, etc.) y podés filtrar o buscar por categoría. Todo vive en el servidor, no en este navegador: podés abrirlo desde cualquier dispositivo con tu mismo Telegram.
+    Cada <b>perfil</b> = un perfil de tu navegador. Adentro registrás las cuentas de IA que usás ahí. Si le decís cuántos mensajes tiene cada una y cada cuántas horas resetea, esta pantalla calcula sola si ya podés volver a usarla — y arriba siempre ves qué tenés <b>disponible ahora</b> en todos tus perfiles. Cada cuenta también muestra <b>en qué es mejor esa IA</b> (programación, diseño, video, escritura, etc.) y podés filtrar o buscar por categoría. Todo vive en el servidor, no en este navegador: podés abrirlo desde cualquier dispositivo con tu mismo Telegram. El <b>Vault de Prompts</b> es la excepción: por ahora se guarda solo en este navegador/dispositivo, así que usá "Exportar" de vez en cuando para tener un backup.
   </section>
 
 </main>
@@ -475,7 +512,8 @@
     back:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>`,
     key:    `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="15" r="4"/><path d="M10.5 11.5L20 2"/><path d="M16 6l3 3"/><path d="M13 9l2.5 2.5"/></svg>`,
     eye:    `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>`,
-    eyeOff: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>`
+    eyeOff: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>`,
+    copy:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`
   };
 
   function getNeonHue(str) {
@@ -535,6 +573,17 @@
   }
   let customCategoryMap = loadCustomCategoryMap();
 
+  const PROMPTS_KEY = 'ia_prompts_v1';
+  function loadPromptsLocal(){
+    try{ const v = JSON.parse(localStorage.getItem(PROMPTS_KEY)); return Array.isArray(v) ? v : []; }catch(e){ return []; }
+  }
+  function savePromptsLocal(list){
+    try{ localStorage.setItem(PROMPTS_KEY, JSON.stringify(list)); }catch(e){}
+  }
+  let prompts = loadPromptsLocal();
+  function uid(){ return 'p_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+  function getPrompt(id){ return prompts.find(p => p.id === id); }
+
   function findPreset(service){
     const key = Object.keys(AI_PRESETS).find(k => k.toLowerCase() === (service || '').trim().toLowerCase());
     return key ? AI_PRESETS[key] : null;
@@ -568,7 +617,7 @@
      ESTADO
      ============================================================ */
   let state = { profiles: [], accounts: [] };
-  const ui = { search:'', filterAI:'', filterCategory:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false, collapsedProfiles: new Set(), formCategories:[], catalogOpen:false };
+  const ui = { search:'', filterAI:'', filterCategory:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false, collapsedProfiles: new Set(), formCategories:[], catalogOpen:false, promptSearch:'', promptFilterCategory:'', promptFilterService:'', showPromptForm:false, editingPromptId:null, promptFormCategories:[], expandedPrompts: new Set() };
 
   async function loadState(){
     state = await apiFetch('/api/state' + qs({ tg_id: TG_ID }));
@@ -688,6 +737,7 @@
     renderForm();
     renderMain();
     renderCatalog();
+    renderPromptsSection();
   }
 
   function renderStats(){
@@ -913,6 +963,194 @@
           </div>
         </div>`;
     }).join('');
+  }
+
+  /* ============================================================
+     VAULT DE PROMPTS (almacenado en localStorage, sin servidor)
+     ============================================================ */
+  function matchesPromptFilters(p){
+    if(ui.promptFilterCategory && !(p.categories || []).includes(ui.promptFilterCategory)) return false;
+    if(ui.promptFilterService && (p.service || '').toLowerCase() !== ui.promptFilterService.toLowerCase()) return false;
+    if(ui.promptSearch){
+      const catLabels = (p.categories || []).map(c => AI_CATEGORIES[c] ? AI_CATEGORIES[c].label : '').join(' ');
+      const hay = [p.title, p.service, p.body, p.notes, catLabels].join(' ').toLowerCase();
+      if(!hay.includes(ui.promptSearch)) return false;
+    }
+    return true;
+  }
+
+  function refreshPromptFilterOptions(){
+    const catSel = document.getElementById('promptFilterCategory');
+    const svcSel = document.getElementById('promptFilterService');
+    if(!catSel || !svcSel) return;
+    const currentCat = ui.promptFilterCategory;
+    const usedCats = new Set();
+    prompts.forEach(p => (p.categories || []).forEach(c => usedCats.add(c)));
+    catSel.innerHTML = '<option value="">Todas las categorías</option>' + Object.entries(AI_CATEGORIES).filter(([id]) => usedCats.has(id)).map(([id,c]) => `<option value="${id}" ${id===currentCat?'selected':''}>${c.icon} ${escapeHtml(c.label)}</option>`).join('');
+    const currentSvc = ui.promptFilterService;
+    const services = [...new Set(prompts.map(p => (p.service||'').trim()).filter(Boolean))].sort();
+    svcSel.innerHTML = '<option value="">Todas las IAs</option>' + services.map(s => `<option value="${escapeHtml(s)}" ${s===currentSvc?'selected':''}>${escapeHtml(s)}</option>`).join('');
+  }
+
+  function renderPromptCard(p){
+    const expanded = ui.expandedPrompts.has(p.id);
+    const cats = (p.categories || []).map(c => categoryChipHtml(c)).join('');
+    return `
+      <div class="prompt-card">
+        <div class="prompt-card-head">
+          <div class="prompt-title-wrap">
+            <span class="prompt-title">${escapeHtml(p.title)}</span>
+            ${p.service ? `<span class="prompt-service">${escapeHtml(p.service)}</span>` : ''}
+          </div>
+          <div class="prompt-actions">
+            <button class="icon-btn ${p.favorite ? 'is-fav' : ''}" type="button" data-action="toggle-fav-prompt" data-id="${p.id}" title="${p.favorite ? 'Quitar de favoritos' : 'Marcar favorito'}">${p.favorite ? '★' : '☆'}</button>
+            <button class="icon-btn is-on" type="button" data-action="copy-prompt" data-id="${p.id}" title="Copiar prompt">${ICONS.copy}</button>
+            <button class="icon-btn" type="button" data-action="edit-prompt" data-id="${p.id}" title="Editar">${ICONS.pencil}</button>
+            <button class="icon-btn danger" type="button" data-action="delete-prompt" data-id="${p.id}" title="Eliminar">${ICONS.trash}</button>
+          </div>
+        </div>
+        ${cats ? `<div class="prompt-cats">${cats}</div>` : ''}
+        <p class="prompt-body ${expanded ? 'is-expanded' : ''}">${escapeHtml(p.body)}</p>
+        <button type="button" class="prompt-expand-btn" data-action="toggle-expand-prompt" data-id="${p.id}">${expanded ? 'Ver menos ▲' : 'Ver más ▼'}</button>
+        ${p.notes ? `<p class="prompt-notes">${escapeHtml(p.notes)}</p>` : ''}
+      </div>`;
+  }
+
+  function renderPrompts(){
+    const zone = document.getElementById('promptsZone');
+    if(!zone) return;
+    if(prompts.length === 0){
+      zone.innerHTML = `<div class="prompts-empty">Todavía no guardaste ningún prompt. Usá <b>+ Prompt</b> para crear el primero.</div>`;
+      return;
+    }
+    const visible = prompts.filter(matchesPromptFilters).sort((a,b) => (b.favorite - a.favorite) || (b.createdAt||'').localeCompare(a.createdAt||''));
+    if(visible.length === 0){
+      zone.innerHTML = `<div class="prompts-empty">Ningún prompt coincide con la búsqueda o el filtro.</div>`;
+      return;
+    }
+    zone.innerHTML = `<div class="prompts-grid">${visible.map(renderPromptCard).join('')}</div>`;
+  }
+
+  function renderPromptsSection(){
+    renderPromptForm();
+    renderPrompts();
+    refreshPromptFilterOptions();
+  }
+
+  function renderPromptForm(){
+    const zone = document.getElementById('promptFormZone');
+    if(!zone) return;
+    if(!ui.showPromptForm){ zone.innerHTML = ''; return; }
+    const editing = ui.editingPromptId ? getPrompt(ui.editingPromptId) : null;
+    ui.promptFormCategories = editing ? (editing.categories || []).slice() : [];
+    zone.innerHTML = `
+      <form class="form-panel" id="promptForm">
+        <h3>${editing ? 'Editar prompt' : 'Nuevo prompt'}</h3>
+        <div class="form-grid">
+          <input name="title" placeholder="Título (ej: Tapa de álbum dembow)" value="${editing ? escapeHtml(editing.title) : ''}" required>
+          <input name="service" list="serviceSuggestions" placeholder="IA (opcional)" value="${editing ? escapeHtml(editing.service || '') : ''}" autocomplete="off">
+        </div>
+        <div class="cat-picker-wrap">
+          <span class="cat-picker-label">Categorías (opcional)</span>
+          <div class="cat-picker" id="promptCategoryPicker">
+            ${Object.entries(AI_CATEGORIES).map(([id,c]) => `<button type="button" class="cat-chip cat-pick ${ui.promptFormCategories.includes(id)?'is-selected':''}" data-cat="${id}" style="--neon-hue:${getNeonHue('cat:'+id)}">${c.icon}<span class="cat-label">${escapeHtml(c.label)}</span></button>`).join('')}
+          </div>
+        </div>
+        <div class="form-grid" style="margin-top:10px"><textarea name="body" placeholder="El prompt completo…" required style="min-height:120px">${editing ? escapeHtml(editing.body) : ''}</textarea></div>
+        <div class="form-grid" style="margin-top:6px"><textarea name="notes" placeholder="Notas (opcional)…">${editing ? escapeHtml(editing.notes || '') : ''}</textarea></div>
+        <div class="form-actions">
+          <button type="button" class="btn ghost" data-action="cancel-prompt-form">Cancelar</button>
+          <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Guardar prompt'}</button>
+        </div>
+      </form>`;
+    zone.querySelector('#promptCategoryPicker').addEventListener('click', e => {
+      const chip = e.target.closest('.cat-pick');
+      if(!chip) return;
+      const cat = chip.dataset.cat;
+      const idx = ui.promptFormCategories.indexOf(cat);
+      if(idx === -1) ui.promptFormCategories.push(cat); else ui.promptFormCategories.splice(idx, 1);
+      chip.classList.toggle('is-selected');
+    });
+    zone.querySelector('#promptForm').addEventListener('submit', e => { e.preventDefault(); submitPromptForm(new FormData(e.target)); });
+    zone.querySelector('input[name="title"]').focus();
+  }
+
+  function openPromptForm(editingId){ ui.showPromptForm = true; ui.editingPromptId = editingId || null; renderPromptForm(); }
+  function closePromptForm(){ ui.showPromptForm = false; ui.editingPromptId = null; ui.promptFormCategories = []; renderPromptForm(); }
+
+  function submitPromptForm(fd){
+    const title = (fd.get('title') || '').trim();
+    const body = (fd.get('body') || '').trim();
+    if(!title || !body) return;
+    const payload = {
+      title, body,
+      service: (fd.get('service') || '').trim(),
+      notes: (fd.get('notes') || '').trim(),
+      categories: ui.promptFormCategories.slice()
+    };
+    if(ui.editingPromptId){
+      const p = getPrompt(ui.editingPromptId);
+      if(p) Object.assign(p, payload);
+    } else {
+      prompts.unshift({ id: uid(), favorite: false, createdAt: new Date().toISOString(), ...payload });
+    }
+    savePromptsLocal(prompts);
+    closePromptForm();
+    renderPrompts();
+    refreshPromptFilterOptions();
+    haptic('success');
+    showToast(ui.editingPromptId ? 'Prompt actualizado' : 'Prompt guardado', 'success');
+  }
+
+  async function deletePromptConfirm(id){
+    const p = getPrompt(id);
+    if(!p) return;
+    const ok = await tgConfirmDelete(`¿Eliminar el prompt "${p.title}"?`, 'Eliminar prompt');
+    if(!ok) return;
+    prompts = prompts.filter(x => x.id !== id);
+    savePromptsLocal(prompts);
+    renderPrompts();
+    refreshPromptFilterOptions();
+    haptic('success');
+    showToast('Prompt eliminado', 'success');
+  }
+
+  function toggleFavoritePrompt(id){
+    const p = getPrompt(id);
+    if(!p) return;
+    p.favorite = !p.favorite;
+    savePromptsLocal(prompts);
+    renderPrompts();
+    haptic('light');
+  }
+
+  function toggleExpandPrompt(id){
+    if(ui.expandedPrompts.has(id)) ui.expandedPrompts.delete(id); else ui.expandedPrompts.add(id);
+    renderPrompts();
+  }
+
+  async function copyPromptBody(id){
+    const p = getPrompt(id);
+    if(!p) return;
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(p.body);
+      } else {
+        const tmp = document.createElement('textarea');
+        tmp.value = p.body;
+        tmp.style.position = 'fixed';
+        tmp.style.opacity = '0';
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand('copy');
+        tmp.remove();
+      }
+      haptic('success');
+      showToast(`Prompt "${p.title}" copiado`, 'success');
+    }catch(e){
+      haptic('error');
+      showToast('No se pudo copiar: ' + e.message, 'error');
+    }
   }
 
   /* ============================================================
@@ -1246,6 +1484,8 @@
   async function exportData(){
     try{
       const data = await apiFetch('/api/export' + qs({ tg_id:TG_ID }));
+      data.prompts = prompts;
+      data.customCategories = customCategoryMap;
       const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1261,6 +1501,14 @@
       const parsed = JSON.parse(json);
       if(!parsed || !Array.isArray(parsed.profiles) || !Array.isArray(parsed.accounts)) throw new Error('formato no reconocido');
       await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, mode:'replace', profiles:parsed.profiles, accounts:parsed.accounts }) });
+      if(Array.isArray(parsed.prompts)){
+        prompts = parsed.prompts;
+        savePromptsLocal(prompts);
+      }
+      if(parsed.customCategories && typeof parsed.customCategories === 'object'){
+        customCategoryMap = parsed.customCategories;
+        saveCustomCategoryMap(customCategoryMap);
+      }
       haptic('success');
       await loadState();
       renderAll();
@@ -1303,6 +1551,9 @@
   document.getElementById('filterCategory').addEventListener('change', e => { ui.filterCategory = e.target.value; renderMain(); });
   document.getElementById('filterStatus').addEventListener('change', e => { ui.filterStatus = e.target.value; renderMain(); });
   document.getElementById('catalogToggleBtn').addEventListener('click', () => { ui.catalogOpen = !ui.catalogOpen; renderCatalog(); });
+  document.getElementById('promptSearchInput').addEventListener('input', e => { ui.promptSearch = e.target.value.toLowerCase(); renderPrompts(); });
+  document.getElementById('promptFilterCategory').addEventListener('change', e => { ui.promptFilterCategory = e.target.value; renderPrompts(); });
+  document.getElementById('promptFilterService').addEventListener('change', e => { ui.promptFilterService = e.target.value; renderPrompts(); });
 
   document.addEventListener('click', e => {
     const target = e.target.closest('[data-action]');
@@ -1323,6 +1574,13 @@
       case 'mark-used': markUsedNow(id); break;
       case 'toggle-enabled': toggleEnabled(id); break;
       case 'copy-apikey': copyApiKey(id); break;
+      case 'new-prompt': haptic(); openPromptForm(null); break;
+      case 'edit-prompt': haptic(); openPromptForm(id); break;
+      case 'cancel-prompt-form': haptic(); closePromptForm(); break;
+      case 'delete-prompt': deletePromptConfirm(id); break;
+      case 'toggle-fav-prompt': toggleFavoritePrompt(id); break;
+      case 'copy-prompt': copyPromptBody(id); break;
+      case 'toggle-expand-prompt': toggleExpandPrompt(id); break;
       case 'export': exportData(); break;
       case 'import': importData(); break;
       case 'reset': resetAll(); break;
@@ -1357,6 +1615,7 @@
      ARRANQUE
      ============================================================ */
   async function boot(){
+    renderPromptsSection();
     try{
       await loadState();
     }catch(e){
