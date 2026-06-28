@@ -280,6 +280,21 @@
   .icon-btn.is-fav{color:var(--gold);border-color:rgba(240,196,25,.4);background:rgba(240,196,25,.1);}
   .prompts-empty{font-size:12px;color:var(--muted-dim);padding:22px 16px;text-align:center;border:1px dashed var(--border);border-radius:12px;margin-top:12px;}
 
+  /* ---- 🧠 MKEYZ INSIGHTS ---- */
+  .insights-section{display:flex;flex-direction:column;gap:10px;}
+  .insights-list{display:flex;flex-direction:column;gap:8px;}
+  .insight-card{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--panel);position:relative;overflow:hidden;padding-left:17px;}
+  .insight-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--purple),var(--mint));background-size:100% 300%;animation:brandShine 6s linear infinite;}
+  .insight-card.tone-warn::before{background:linear-gradient(180deg,var(--gold),var(--pink));}
+  .insight-card.tone-good::before{background:linear-gradient(180deg,var(--mint),var(--purple));}
+  .insight-icon{font-size:15px;flex-shrink:0;line-height:1.4;}
+  .insight-text{flex:1;font-size:11.5px;color:var(--text);line-height:1.55;min-width:0;}
+  .insight-text b{color:var(--mint);font-weight:700;}
+  .insight-card.tone-warn .insight-text b{color:var(--gold);}
+  .insight-action{flex-shrink:0;}
+  .insights-empty{font-size:12px;color:var(--muted-dim);padding:14px 16px;border:1px dashed var(--border);border-radius:12px;}
+  @media (prefers-reduced-motion: reduce){.insight-card::before{animation:none;}}
+
   @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
 </head>
@@ -300,6 +315,11 @@
   <div class="migration-banner" id="migrationBanner"></div>
 
   <section class="ready-strip" id="readyStrip"><div class="loading-state">Cargando…</div></section>
+
+  <section class="insights-section">
+    <div class="section-head"><h2>🧠 Mkeyz Insights</h2></div>
+    <div id="insightsZone"><div class="loading-state">Pensando…</div></div>
+  </section>
 
   <section class="rail-wrap">
     <div class="profile-rail" id="profileRail"></div>
@@ -738,6 +758,7 @@
     renderMain();
     renderCatalog();
     renderPromptsSection();
+    renderInsights();
   }
 
   function renderStats(){
@@ -934,7 +955,7 @@
 
   function refreshComputedVisuals(){
     state.accounts.forEach(updateAccountRowVisual);
-    renderStats(); renderReadyStrip(); renderRail();
+    renderStats(); renderReadyStrip(); renderRail(); renderInsights();
   }
 
   /* ============================================================
@@ -1035,6 +1056,7 @@
     renderPromptForm();
     renderPrompts();
     refreshPromptFilterOptions();
+    renderInsights();
   }
 
   function renderPromptForm(){
@@ -1098,6 +1120,7 @@
     closePromptForm();
     renderPrompts();
     refreshPromptFilterOptions();
+    renderInsights();
     haptic('success');
     showToast(ui.editingPromptId ? 'Prompt actualizado' : 'Prompt guardado', 'success');
   }
@@ -1111,6 +1134,7 @@
     savePromptsLocal(prompts);
     renderPrompts();
     refreshPromptFilterOptions();
+    renderInsights();
     haptic('success');
     showToast('Prompt eliminado', 'success');
   }
@@ -1121,6 +1145,7 @@
     p.favorite = !p.favorite;
     savePromptsLocal(prompts);
     renderPrompts();
+    renderInsights();
     haptic('light');
   }
 
@@ -1145,12 +1170,112 @@
         document.execCommand('copy');
         tmp.remove();
       }
+      p.lastCopiedAt = new Date().toISOString();
+      savePromptsLocal(prompts);
+      renderInsights();
       haptic('success');
       showToast(`Prompt "${p.title}" copiado`, 'success');
     }catch(e){
       haptic('error');
       showToast('No se pudo copiar: ' + e.message, 'error');
     }
+  }
+
+  /* ============================================================
+     🧠 MKEYZ INSIGHTS — la app piensa por vos
+     Heurísticas en vivo sobre tus propias cuentas y prompts.
+     No usa ninguna IA externa: todo se calcula acá mismo, gratis e instantáneo.
+     ============================================================ */
+  function computeInsights(){
+    const insights = [];
+    const accounts = (state.accounts || []);
+    const enabled = accounts.filter(a => a.enabled !== false);
+    const withStatus = enabled.map(a => ({ acc:a, status: computeStatus(a) }));
+    const available = withStatus.filter(x => x.status.key === 'available' || x.status.key === 'neutral');
+    const cooldown = withStatus.filter(x => x.status.key === 'cooldown');
+
+    // A) Próxima cuenta sugerida (reparte el desgaste: prioriza la que hace más tiempo no se toca)
+    if(available.length){
+      const sorted = available.slice().sort((a,b) => {
+        const at = a.acc.lastUsed ? new Date(a.acc.lastUsed).getTime() : -1;
+        const bt = b.acc.lastUsed ? new Date(b.acc.lastUsed).getTime() : -1;
+        return at - bt;
+      });
+      const pick = sorted[0].acc;
+      const profile = getProfile(pick.profileId);
+      insights.push({
+        icon:'👉', tone:'good',
+        text:`Para repartir el uso, arrancá con <b>${escapeHtml(pick.service)}</b>${pick.email ? ' ('+escapeHtml(pick.email)+')' : ''} en <b>${escapeHtml(profile ? profile.name : '—')}</b> — es la disponible que hace más tiempo no tocás.`,
+        actionHtml:`<button class="btn sm accent" type="button" data-action="mark-used" data-id="${pick.id}">Marcar usada ahora</button>`
+      });
+    }
+
+    // B) Categorías sin nada disponible ahora
+    const catAccounts = {};
+    enabled.forEach(a => getServiceCategories(a.service).forEach(c => { (catAccounts[c] = catAccounts[c] || []).push(a); }));
+    Object.entries(catAccounts).forEach(([catId, accs]) => {
+      const anyFree = accs.some(a => { const s = computeStatus(a); return s.key === 'available' || s.key === 'neutral'; });
+      if(!anyFree){
+        const cat = AI_CATEGORIES[catId];
+        insights.push({ icon: cat ? cat.icon : '⚠️', tone:'warn',
+          text:`No tenés nada disponible ahora en <b>${cat ? escapeHtml(cat.label) : catId}</b> — ${accs.length===1?'la única cuenta está':'las '+accs.length+' cuentas están'} en cooldown.` });
+      }
+    });
+
+    // C) Todo en cooldown, sin ninguna disponible
+    if(available.length === 0 && cooldown.length > 0){
+      const soonest = cooldown.slice().sort((a,b) => a.status.remainingMs - b.status.remainingMs)[0];
+      insights.push({ icon:'⏳', tone:'warn',
+        text:`No tenés ninguna cuenta disponible en este momento. La primera en liberarse es <b>${escapeHtml(soonest.acc.service)}</b>, ${soonest.status.sub}.` });
+    }
+
+    // D) Cuentas nunca usadas
+    const neverUsed = enabled.filter(a => !a.lastUsed);
+    if(neverUsed.length){
+      insights.push({ icon:'🌱', tone:'neutral',
+        text:`Tenés ${neverUsed.length} cuenta${neverUsed.length>1?'s':''} que nunca usaste: ${neverUsed.slice(0,3).map(a=>escapeHtml(a.service)).join(', ')}${neverUsed.length>3?'…':''}.` });
+    }
+
+    // E) Cuentas pagas inactivas hace 14+ días (o nunca usadas)
+    const idlePaid = enabled.filter(a => a.plan && a.plan.toLowerCase() !== 'free' && (!a.lastUsed || (Date.now() - new Date(a.lastUsed).getTime()) > 14*24*3600*1000));
+    if(idlePaid.length){
+      insights.push({ icon:'💸', tone:'warn',
+        text:`Pagás por ${idlePaid.length} cuenta${idlePaid.length>1?'s':''} (${idlePaid.slice(0,3).map(a=>escapeHtml(a.service)).join(', ')}) que no usás hace más de 2 semanas. ¿Vale la pena seguir pagándola${idlePaid.length>1?'s':''}?` });
+    }
+
+    // F) Prompts sin categoría
+    const uncategorized = prompts.filter(p => !(p.categories && p.categories.length));
+    if(uncategorized.length >= 3){
+      insights.push({ icon:'🏷️', tone:'neutral',
+        text:`Tenés ${uncategorized.length} prompts en el Vault sin categoría — etiquetalos para encontrarlos más rápido.` });
+    }
+
+    // G) Favorito del Vault que no copiás hace rato
+    const staleFavs = prompts.filter(p => p.favorite && (!p.lastCopiedAt || (Date.now() - new Date(p.lastCopiedAt).getTime()) > 21*24*3600*1000));
+    if(staleFavs.length){
+      const p = staleFavs[0];
+      insights.push({ icon:'⭐', tone:'neutral',
+        text:`Marcaste "<b>${escapeHtml(p.title)}</b>" como favorito pero ${p.lastCopiedAt ? 'no lo copiás hace más de 3 semanas' : 'todavía no lo copiaste nunca'}.`,
+        actionHtml:`<button class="btn sm accent" type="button" data-action="copy-prompt" data-id="${p.id}">Copiar ahora</button>` });
+    }
+
+    return insights;
+  }
+
+  function renderInsights(){
+    const zone = document.getElementById('insightsZone');
+    if(!zone) return;
+    const list = computeInsights();
+    if(list.length === 0){
+      zone.innerHTML = `<div class="insights-empty">Todo en orden por ahora — sin sugerencias. 🤙</div>`;
+      return;
+    }
+    zone.innerHTML = `<div class="insights-list">${list.map(ins => `
+      <div class="insight-card tone-${ins.tone}">
+        <span class="insight-icon">${ins.icon}</span>
+        <div class="insight-text">${ins.text}</div>
+        ${ins.actionHtml ? `<div class="insight-action">${ins.actionHtml}</div>` : ''}
+      </div>`).join('')}</div>`;
   }
 
   /* ============================================================
@@ -1359,7 +1484,7 @@
     const prev = acc.lastUsed;
     acc.lastUsed = new Date().toISOString();
     const stillMatches = !ui.filterStatus || ui.filterStatus === computeStatus(acc).key;
-    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); }
+    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); renderInsights(); }
     else { renderAll(); }
     haptic();
     try{
@@ -1367,7 +1492,7 @@
       Object.assign(acc, res.account);
     }catch(e){
       acc.lastUsed = prev;
-      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail();
+      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail(); renderInsights();
       showToast('No se pudo guardar: ' + e.message, 'error');
     }
   }
@@ -1407,7 +1532,7 @@
     const prev = acc.enabled;
     acc.enabled = !acc.enabled;
     const stillMatches = !ui.filterStatus || ui.filterStatus === computeStatus(acc).key;
-    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); }
+    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); renderInsights(); }
     else { renderAll(); }
     haptic();
     try{
@@ -1415,7 +1540,7 @@
       Object.assign(acc, res.account);
     }catch(e){
       acc.enabled = prev;
-      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail();
+      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail(); renderInsights();
       showToast('No se pudo guardar: ' + e.message, 'error');
     }
   }
@@ -1616,6 +1741,7 @@
      ============================================================ */
   async function boot(){
     renderPromptsSection();
+    renderInsights();
     try{
       await loadState();
     }catch(e){
