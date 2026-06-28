@@ -26,7 +26,29 @@
   ::-webkit-scrollbar{width:10px;height:10px;}
   ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:6px;}
 
-  header.topbar{display:flex;flex-direction:column;align-items:center;gap:12px;padding:calc(18px + var(--safe-top, 0px)) 22px 18px;border-bottom:1px solid var(--border);background:rgba(11,12,20,.6);backdrop-filter:blur(10px);position:sticky;top:0;z-index:10;}
+  header.topbar{display:flex;flex-direction:column;align-items:center;gap:12px;padding:calc(18px + var(--safe-top, 0px)) 22px 18px;border-bottom:1px solid var(--border);background:rgba(11,12,20,.6);backdrop-filter:blur(10px);}
+
+  /* ---- BARRA DE CONTROL UNIFICADA ---- */
+  .control-bar{position:sticky;top:0;z-index:12;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;padding-top:calc(10px + var(--safe-top, 0px));background:rgba(8,9,16,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+  .cb-group{display:flex;gap:3px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:3px;overflow-x:auto;scrollbar-width:none;}
+  .cb-group::-webkit-scrollbar{display:none;}
+  .cb-btn{display:flex;align-items:center;gap:6px;flex-shrink:0;font-family:var(--font-mono);font-size:12px;font-weight:700;padding:8px 13px;border-radius:11px;border:none;cursor:pointer;transition:filter .15s,transform .1s;}
+  .cb-btn:active{transform:scale(.96);}
+  .cb-btn .cb-icon{font-size:14px;line-height:1;}
+  .cb-btn[data-tone="purple"]{background:var(--purple);color:#0b0612;}
+  .cb-btn[data-tone="mint"]{background:var(--mint);color:#04150d;}
+  .cb-btn[data-tone="gold"]{background:var(--gold);color:#1a1304;}
+  .cb-btn:hover{filter:brightness(1.08);}
+  .cb-reset{position:relative;flex-shrink:0;display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;padding:8px 12px;border-radius:11px;border:1px solid var(--border);background:var(--panel);color:var(--text);cursor:pointer;transition:border-color .15s;}
+  .cb-reset:hover{border-color:var(--pink);}
+  .cb-reset:active{transform:scale(.97);}
+  .cb-badge{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;padding:0 5px;border-radius:20px;background:var(--pink);color:#1a0410;font-size:10px;font-weight:800;line-height:1;}
+  @media (max-width:880px){
+    .control-bar{padding:8px 12px;padding-top:calc(8px + var(--safe-top, 0px));gap:6px;}
+    .cb-btn{padding:7px 10px;font-size:11px;}
+    .cb-reset{padding:7px 10px;font-size:11px;}
+    .cb-reset .cb-label{display:none;}
+  }
   .brand{display:flex;align-items:center;gap:12px;}
   .brand-mark{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--purple),var(--mint));font-family:var(--font-display);font-weight:800;color:#04050a;font-size:14px;flex-shrink:0;animation:markPulse 3s ease-in-out infinite;}
   .brand h1{font-family:var(--font-display);font-size:21px;font-weight:800;margin:0;letter-spacing:.01em;background:linear-gradient(90deg,var(--purple),var(--mint),var(--pink),var(--purple));background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brandShine 6s linear infinite;}
@@ -310,6 +332,23 @@
   <div class="stats-row" id="statsRow"></div>
 </header>
 
+<nav class="control-bar" id="controlBar">
+  <div class="cb-group">
+    <button class="cb-btn" data-tone="purple" type="button" data-action="new-profile" title="Crear perfil">
+      <span class="cb-icon">👤</span><span class="cb-label">Perfil</span>
+    </button>
+    <button class="cb-btn" data-tone="mint" type="button" data-action="new-account" title="Agregar cuenta IA">
+      <span class="cb-icon">🤖</span><span class="cb-label">Cuenta IA</span>
+    </button>
+    <button class="cb-btn" data-tone="gold" type="button" data-action="new-prompt" title="Guardar prompt">
+      <span class="cb-icon">💡</span><span class="cb-label">Prompt</span>
+    </button>
+  </div>
+  <button class="cb-reset" type="button" data-action="reset-cooldowns" title="Pone disponibles las cuentas en cooldown. No borra nada.">
+    <span class="cb-icon">🔄</span><span class="cb-label">Reiniciar</span><span class="cb-badge" id="cbResetBadge" hidden>0</span>
+  </button>
+</nav>
+
 <main class="container">
 
   <div class="migration-banner" id="migrationBanner"></div>
@@ -323,7 +362,6 @@
 
   <section class="rail-wrap">
     <div class="profile-rail" id="profileRail"></div>
-    <button class="btn primary" type="button" data-action="new-profile" title="Crear perfil">+ Perfil</button>
   </section>
 
   <section class="toolbar">
@@ -340,10 +378,8 @@
       <option value="disabled">Desactivada</option>
       <option value="neutral">Sin datos</option>
     </select>
-    <button class="btn accent" type="button" data-action="new-account">+ Cuenta IA</button>
     <button class="btn ghost" type="button" data-action="export">Exportar</button>
     <button class="btn ghost" type="button" data-action="import">Importar</button>
-    <button class="btn ghost" type="button" data-action="reset-cooldowns" title="Pone todas las cuentas en cooldown como disponibles. No borra nada.">🔄 Reiniciar cooldowns</button>
     <button class="btn ghost danger" type="button" data-action="reset">Borrar todo</button>
   </section>
 
@@ -354,7 +390,6 @@
   <section class="prompts-section">
     <div class="section-head">
       <h2>💡 Vault de Prompts</h2>
-      <button class="btn accent" type="button" data-action="new-prompt">+ Prompt</button>
     </div>
     <div class="prompts-toolbar">
       <label class="search-box">
@@ -760,6 +795,7 @@
     renderCatalog();
     renderPromptsSection();
     renderInsights();
+    renderControlBar();
   }
 
   function renderStats(){
@@ -956,7 +992,7 @@
 
   function refreshComputedVisuals(){
     state.accounts.forEach(updateAccountRowVisual);
-    renderStats(); renderReadyStrip(); renderRail(); renderInsights();
+    renderStats(); renderReadyStrip(); renderRail(); renderInsights(); renderControlBar();
   }
 
   /* ============================================================
@@ -1098,7 +1134,11 @@
     zone.querySelector('input[name="title"]').focus();
   }
 
-  function openPromptForm(editingId){ ui.showPromptForm = true; ui.editingPromptId = editingId || null; renderPromptForm(); }
+  function openPromptForm(editingId){
+    ui.showPromptForm = true; ui.editingPromptId = editingId || null;
+    renderPromptForm();
+    document.getElementById('promptFormZone').scrollIntoView({ behavior:'smooth', block:'center' });
+  }
   function closePromptForm(){ ui.showPromptForm = false; ui.editingPromptId = null; ui.promptFormCategories = []; renderPromptForm(); }
 
   function submitPromptForm(fd){
@@ -1435,7 +1475,11 @@
   /* ============================================================
      ACCIONES Y COLAPSO PERMANENTE
      ============================================================ */
-  function openForm(kind, editingId){ ui.showForm = kind; ui.editingId = editingId || null; ui.bulkProfileMode = false; renderForm(); }
+  function openForm(kind, editingId){
+    ui.showForm = kind; ui.editingId = editingId || null; ui.bulkProfileMode = false;
+    renderForm();
+    document.getElementById('formZone').scrollIntoView({ behavior:'smooth', block:'center' });
+  }
   function closeForm(){ ui.showForm = null; ui.editingId = null; ui.bulkProfileMode = false; ui.formCategories = []; renderForm(); }
 
   function selectProfile(id){ ui.activeProfile = id || null; renderRail(); renderMain(); }
@@ -1485,7 +1529,7 @@
     const prev = acc.lastUsed;
     acc.lastUsed = new Date().toISOString();
     const stillMatches = !ui.filterStatus || ui.filterStatus === computeStatus(acc).key;
-    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); renderInsights(); }
+    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); renderInsights(); renderControlBar(); }
     else { renderAll(); }
     haptic();
     try{
@@ -1493,7 +1537,7 @@
       Object.assign(acc, res.account);
     }catch(e){
       acc.lastUsed = prev;
-      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail(); renderInsights();
+      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail(); renderInsights(); renderControlBar();
       showToast('No se pudo guardar: ' + e.message, 'error');
     }
   }
@@ -1533,7 +1577,7 @@
     const prev = acc.enabled;
     acc.enabled = !acc.enabled;
     const stillMatches = !ui.filterStatus || ui.filterStatus === computeStatus(acc).key;
-    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); renderInsights(); }
+    if(stillMatches && updateAccountRowVisual(acc)){ renderStats(); renderReadyStrip(); renderRail(); renderInsights(); renderControlBar(); }
     else { renderAll(); }
     haptic();
     try{
@@ -1541,7 +1585,7 @@
       Object.assign(acc, res.account);
     }catch(e){
       acc.enabled = prev;
-      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail(); renderInsights();
+      updateAccountRowVisual(acc); renderStats(); renderReadyStrip(); renderRail(); renderInsights(); renderControlBar();
       showToast('No se pudo guardar: ' + e.message, 'error');
     }
   }
@@ -1642,9 +1686,20 @@
     }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
+  function accountsInCooldown(){
+    return (state.accounts || []).filter(a => a.enabled !== false && computeStatus(a).key === 'cooldown');
+  }
+
+  function renderControlBar(){
+    const badge = document.getElementById('cbResetBadge');
+    if(!badge) return;
+    const n = accountsInCooldown().length;
+    if(n > 0){ badge.hidden = false; badge.textContent = n; }
+    else { badge.hidden = true; }
+  }
+
   async function resetAllCooldowns(){
-    const enabled = state.accounts.filter(a => a.enabled !== false);
-    const inCooldown = enabled.filter(a => computeStatus(a).key === 'cooldown');
+    const inCooldown = accountsInCooldown();
     if(inCooldown.length === 0){
       haptic();
       showToast('Ninguna cuenta está en cooldown ahora mismo', 'success');
