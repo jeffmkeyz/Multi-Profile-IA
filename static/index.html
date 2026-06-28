@@ -343,6 +343,7 @@
     <button class="btn accent" type="button" data-action="new-account">+ Cuenta IA</button>
     <button class="btn ghost" type="button" data-action="export">Exportar</button>
     <button class="btn ghost" type="button" data-action="import">Importar</button>
+    <button class="btn ghost" type="button" data-action="reset-cooldowns" title="Pone todas las cuentas en cooldown como disponibles. No borra nada.">🔄 Reiniciar cooldowns</button>
     <button class="btn ghost danger" type="button" data-action="reset">Borrar todo</button>
   </section>
 
@@ -1641,6 +1642,52 @@
     }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
+  async function resetAllCooldowns(){
+    const enabled = state.accounts.filter(a => a.enabled !== false);
+    const inCooldown = enabled.filter(a => computeStatus(a).key === 'cooldown');
+    if(inCooldown.length === 0){
+      haptic();
+      showToast('Ninguna cuenta está en cooldown ahora mismo', 'success');
+      return;
+    }
+    const ok = await tgConfirmDelete(`¿Reiniciar el cooldown de ${inCooldown.length} cuenta${inCooldown.length>1?'s':''}? No se borra nada, solo vuelven a quedar disponibles.`, 'Reiniciar cooldowns');
+    if(!ok) return;
+    haptic();
+    const prevValues = new Map(inCooldown.map(a => [a.id, a.lastUsed]));
+    inCooldown.forEach(acc => {
+      acc.lastUsed = new Date(Date.now() - (acc.limitResetHours*3600*1000 + 60000)).toISOString();
+    });
+    renderAll();
+    const results = await Promise.allSettled(inCooldown.map(acc => apiFetch(`/api/accounts/${acc.id}`, {
+      method:'PATCH',
+      body: JSON.stringify({
+        tg_id: TG_ID, profileId: acc.profileId, service: acc.service,
+        email: acc.email || '', plan: acc.plan || 'Free',
+        limitCount: acc.limitCount, limitResetHours: acc.limitResetHours,
+        apiKey: acc.apiKey || '', notes: acc.notes || '',
+        lastUsed: acc.lastUsed
+      })
+    })));
+    let failCount = 0;
+    results.forEach((r, i) => {
+      const acc = inCooldown[i];
+      if(r.status === 'rejected'){
+        failCount++;
+        acc.lastUsed = prevValues.get(acc.id);
+      } else if(r.value && r.value.account){
+        Object.assign(acc, r.value.account);
+      }
+    });
+    renderAll();
+    if(failCount === 0){
+      haptic('success');
+      showToast(`${inCooldown.length} cuenta${inCooldown.length>1?'s':''} disponible${inCooldown.length>1?'s':''} de nuevo`, 'success');
+    } else {
+      haptic('error');
+      showToast(`${inCooldown.length-failCount} reiniciadas, ${failCount} fallaron`, 'error');
+    }
+  }
+
   async function resetAll(){
     const ok = await tgConfirmDelete('¿Seguro que querés borrar todos los perfiles y cuentas del servidor?', 'Borrar todo');
     if(!ok) return;
@@ -1708,6 +1755,7 @@
       case 'toggle-expand-prompt': toggleExpandPrompt(id); break;
       case 'export': exportData(); break;
       case 'import': importData(); break;
+      case 'reset-cooldowns': resetAllCooldowns(); break;
       case 'reset': resetAll(); break;
     }
   });
