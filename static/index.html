@@ -110,22 +110,33 @@
   .icon-btn.is-off{color:var(--pink);border-color:rgba(255,111,174,.4);background:rgba(255,111,174,.08);}
   .icon-btn.is-on{color:var(--mint);border-color:rgba(61,220,151,.4);background:rgba(61,220,151,.08);}
 
-  /* ---- ESTILOS MODALES (Forms y Dialogs) ---- */
-  .modal-overlay{position:fixed;inset:0;z-index:60;background:rgba(2,2,6,.65);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:18px;}
+  /* ---- ESTILOS MODALES (NUEVA ARQUITECTURA ANTI-BUG) ---- */
+  .modal-overlay{
+    position:fixed; inset:0; z-index:60; 
+    background:rgba(2,2,6,.8); backdrop-filter:blur(4px); 
+    display:none; flex-direction:column; align-items:center; 
+    padding:calc(20px + var(--safe-top, 0px)) 16px calc(20px + var(--safe-bottom, 0px)); 
+    overflow-y:auto; -webkit-overflow-scrolling:touch;
+  }
   .modal-overlay.is-open{display:flex;}
+  /* Pseudo-elementos para centrar seguro sin romper el scroll cuando hay poco espacio */
+  .modal-overlay::before, .modal-overlay::after { content:''; margin:auto; flex-shrink:0; }
   
-  /* Nuevo box modal con scroll interno oculto */
-  .modal-box{width:100%;max-width:480px;background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:18px;animation:formIn .18s ease both; max-height:85vh; overflow-y:auto; scrollbar-width:none;}
-  .modal-box::-webkit-scrollbar{display:none;}
+  .modal-box{
+    width:100%; max-width:480px; 
+    background:var(--panel-2); border:1px solid var(--border); 
+    border-radius:14px; padding:20px; 
+    flex-shrink:0; animation:formIn .2s ease both;
+  }
   .modal-box h3{margin:0 0 4px;font-family:var(--font-display);font-size:16px;color:var(--text);}
-  .modal-box form { display: flex; flex-direction: column; gap: 4px; }
+  .modal-box form { display:flex; flex-direction:column; gap:4px; }
   .modal-box p{margin:0 0 10px;font-size:11.5px;color:var(--muted);}
 
   @keyframes formIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
   
   .form-sub{margin:0 0 12px;font-size:11px;color:var(--muted);}
-  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;}
-  .form-grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;}
+  .form-grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(110px,1fr));}
   
   .modal-box input, .modal-box select, .modal-box textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:12.5px;padding:9px 10px;outline:none;}
   .modal-box input:focus, .modal-box select:focus, .modal-box textarea:focus{border-color:var(--purple);}
@@ -140,7 +151,6 @@
   .icon-btn.is-empty:hover{color:var(--muted);border-color:var(--border);}
   .form-toggle-link{font-size:11px;color:var(--purple);cursor:pointer;text-decoration:underline;margin-right:auto;background:none;border:none;font-family:var(--font-mono);padding:0;}
   .form-empty-note{font-size:12px;color:var(--gold);margin:0 0 10px;}
-
   .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;}
 
   .profiles-list{display:flex;flex-direction:column;gap:16px;}
@@ -206,9 +216,12 @@
   .meta-pill.is-mint{color:var(--mint);border-color:rgba(61,220,151,.35);background:rgba(61,220,151,.08);}
   .meta-pill.is-gold{color:var(--gold);border-color:rgba(240,196,25,.35);background:rgba(240,196,25,.08);}
   .profile-head-actions{display:flex;gap:6px;flex-shrink:0;}
-  .profile-body{max-height:3000px;transition:max-height .3s ease;overflow:hidden;}
-  .profile-card.is-collapsed .profile-body{max-height:0;}
-  .accounts-wrap{padding:14px 16px;display:flex;flex-direction:column;gap:8px;}
+  
+  /* NUEVO: Truco CSS Grid para animar collapse sin los bugs de max-height */
+  .profile-body{ display:grid; grid-template-rows:1fr; transition:grid-template-rows .25s ease; overflow:hidden; }
+  .profile-body > .accounts-wrap{ min-height:0; padding:14px 16px; display:flex; flex-direction:column; gap:8px; }
+  .profile-card.is-collapsed .profile-body{ grid-template-rows:0fr; }
+  
   .profile-empty{font-size:12px;color:var(--muted-dim);padding:14px 16px;}
 
   .back-link{font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;}
@@ -519,8 +532,6 @@
     try{ tg.BackButton.onClick(() => selectProfile(null)); }catch(e){}
   }
 
-  const TG_ID = 'seguro-por-backend'; 
-
   /* ============================================================
      TOASTS
      ============================================================ */
@@ -794,7 +805,6 @@
     renderStats();
     renderReadyStrip();
     renderRail();
-    renderForm();
     renderMain();
     renderCatalog();
     renderPromptsSection();
