@@ -513,18 +513,7 @@
     try{ tg.BackButton.onClick(() => selectProfile(null)); }catch(e){}
   }
 
-  function resolveTgId(){
-    if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id){
-      return String(tg.initDataUnsafe.user.id);
-    }
-    let dev = localStorage.getItem('dev_tg_id');
-    if(!dev){
-      dev = 'dev-' + Math.random().toString(36).slice(2, 9);
-      localStorage.setItem('dev_tg_id', dev);
-    }
-    return dev;
-  }
-  const TG_ID = resolveTgId();
+  const TG_ID = 'seguro-por-backend'; // Ya no se envía el ID, lo maneja el backend. Dejado como fallback.
 
   /* ============================================================
      TOASTS
@@ -539,14 +528,29 @@
   }
 
   /* ============================================================
-     API
+     API SEGURA CON FIRMA DE TELEGRAM
      ============================================================ */
   async function apiFetch(path, options){
     options = options || {};
+    
+    // Obtenemos la firma segura de la Mini App (si no estamos en web pura)
+    let authData = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp.initData : '';
+    
+    // Fallback para desarrollo en navegador (fuera de Telegram)
+    if (!authData) {
+      let dev = localStorage.getItem('dev_tg_id');
+      if(!dev) { dev = 'DEV_MODE_' + Math.random().toString(36).slice(2, 9); localStorage.setItem('dev_tg_id', dev); }
+      authData = dev;
+    }
+
     const res = await fetch(path, {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': authData // Pasamos la firma por aquí, no por URL
+      },
       ...options
     });
+    
     if(!res.ok){
       let msg = 'Error de red (' + res.status + ')';
       try{ const j = await res.json(); if(j && j.error) msg = j.error; }catch(e){}
@@ -554,7 +558,6 @@
     }
     return res.json();
   }
-  const qs = (params) => '?' + new URLSearchParams(params).toString();
 
   /* ============================================================
      ICONOS & HASH MATEMÁTICO DE COLORES (FNV-1a)
@@ -676,7 +679,7 @@
   const ui = { search:'', filterAI:'', filterCategory:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false, collapsedProfiles: new Set(), formCategories:[], catalogOpen:false, promptSearch:'', promptFilterCategory:'', promptFilterService:'', showPromptForm:false, editingPromptId:null, promptFormCategories:[], expandedPrompts: new Set() };
 
   async function loadState(){
-    state = await apiFetch('/api/state' + qs({ tg_id: TG_ID }));
+    state = await apiFetch('/api/state');
   }
 
   function getLocalLegacyData(){
@@ -702,7 +705,7 @@
     `;
     document.getElementById('migrateNowBtn').addEventListener('click', async () => {
       try{
-        await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, mode:'merge', profiles:local.profiles, accounts:local.accounts }) });
+        await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ mode:'merge', profiles:local.profiles, accounts:local.accounts }) });
         banner.style.display = 'none';
         haptic('success');
         showToast('Datos migrados al servidor', 'success');
@@ -1224,8 +1227,6 @@
 
   /* ============================================================
      🧠 MKEYZ INSIGHTS — la app piensa por vos
-     Heurísticas en vivo sobre tus propias cuentas y prompts.
-     No usa ninguna IA externa: todo se calcula acá mismo, gratis e instantáneo.
      ============================================================ */
   function computeInsights(){
     const insights = [];
@@ -1235,7 +1236,6 @@
     const available = withStatus.filter(x => x.status.key === 'available' || x.status.key === 'neutral');
     const cooldown = withStatus.filter(x => x.status.key === 'cooldown');
 
-    // A) Próxima cuenta sugerida (reparte el desgaste: prioriza la que hace más tiempo no se toca)
     if(available.length){
       const sorted = available.slice().sort((a,b) => {
         const at = a.acc.lastUsed ? new Date(a.acc.lastUsed).getTime() : -1;
@@ -1251,7 +1251,6 @@
       });
     }
 
-    // B) Categorías sin nada disponible ahora
     const catAccounts = {};
     enabled.forEach(a => getServiceCategories(a.service).forEach(c => { (catAccounts[c] = catAccounts[c] || []).push(a); }));
     Object.entries(catAccounts).forEach(([catId, accs]) => {
@@ -1263,35 +1262,30 @@
       }
     });
 
-    // C) Todo en cooldown, sin ninguna disponible
     if(available.length === 0 && cooldown.length > 0){
       const soonest = cooldown.slice().sort((a,b) => a.status.remainingMs - b.status.remainingMs)[0];
       insights.push({ icon:'⏳', tone:'warn',
         text:`No tenés ninguna cuenta disponible en este momento. La primera en liberarse es <b>${escapeHtml(soonest.acc.service)}</b>, ${soonest.status.sub}.` });
     }
 
-    // D) Cuentas nunca usadas
     const neverUsed = enabled.filter(a => !a.lastUsed);
     if(neverUsed.length){
       insights.push({ icon:'🌱', tone:'neutral',
         text:`Tenés ${neverUsed.length} cuenta${neverUsed.length>1?'s':''} que nunca usaste: ${neverUsed.slice(0,3).map(a=>escapeHtml(a.service)).join(', ')}${neverUsed.length>3?'…':''}.` });
     }
 
-    // E) Cuentas pagas inactivas hace 14+ días (o nunca usadas)
     const idlePaid = enabled.filter(a => a.plan && a.plan.toLowerCase() !== 'free' && (!a.lastUsed || (Date.now() - new Date(a.lastUsed).getTime()) > 14*24*3600*1000));
     if(idlePaid.length){
       insights.push({ icon:'💸', tone:'warn',
         text:`Pagás por ${idlePaid.length} cuenta${idlePaid.length>1?'s':''} (${idlePaid.slice(0,3).map(a=>escapeHtml(a.service)).join(', ')}) que no usás hace más de 2 semanas. ¿Vale la pena seguir pagándola${idlePaid.length>1?'s':''}?` });
     }
 
-    // F) Prompts sin categoría
     const uncategorized = prompts.filter(p => !(p.categories && p.categories.length));
     if(uncategorized.length >= 3){
       insights.push({ icon:'🏷️', tone:'neutral',
         text:`Tenés ${uncategorized.length} prompts en el Vault sin categoría — etiquetalos para encontrarlos más rápido.` });
     }
 
-    // G) Favorito del Vault que no copiás hace rato
     const staleFavs = prompts.filter(p => p.favorite && (!p.lastCopiedAt || (Date.now() - new Date(p.lastCopiedAt).getTime()) > 21*24*3600*1000));
     if(staleFavs.length){
       const p = staleFavs[0];
@@ -1373,7 +1367,6 @@
       const lastUsedLocal = editing && editing.lastUsed ? toLocalInputValue(editing.lastUsed) : '';
       ui.formCategories = editing ? getServiceCategories(editing.service).slice() : [];
       
-      // EXTRACCIÓN DINÁMICA DE CORREOS PARA AUTOCOMPLETADO NATIVO
       const uniqueEmails = [...new Set(state.accounts.map(a => (a.email || '').trim()).filter(Boolean))].sort();
 
       zone.innerHTML = `
@@ -1406,7 +1399,7 @@
               <button type="button" class="icon-btn" id="apiKeyToggleBtn" title="Mostrar/ocultar">${ICONS.eye}</button>
             </div>
           </div>
-          <p class="form-hint">🔒 Se guarda junto con la cuenta para tenerla recopilada y a mano más adelante.</p>
+          <p class="form-hint">🔒 Se guarda de forma encriptada (AES) en el servidor.</p>
           <div class="form-grid" style="margin-top:6px"><textarea name="notes" placeholder="Notas…">${editing ? escapeHtml(editing.notes) : ''}</textarea></div>
           <div class="form-actions">
             <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
@@ -1500,7 +1493,7 @@
     const ok = await tgConfirmDelete(`¿Eliminar el perfil "${profile.name}" y todas sus cuentas?`, 'Eliminar perfil');
     if(!ok) return;
     try{
-      await apiFetch(`/api/profiles/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
+      await apiFetch(`/api/profiles/${id}`, { method:'DELETE' });
       if(ui.activeProfile === id) ui.activeProfile = null;
       haptic('success');
       await loadState();
@@ -1515,7 +1508,7 @@
     const ok = await tgConfirmDelete(`¿Eliminar la cuenta de ${acc.service}?`, 'Eliminar cuenta');
     if(!ok) return;
     try{
-      await apiFetch(`/api/accounts/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
+      await apiFetch(`/api/accounts/${id}`, { method:'DELETE' });
       haptic('success');
       await loadState();
       renderAll();
@@ -1533,7 +1526,7 @@
     else { renderAll(); }
     haptic();
     try{
-      const res = await apiFetch(`/api/accounts/${id}/mark-used`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) });
+      const res = await apiFetch(`/api/accounts/${id}/mark-used`, { method:'POST', body: JSON.stringify({}) });
       Object.assign(acc, res.account);
     }catch(e){
       acc.lastUsed = prev;
@@ -1581,7 +1574,7 @@
     else { renderAll(); }
     haptic();
     try{
-      const res = await apiFetch(`/api/accounts/${id}/toggle-enabled`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) });
+      const res = await apiFetch(`/api/accounts/${id}/toggle-enabled`, { method:'POST', body: JSON.stringify({}) });
       Object.assign(acc, res.account);
     }catch(e){
       acc.enabled = prev;
@@ -1595,9 +1588,9 @@
     if(!name) return;
     try{
       if(ui.editingId){
-        await apiFetch(`/api/profiles/${ui.editingId}`, { method:'PATCH', body: JSON.stringify({ tg_id:TG_ID, name }) });
+        await apiFetch(`/api/profiles/${ui.editingId}`, { method:'PATCH', body: JSON.stringify({ name }) });
       } else {
-        const res = await apiFetch('/api/profiles', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, name }) });
+        const res = await apiFetch('/api/profiles', { method:'POST', body: JSON.stringify({ name }) });
         ui.activeProfile = res.profile.id;
       }
       haptic('success');
@@ -1610,7 +1603,7 @@
 
   async function submitBulkProfiles(prefix, from, to){
     try{
-      const res = await apiFetch('/api/profiles/bulk', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, prefix, from, to }) });
+      const res = await apiFetch('/api/profiles/bulk', { method:'POST', body: JSON.stringify({ prefix, from, to }) });
       haptic('success');
       closeForm();
       await loadState();
@@ -1624,7 +1617,7 @@
     const service = (fd.get('service') || '').trim();
     if(!profileId || !service) return;
     const payload = {
-      tg_id: TG_ID, profileId, service,
+      profileId, service,
       email: (fd.get('email')||'').trim(),
       plan: (fd.get('plan')||'Free').trim() || 'Free',
       limitCount: fd.get('limitCount') ? Number(fd.get('limitCount')) : null,
@@ -1653,7 +1646,7 @@
 
   async function exportData(){
     try{
-      const data = await apiFetch('/api/export' + qs({ tg_id:TG_ID }));
+      const data = await apiFetch('/api/export');
       data.prompts = prompts;
       data.customCategories = customCategoryMap;
       const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
@@ -1670,7 +1663,7 @@
     try{
       const parsed = JSON.parse(json);
       if(!parsed || !Array.isArray(parsed.profiles) || !Array.isArray(parsed.accounts)) throw new Error('formato no reconocido');
-      await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, mode:'replace', profiles:parsed.profiles, accounts:parsed.accounts }) });
+      await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ mode:'replace', profiles:parsed.profiles, accounts:parsed.accounts }) });
       if(Array.isArray(parsed.prompts)){
         prompts = parsed.prompts;
         savePromptsLocal(prompts);
@@ -1716,7 +1709,7 @@
     const results = await Promise.allSettled(inCooldown.map(acc => apiFetch(`/api/accounts/${acc.id}`, {
       method:'PATCH',
       body: JSON.stringify({
-        tg_id: TG_ID, profileId: acc.profileId, service: acc.service,
+        profileId: acc.profileId, service: acc.service,
         email: acc.email || '', plan: acc.plan || 'Free',
         limitCount: acc.limitCount, limitResetHours: acc.limitResetHours,
         apiKey: acc.apiKey || '', notes: acc.notes || '',
@@ -1747,7 +1740,7 @@
     const ok = await tgConfirmDelete('¿Seguro que querés borrar todos los perfiles y cuentas del servidor?', 'Borrar todo');
     if(!ok) return;
     try{
-      await apiFetch('/api/reset' + qs({ tg_id:TG_ID }), { method:'DELETE' });
+      await apiFetch('/api/reset', { method:'DELETE' });
       ui.activeProfile = null;
       haptic('warning');
       await loadState();
@@ -1762,7 +1755,7 @@
   async function backgroundPoll(){
     if(ui.showForm) return;
     try{
-      const fresh = await apiFetch('/api/state' + qs({ tg_id:TG_ID }));
+      const fresh = await apiFetch('/api/state');
       if(JSON.stringify(fresh) !== JSON.stringify(state)){
         state = fresh;
         renderAll();
