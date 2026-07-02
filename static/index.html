@@ -692,15 +692,44 @@
   let customCategoryMap = loadCustomCategoryMap();
 
   const PROMPTS_KEY = 'ia_prompts_v1';
-  function loadPromptsLocal(){
-    try{ const v = JSON.parse(localStorage.getItem(PROMPTS_KEY)); return Array.isArray(v) ? v : []; }catch(e){ return []; }
-  }
-  function savePromptsLocal(list){
-    try{ localStorage.setItem(PROMPTS_KEY, JSON.stringify(list)); }catch(e){}
-  }
-  let prompts = loadPromptsLocal();
-  function uid(){ return 'p_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+  // Los prompts ahora viven en el servidor (llegan en /api/state).
+  // localStorage queda solo como fuente de migración de versiones anteriores.
+  let prompts = [];
   function getPrompt(id){ return prompts.find(p => p.id === id); }
+
+  const PROMPT_COPIES_KEY = 'ia_prompt_copies_v1';
+  function loadPromptCopies(){
+    try{ const v = JSON.parse(localStorage.getItem(PROMPT_COPIES_KEY)); return v && typeof v === 'object' ? v : {}; }catch(e){ return {}; }
+  }
+  let promptCopies = loadPromptCopies();
+  function recordPromptCopy(id){
+    promptCopies[id] = new Date().toISOString();
+    try{ localStorage.setItem(PROMPT_COPIES_KEY, JSON.stringify(promptCopies)); }catch(e){}
+  }
+  function lastCopyOf(id){ return promptCopies[id] || null; }
+
+  async function migrateLocalPromptsIfNeeded(){
+    let local = [];
+    try{ const v = JSON.parse(localStorage.getItem(PROMPTS_KEY)); if(Array.isArray(v)) local = v; }catch(e){}
+    if(local.length === 0) return;
+    try{
+      const normalized = local.map(p => ({
+        title: p.title, body: p.body, service: p.service || '', notes: p.notes || '',
+        categories: p.categories || [], favorite: !!p.favorite,
+        createdAt: p.createdAt ? Date.parse(p.createdAt) || undefined : undefined
+      }));
+      const res = await apiFetch('/api/prompts/bulk', { method:'POST', body: JSON.stringify({ prompts: normalized }) });
+      if(res.prompts){
+        prompts = res.prompts.concat(prompts);
+        localStorage.removeItem(PROMPTS_KEY);
+        renderPromptsSection();
+        showToast(`${res.prompts.length} prompt${res.prompts.length>1?'s':''} migrado${res.prompts.length>1?'s':''} al servidor 🔄`, 'success');
+      }
+    }catch(e){
+      // Si falla, los prompts locales quedan intactos para reintentar en la próxima carga
+      console.warn('Migración de prompts pendiente:', e.message);
+    }
+  }
 
   function findPreset(service){
     const key = Object.keys(AI_PRESETS).find(k => k.toLowerCase() === (service || '').trim().toLowerCase());
@@ -739,6 +768,7 @@
 
   async function loadState(){
     state = await apiFetch('/api/state' + qs({ tg_id: TG_ID }));
+    prompts = state.prompts || [];
   }
 
   function getLocalLegacyData(){
@@ -1206,29 +1236,35 @@
   }
   function closePromptForm(){ ui.showPromptForm = false; ui.editingPromptId = null; ui.promptFormCategories = []; renderPromptForm(); }
 
-  function submitPromptForm(fd){
+  async function submitPromptForm(fd){
     const title = (fd.get('title') || '').trim();
     const body = (fd.get('body') || '').trim();
     if(!title || !body) return;
+    const editingId = ui.editingPromptId;
+    const existing = editingId ? getPrompt(editingId) : null;
     const payload = {
       title, body,
       service: (fd.get('service') || '').trim(),
       notes: (fd.get('notes') || '').trim(),
-      categories: ui.promptFormCategories.slice()
+      categories: ui.promptFormCategories.slice(),
+      favorite: existing ? !!existing.favorite : false
     };
-    if(ui.editingPromptId){
-      const p = getPrompt(ui.editingPromptId);
-      if(p) Object.assign(p, payload);
-    } else {
-      prompts.unshift({ id: uid(), favorite: false, createdAt: new Date().toISOString(), ...payload });
-    }
-    savePromptsLocal(prompts);
-    closePromptForm();
-    renderPrompts();
-    refreshPromptFilterOptions();
-    renderInsights();
-    haptic('success');
-    showToast(ui.editingPromptId ? 'Prompt actualizado' : 'Prompt guardado', 'success');
+    try{
+      if(editingId){
+        const res = await apiFetch(`/api/prompts/${editingId}`, { method:'PATCH', body: JSON.stringify(payload) });
+        const idx = prompts.findIndex(p => p.id === editingId);
+        if(idx !== -1) prompts[idx] = res.prompt;
+      } else {
+        const res = await apiFetch('/api/prompts', { method:'POST', body: JSON.stringify(payload) });
+        prompts.unshift(res.prompt);
+      }
+      closePromptForm();
+      renderPrompts();
+      refreshPromptFilterOptions();
+      renderInsights();
+      haptic('success');
+      showToast(editingId ? 'Prompt actualizado' : 'Prompt guardado', 'success');
+    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
   async function deletePromptConfirm(id){
@@ -1236,23 +1272,32 @@
     if(!p) return;
     const ok = await tgConfirmDelete(`¿Eliminar el prompt "${p.title}"?`, 'Eliminar prompt');
     if(!ok) return;
-    prompts = prompts.filter(x => x.id !== id);
-    savePromptsLocal(prompts);
-    renderPrompts();
-    refreshPromptFilterOptions();
-    renderInsights();
-    haptic('success');
-    showToast('Prompt eliminado', 'success');
+    try{
+      await apiFetch(`/api/prompts/${id}`, { method:'DELETE' });
+      prompts = prompts.filter(x => x.id !== id);
+      renderPrompts();
+      refreshPromptFilterOptions();
+      renderInsights();
+      haptic('success');
+      showToast('Prompt eliminado', 'success');
+    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
-  function toggleFavoritePrompt(id){
+  async function toggleFavoritePrompt(id){
     const p = getPrompt(id);
     if(!p) return;
-    p.favorite = !p.favorite;
-    savePromptsLocal(prompts);
+    p.favorite = !p.favorite;   // actualización optimista
     renderPrompts();
     renderInsights();
     haptic('light');
+    try{
+      const res = await apiFetch(`/api/prompts/${id}/toggle-favorite`, { method:'POST' });
+      Object.assign(p, res.prompt);
+    }catch(e){
+      p.favorite = !p.favorite; // revertir si el servidor falló
+      renderPrompts();
+      showToast('No se pudo guardar: ' + e.message, 'error');
+    }
   }
 
   function toggleExpandPrompt(id){
@@ -1276,8 +1321,7 @@
         document.execCommand('copy');
         tmp.remove();
       }
-      p.lastCopiedAt = new Date().toISOString();
-      savePromptsLocal(prompts);
+      recordPromptCopy(p.id);
       renderInsights();
       haptic('success');
       showToast(`Prompt "${p.title}" copiado`, 'success');
@@ -1445,23 +1489,24 @@ El archivo completo listo para usar. Si modificás código existente, mostrá el
     }
   }
 
-  function labSaveToVault(){
+  async function labSaveToVault(){
     if(!labState.result) return;
     const idea = document.getElementById('labInput').value.trim();
     const meta = LAB_TARGET_META[labState.target] || LAB_TARGET_META.texto;
     const title = (idea.length > 48 ? idea.slice(0, 48).trimEnd() + '…' : idea) || 'Prompt del Lab';
-    prompts.unshift({
-      id: uid(), favorite: false, createdAt: new Date().toISOString(),
-      title, body: labState.result,
-      service: '', notes: 'Generado en ⚡ Prompt Lab',
-      categories: meta.vaultCats.slice()
-    });
-    savePromptsLocal(prompts);
-    renderPrompts();
-    refreshPromptFilterOptions();
-    renderInsights();
-    haptic('success');
-    showToast('Guardado en el Vault de Prompts', 'success');
+    try{
+      const res = await apiFetch('/api/prompts', { method:'POST', body: JSON.stringify({
+        title, body: labState.result,
+        service: '', notes: 'Generado en ⚡ Prompt Lab',
+        categories: meta.vaultCats.slice(), favorite: false
+      })});
+      prompts.unshift(res.prompt);
+      renderPrompts();
+      refreshPromptFilterOptions();
+      renderInsights();
+      haptic('success');
+      showToast('Guardado en el Vault de Prompts', 'success');
+    }catch(e){ haptic('error'); showToast('Error: ' + e.message, 'error'); }
   }
 
   /* ============================================================
@@ -1534,11 +1579,11 @@ El archivo completo listo para usar. Si modificás código existente, mostrá el
     }
 
     // G) Favorito del Vault que no copiás hace rato
-    const staleFavs = prompts.filter(p => p.favorite && (!p.lastCopiedAt || (Date.now() - new Date(p.lastCopiedAt).getTime()) > 21*24*3600*1000));
+    const staleFavs = prompts.filter(p => { const lc = lastCopyOf(p.id); return p.favorite && (!lc || (Date.now() - new Date(lc).getTime()) > 21*24*3600*1000); });
     if(staleFavs.length){
       const p = staleFavs[0];
       insights.push({ icon:'⭐', tone:'neutral',
-        text:`Marcaste "<b>${escapeHtml(p.title)}</b>" como favorito pero ${p.lastCopiedAt ? 'no lo copiás hace más de 3 semanas' : 'todavía no lo copiaste nunca'}.`,
+        text:`Marcaste "<b>${escapeHtml(p.title)}</b>" como favorito pero ${lastCopyOf(p.id) ? 'no lo copiás hace más de 3 semanas' : 'todavía no lo copiaste nunca'}.`,
         actionHtml:`<button class="btn sm accent" type="button" data-action="copy-prompt" data-id="${p.id}">Copiar ahora</button>` });
     }
 
