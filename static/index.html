@@ -110,38 +110,15 @@
   .icon-btn.is-off{color:var(--pink);border-color:rgba(255,111,174,.4);background:rgba(255,111,174,.08);}
   .icon-btn.is-on{color:var(--mint);border-color:rgba(61,220,151,.4);background:rgba(61,220,151,.08);}
 
-  /* ---- ESTILOS MODALES (NUEVA ARQUITECTURA ANTI-BUG) ---- */
-  .modal-overlay{
-    position:fixed; inset:0; z-index:60; 
-    background:rgba(2,2,6,.8); backdrop-filter:blur(4px); 
-    display:none; flex-direction:column; align-items:center; 
-    padding:calc(20px + var(--safe-top, 0px)) 16px calc(20px + var(--safe-bottom, 0px)); 
-    overflow-y:auto; -webkit-overflow-scrolling:touch;
-  }
-  .modal-overlay.is-open{display:flex;}
-  /* Pseudo-elementos para centrar seguro sin romper el scroll cuando hay poco espacio */
-  .modal-overlay::before, .modal-overlay::after { content:''; margin:auto; flex-shrink:0; }
-  
-  .modal-box{
-    width:100%; max-width:480px; 
-    background:var(--panel-2); border:1px solid var(--border); 
-    border-radius:14px; padding:20px; 
-    flex-shrink:0; animation:formIn .2s ease both;
-  }
-  .modal-box h3{margin:0 0 4px;font-family:var(--font-display);font-size:16px;color:var(--text);}
-  .modal-box form { display:flex; flex-direction:column; gap:4px; }
-  .modal-box p{margin:0 0 10px;font-size:11.5px;color:var(--muted);}
-
+  .form-panel{border:1px solid var(--border);background:var(--panel-2);border-radius:14px;padding:16px;animation:formIn .2s ease both;}
   @keyframes formIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
-  
-  .form-sub{margin:0 0 12px;font-size:11px;color:var(--muted);}
-  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;}
-  .form-grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(110px,1fr));}
-  
-  .modal-box input, .modal-box select, .modal-box textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:12.5px;padding:9px 10px;outline:none;}
-  .modal-box input:focus, .modal-box select:focus, .modal-box textarea:focus{border-color:var(--purple);}
-  .modal-box textarea{grid-column:1/-1;min-height:50px;resize:vertical;}
-  
+  .form-panel h3{margin:0 0 4px;font-family:var(--font-display);font-size:13px;color:var(--text);}
+  .form-panel .form-sub{margin:0 0 12px;font-size:11px;color:var(--muted);}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;}
+  .form-grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));}
+  .form-panel input, .form-panel select, .form-panel textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:12.5px;padding:9px 10px;outline:none;}
+  .form-panel input:focus, .form-panel select:focus, .form-panel textarea:focus{border-color:var(--purple);}
+  .form-panel textarea{grid-column:1/-1;min-height:50px;resize:vertical;}
   .form-hint{grid-column:1/-1;font-size:10.5px;color:var(--muted-dim);}
   .form-actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end;align-items:center;}
   .field-key{grid-column:1/-1;display:flex;gap:6px;align-items:center;}
@@ -151,11 +128,10 @@
   .icon-btn.is-empty:hover{color:var(--muted);border-color:var(--border);}
   .form-toggle-link{font-size:11px;color:var(--purple);cursor:pointer;text-decoration:underline;margin-right:auto;background:none;border:none;font-family:var(--font-mono);padding:0;}
   .form-empty-note{font-size:12px;color:var(--gold);margin:0 0 10px;}
-  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;}
 
   .profiles-list{display:flex;flex-direction:column;gap:16px;}
   
-  /* ---- ESTILOS NEON DINAMICOS ---- */
+  /* ---- ESTILOS NEÓN DINÁMICOS ---- */
   .profile-card{
     border:1px solid hsla(var(--neon-hue, 210), 100%, 65%, 0.25);
     background:var(--panel);
@@ -216,12 +192,9 @@
   .meta-pill.is-mint{color:var(--mint);border-color:rgba(61,220,151,.35);background:rgba(61,220,151,.08);}
   .meta-pill.is-gold{color:var(--gold);border-color:rgba(240,196,25,.35);background:rgba(240,196,25,.08);}
   .profile-head-actions{display:flex;gap:6px;flex-shrink:0;}
-  
-  /* NUEVO: Truco CSS Grid para animar collapse sin los bugs de max-height */
-  .profile-body{ display:grid; grid-template-rows:1fr; transition:grid-template-rows .25s ease; overflow:hidden; }
-  .profile-body > .accounts-wrap{ min-height:0; padding:14px 16px; display:flex; flex-direction:column; gap:8px; }
-  .profile-card.is-collapsed .profile-body{ grid-template-rows:0fr; }
-  
+  .profile-body{max-height:3000px;transition:max-height .3s ease;overflow:hidden;}
+  .profile-card.is-collapsed .profile-body{max-height:0;}
+  .accounts-wrap{padding:14px 16px;display:flex;flex-direction:column;gap:8px;}
   .profile-empty{font-size:12px;color:var(--muted-dim);padding:14px 16px;}
 
   .back-link{font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;}
@@ -276,7 +249,16 @@
   .toast.is-error{border-color:rgba(255,111,174,.45);color:var(--pink);}
   .toast.is-success{border-color:rgba(61,220,151,.45);}
 
-  /* ---- CATEGORIAS DE IA ---- */
+  .modal-overlay{position:fixed;inset:0;z-index:60;background:rgba(2,2,6,.65);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:18px;}
+  .modal-overlay.is-open{display:flex;}
+  .modal-box{width:100%;max-width:480px;background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:18px;animation:formIn .18s ease both;}
+  .modal-box h3{margin:0 0 4px;font-family:var(--font-display);font-size:14px;}
+  .modal-box p{margin:0 0 10px;font-size:11.5px;color:var(--muted);}
+  .modal-box textarea{width:100%;min-height:140px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:12px;padding:10px;outline:none;resize:vertical;}
+  .modal-box textarea:focus{border-color:var(--purple);}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;}
+
+  /* ---- CATEGORÍAS DE IA ---- */
   .cat-chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:10.5px;line-height:1.3;padding:4px 9px;border-radius:20px;white-space:nowrap;
     border:1px solid hsla(var(--neon-hue,210),100%,65%,.3);
     background:hsla(var(--neon-hue,210),100%,65%,.08);
@@ -320,7 +302,30 @@
   .icon-btn.is-fav{color:var(--gold);border-color:rgba(240,196,25,.4);background:rgba(240,196,25,.1);}
   .prompts-empty{font-size:12px;color:var(--muted-dim);padding:22px 16px;text-align:center;border:1px dashed var(--border);border-radius:12px;margin-top:12px;}
 
-  /* ---- MKEYZ INSIGHTS ---- */
+  /* ---- SCROLL A FORMULARIOS + DESTELLO DE FOCO ---- */
+  #formZone,#promptFormZone{scroll-margin-top:78px;}
+  .form-panel.just-opened{animation:formFlash 1.2s ease-out;}
+  @keyframes formFlash{0%{box-shadow:0 0 0 2px var(--mint),0 0 26px rgba(61,220,151,.35);}100%{box-shadow:0 0 0 0 transparent;}}
+
+  /* ---- ⚡ PROMPT LAB ---- */
+  .promptlab-section{display:flex;flex-direction:column;gap:10px;}
+  .promptlab-panel{border:1px solid var(--border);background:var(--panel);border-radius:14px;padding:16px;}
+  .promptlab-panel textarea{width:100%;box-sizing:border-box;min-height:96px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font-mono);font-size:12.5px;line-height:1.6;padding:11px 13px;outline:none;resize:vertical;}
+  .promptlab-panel textarea:focus{border-color:var(--purple);}
+  .lab-targets{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .lab-target{font-family:var(--font-mono);font-size:11px;padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;}
+  .lab-target.is-active{border-color:var(--purple);background:rgba(124,58,255,.16);color:var(--text);font-weight:700;}
+  .lab-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center;}
+  .lab-result{margin-top:14px;border:1px solid rgba(124,58,255,.35);background:rgba(124,58,255,.05);border-radius:12px;padding:14px;}
+  .lab-result-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .lab-result pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(--font-mono);font-size:12px;line-height:1.65;color:var(--text);}
+  .lab-result-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .lab-loading{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted);margin-top:12px;}
+  .lab-spinner{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--purple);animation:labSpin .7s linear infinite;flex-shrink:0;}
+  @keyframes labSpin{to{transform:rotate(360deg);}}
+  .lab-hint{font-size:10.5px;color:var(--muted-dim);margin:0;}
+
+  /* ---- 🧠 MKEYZ INSIGHTS ---- */
   .insights-section{display:flex;flex-direction:column;gap:10px;}
   .insights-list{display:flex;flex-direction:column;gap:8px;}
   .insight-card{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--panel);position:relative;overflow:hidden;padding-left:17px;}
@@ -371,11 +376,11 @@
 
   <div class="migration-banner" id="migrationBanner"></div>
 
-  <section class="ready-strip" id="readyStrip"><div class="loading-state">Cargando...</div></section>
+  <section class="ready-strip" id="readyStrip"><div class="loading-state">Cargando…</div></section>
 
   <section class="insights-section">
     <div class="section-head"><h2>🧠 Mkeyz Insights</h2></div>
-    <div id="insightsZone"><div class="loading-state">Pensando...</div></div>
+    <div id="insightsZone"><div class="loading-state">Pensando…</div></div>
   </section>
 
   <section class="rail-wrap">
@@ -385,10 +390,10 @@
   <section class="toolbar">
     <label class="search-box">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="searchInput" type="text" placeholder="Buscar IA, correo, notas..." autocomplete="off">
+      <input id="searchInput" type="text" placeholder="Buscar IA, correo, notas…" autocomplete="off">
     </label>
     <select id="filterAI"><option value="">Todas las IAs</option></select>
-    <select id="filterCategory"><option value="">Todas las categorias</option></select>
+    <select id="filterCategory"><option value="">Todas las categorías</option></select>
     <select id="filterStatus">
       <option value="">Cualquier estado</option>
       <option value="available">Disponible</option>
@@ -401,7 +406,37 @@
     <button class="btn ghost danger" type="button" data-action="reset">Borrar todo</button>
   </section>
 
-  <section id="mainZone"><div class="loading-state">Conectando con el servidor...</div></section>
+  <section id="formZone"></section>
+
+  <section id="mainZone"><div class="loading-state">Conectando con el servidor…</div></section>
+
+  <section class="promptlab-section">
+    <div class="section-head"><h2>⚡ Prompt Lab</h2></div>
+    <div class="promptlab-panel">
+      <textarea id="labInput" placeholder="Escribí acá lo que querés lograr, con tus palabras, como si me lo contaras a mí. Ej: 'quiero una tapa de álbum dembow oscura con neón y que se sienta callejera' o 'un beat tipo afrobeat lento con 808 distorsionada'…"></textarea>
+      <div class="lab-targets" id="labTargets">
+        <button type="button" class="lab-target is-active" data-target="texto">💬 Texto / Chat</button>
+        <button type="button" class="lab-target" data-target="imagen">🎨 Imagen</button>
+        <button type="button" class="lab-target" data-target="musica">🎵 Música (Suno)</button>
+        <button type="button" class="lab-target" data-target="video">🎬 Video</button>
+        <button type="button" class="lab-target" data-target="codigo">💻 Código</button>
+      </div>
+      <div class="lab-actions">
+        <button class="btn primary" type="button" data-action="lab-generate">⚡ Generar prompt</button>
+        <button class="btn ghost" type="button" data-action="lab-enhance" title="Reescribe tu idea con un modelo de IA gratuito (Pollinations), sin API key">✨ Mejorar con IA</button>
+        <p class="lab-hint">"Generar" es instantáneo y offline. "Mejorar con IA" usa un modelo gratuito online.</p>
+      </div>
+      <div class="lab-loading" id="labLoading" hidden><span class="lab-spinner"></span><span id="labLoadingText">Pensando…</span></div>
+      <div class="lab-result" id="labResult" hidden>
+        <div class="lab-result-label"><span id="labResultSource">Prompt generado</span></div>
+        <pre id="labResultText"></pre>
+        <div class="lab-result-actions">
+          <button class="btn accent sm" type="button" data-action="lab-copy">📋 Copiar</button>
+          <button class="btn sm" type="button" data-action="lab-save">💾 Guardar en Vault</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="prompts-section">
     <div class="section-head">
@@ -410,22 +445,23 @@
     <div class="prompts-toolbar">
       <label class="search-box">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input id="promptSearchInput" type="text" placeholder="Buscar prompt, IA, notas..." autocomplete="off">
+        <input id="promptSearchInput" type="text" placeholder="Buscar prompt, IA, notas…" autocomplete="off">
       </label>
-      <select id="promptFilterCategory"><option value="">Todas las categorias</option></select>
+      <select id="promptFilterCategory"><option value="">Todas las categorías</option></select>
       <select id="promptFilterService"><option value="">Todas las IAs</option></select>
     </div>
+    <section id="promptFormZone"></section>
     <div id="promptsZone"></div>
   </section>
 
   <section class="catalog-section">
-    <button class="btn ghost" type="button" id="catalogToggleBtn">📚 Catalogo de IAs por categoria</button>
+    <button class="btn ghost" type="button" id="catalogToggleBtn">📚 Catálogo de IAs por categoría</button>
     <div class="catalog-panel" id="catalogPanel" hidden></div>
   </section>
 
   <section class="help-card">
-    <b>📌 Como funciona</b><br>
-    Cada <b>perfil</b> = un perfil de tu navegador. Adentro registras las cuentas de IA que usas ahi. Si le decis cuantos mensajes tiene cada una y cada cuantas horas resetea, esta pantalla calcula sola si ya podes volver a usarla — y arriba siempre ves que tenes <b>disponible ahora</b> en todos tus perfiles. Cada cuenta tambien muestra <b>en que es mejor esa IA</b> (programacion, diseno, video, escritura, etc.) y podes filtrar o buscar por categoria. Todo vive en el servidor, no en este navegador: podes abrirlo desde cualquier dispositivo con tu mismo Telegram. El <b>Vault de Prompts</b> es la excepcion: por ahora se guarda solo en este navegador/dispositivo, asi que usa "Exportar" de vez en cuando para tener un backup.
+    <b>📌 Cómo funciona</b><br>
+    Cada <b>perfil</b> = un perfil de tu navegador. Adentro registrás las cuentas de IA que usás ahí. Si le decís cuántos mensajes tiene cada una y cada cuántas horas resetea, esta pantalla calcula sola si ya podés volver a usarla — y arriba siempre ves qué tenés <b>disponible ahora</b> en todos tus perfiles. Cada cuenta también muestra <b>en qué es mejor esa IA</b> (programación, diseño, video, escritura, etc.) y podés filtrar o buscar por categoría. Todo vive en el servidor, no en este navegador: podés abrirlo desde cualquier dispositivo con tu mismo Telegram. El <b>Vault de Prompts</b> es la excepción: por ahora se guarda solo en este navegador/dispositivo, así que usá "Exportar" de vez en cuando para tener un backup.
   </section>
 
 </main>
@@ -433,14 +469,10 @@
 <footer>Mkeyz IA · datos guardados en servidor, separados por tu cuenta de Telegram</footer>
 <div class="toast-wrap" id="toastWrap"></div>
 
-<div class="modal-overlay" id="formOverlay">
-  <div class="modal-box" id="formModalBox"></div>
-</div>
-
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box">
     <h3 id="modalTitle">Importar datos</h3>
-    <p id="modalDesc">Pega aqui tu JSON exportado. Esto reemplaza todos tus datos actuales.</p>
+    <p id="modalDesc">Pegá aquí tu JSON exportado. Esto reemplaza todos tus datos actuales.</p>
     <textarea id="modalTextarea" placeholder="{ &quot;profiles&quot;: [...], &quot;accounts&quot;: [...] }"></textarea>
     <div class="modal-actions">
       <button type="button" class="btn ghost" id="modalCancelBtn">Cancelar</button>
@@ -532,6 +564,19 @@
     try{ tg.BackButton.onClick(() => selectProfile(null)); }catch(e){}
   }
 
+  function resolveTgId(){
+    if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id){
+      return String(tg.initDataUnsafe.user.id);
+    }
+    let dev = localStorage.getItem('dev_tg_id');
+    if(!dev){
+      dev = 'dev-' + Math.random().toString(36).slice(2, 9);
+      localStorage.setItem('dev_tg_id', dev);
+    }
+    return dev;
+  }
+  const TG_ID = resolveTgId();
+
   /* ============================================================
      TOASTS
      ============================================================ */
@@ -545,27 +590,14 @@
   }
 
   /* ============================================================
-     API SEGURA CON FIRMA DE TELEGRAM
+     API
      ============================================================ */
   async function apiFetch(path, options){
     options = options || {};
-    
-    let authData = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp.initData : '';
-    
-    if (!authData) {
-      let dev = localStorage.getItem('dev_tg_id');
-      if(!dev) { dev = 'DEV_MODE_' + Math.random().toString(36).slice(2, 9); localStorage.setItem('dev_tg_id', dev); }
-      authData = dev;
-    }
-
     const res = await fetch(path, {
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': authData 
-      },
+      headers: { 'Content-Type': 'application/json' },
       ...options
     });
-    
     if(!res.ok){
       let msg = 'Error de red (' + res.status + ')';
       try{ const j = await res.json(); if(j && j.error) msg = j.error; }catch(e){}
@@ -573,9 +605,10 @@
     }
     return res.json();
   }
+  const qs = (params) => '?' + new URLSearchParams(params).toString();
 
   /* ============================================================
-     ICONOS & HASH MATEMATICO DE COLORES (FNV-1a)
+     ICONOS & HASH MATEMÁTICO DE COLORES (FNV-1a)
      ============================================================ */
   const ICONS = {
     chev:   `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>`,
@@ -601,38 +634,38 @@
   }
 
   /* ============================================================
-     CATEGORIAS DE IA
+     CATEGORÍAS DE IA
      ============================================================ */
   const AI_CATEGORIES = {
-    programming:  { label:'Programacion',          icon:'💻' },
-    design:       { label:'Diseno',                 icon:'🎨' },
+    programming:  { label:'Programación',          icon:'💻' },
+    design:       { label:'Diseño',                 icon:'🎨' },
     video:        { label:'Video',                  icon:'🎬' },
-    audio:        { label:'Musica y audio',         icon:'🎵' },
+    audio:        { label:'Música y audio',         icon:'🎵' },
     writing:      { label:'Escritura',              icon:'✍️' },
-    research:     { label:'Investigacion',          icon:'🔍' },
-    analysis:     { label:'Analisis de datos',      icon:'📊' },
-    chat:         { label:'Conversacion',           icon:'💬' },
+    research:     { label:'Investigación',          icon:'🔍' },
+    analysis:     { label:'Análisis de datos',      icon:'📊' },
+    chat:         { label:'Conversación',           icon:'💬' },
     engagement:   { label:'Engagement y marketing', icon:'📣' },
     productivity: { label:'Productividad',          icon:'🤖' }
   };
 
   const AI_PRESETS = {
-    'ChatGPT':      { plan:'Plus', limitCount:40,    limitResetHours:3,  categories:['chat','writing','programming'],   bestFor:'Asistente todo-terreno: texto, codigo y razonamiento general.' },
-    'Claude':       { plan:'Pro',  limitCount:45,    limitResetHours:5,  categories:['programming','writing','analysis'], bestFor:'Codigo complejo, documentos largos y razonamiento cuidadoso.' },
-    'Gemini':       { plan:'Free', limitCount:60,    limitResetHours:24, categories:['research','chat','analysis'],     bestFor:'Multimodal, busqueda en tiempo real e integracion con Google.' },
-    'Perplexity':   { plan:'Free', limitCount:30,    limitResetHours:1,  categories:['research'],                       bestFor:'Respuestas con fuentes citadas, ideal para investigar rapido.' },
+    'ChatGPT':      { plan:'Plus', limitCount:40,    limitResetHours:3,  categories:['chat','writing','programming'],   bestFor:'Asistente todo-terreno: texto, código y razonamiento general.' },
+    'Claude':       { plan:'Pro',  limitCount:45,    limitResetHours:5,  categories:['programming','writing','analysis'], bestFor:'Código complejo, documentos largos y razonamiento cuidadoso.' },
+    'Gemini':       { plan:'Free', limitCount:60,    limitResetHours:24, categories:['research','chat','analysis'],     bestFor:'Multimodal, búsqueda en tiempo real e integración con Google.' },
+    'Perplexity':   { plan:'Free', limitCount:30,    limitResetHours:1,  categories:['research'],                       bestFor:'Respuestas con fuentes citadas, ideal para investigar rápido.' },
     'Grok':         { plan:'Free', limitCount:20,    limitResetHours:2,  categories:['chat','engagement'],              bestFor:'Tendencias en tiempo real y tono desenfadado.' },
-    'DeepSeek':     { plan:'Free', limitCount:50,    limitResetHours:1,  categories:['programming','analysis'],         bestFor:'Codigo y razonamiento matematico muy economico.' },
-    'Mistral':      { plan:'Free', limitCount:50,    limitResetHours:24, categories:['programming'],                    bestFor:'Modelos abiertos, rapidos y eficientes.' },
-    'Copilot':      { plan:'Free', limitCount:30,    limitResetHours:24, categories:['programming'],                    bestFor:'Autocompletado de codigo integrado en el editor.' },
-    'Midjourney':   { plan:'Pro',  limitCount:null,  limitResetHours:null, categories:['design'],                       bestFor:'Imagenes con la estetica mas artistica y pulida.' },
-    'Leonardo AI':  { plan:'Free', limitCount:150,   limitResetHours:24, categories:['design'],                         bestFor:'Control fino de estilo para arte e ilustracion.' },
-    'Canva AI':     { plan:'Free', limitCount:50,    limitResetHours:24, categories:['design','engagement'],            bestFor:'Diseno grafico rapido para redes y presentaciones.' },
+    'DeepSeek':     { plan:'Free', limitCount:50,    limitResetHours:1,  categories:['programming','analysis'],         bestFor:'Código y razonamiento matemático muy económico.' },
+    'Mistral':      { plan:'Free', limitCount:50,    limitResetHours:24, categories:['programming'],                    bestFor:'Modelos abiertos, rápidos y eficientes.' },
+    'Copilot':      { plan:'Free', limitCount:30,    limitResetHours:24, categories:['programming'],                    bestFor:'Autocompletado de código integrado en el editor.' },
+    'Midjourney':   { plan:'Pro',  limitCount:null,  limitResetHours:null, categories:['design'],                       bestFor:'Imágenes con la estética más artística y pulida.' },
+    'Leonardo AI':  { plan:'Free', limitCount:150,   limitResetHours:24, categories:['design'],                         bestFor:'Control fino de estilo para arte e ilustración.' },
+    'Canva AI':     { plan:'Free', limitCount:50,    limitResetHours:24, categories:['design','engagement'],            bestFor:'Diseño gráfico rápido para redes y presentaciones.' },
     'Suno':         { plan:'Free', limitCount:10,    limitResetHours:24, categories:['audio'],                          bestFor:'Canciones completas con letra a partir de un prompt.' },
-    'ElevenLabs':   { plan:'Free', limitCount:10000, limitResetHours:24, categories:['audio'],                          bestFor:'Voces realistas y clonacion de voz.' },
-    'Runway':       { plan:'Free', limitCount:null,  limitResetHours:null, categories:['video','design'],               bestFor:'Edicion y generacion de video con IA.' },
+    'ElevenLabs':   { plan:'Free', limitCount:10000, limitResetHours:24, categories:['audio'],                          bestFor:'Voces realistas y clonación de voz.' },
+    'Runway':       { plan:'Free', limitCount:null,  limitResetHours:null, categories:['video','design'],               bestFor:'Edición y generación de video con IA.' },
     'HeyGen':       { plan:'Free', limitCount:null,  limitResetHours:null, categories:['video','engagement'],           bestFor:'Videos con avatares IA, ideal para contenido y ads.' },
-    'Jasper':       { plan:'Free', limitCount:null,  limitResetHours:null, categories:['engagement','writing'],         bestFor:'Copys de marketing y campanas a escala.' },
+    'Jasper':       { plan:'Free', limitCount:null,  limitResetHours:null, categories:['engagement','writing'],         bestFor:'Copys de marketing y campañas a escala.' },
     'Notion AI':    { plan:'Free', limitCount:null,  limitResetHours:null, categories:['writing','productivity'],       bestFor:'Resumir y redactar directamente en tus notas.' },
     'Character.AI': { plan:'Free', limitCount:null,  limitResetHours:null, categories:['chat'],                        bestFor:'Personajes conversacionales y rol.' },
     'Meta AI':      { plan:'Free', limitCount:null,  limitResetHours:null, categories:['chat','engagement'],            bestFor:'Integrado en Instagram/WhatsApp para contenido social.' }
@@ -688,13 +721,13 @@
   }
 
   /* ============================================================
-     ESTADO GLOBAL DE LA APP
+     ESTADO
      ============================================================ */
   let state = { profiles: [], accounts: [] };
   const ui = { search:'', filterAI:'', filterCategory:'', filterStatus:'', activeProfile:null, showForm:null, editingId:null, bulkProfileMode:false, collapsedProfiles: new Set(), formCategories:[], catalogOpen:false, promptSearch:'', promptFilterCategory:'', promptFilterService:'', showPromptForm:false, editingPromptId:null, promptFormCategories:[], expandedPrompts: new Set() };
 
   async function loadState(){
-    state = await apiFetch('/api/state');
+    state = await apiFetch('/api/state' + qs({ tg_id: TG_ID }));
   }
 
   function getLocalLegacyData(){
@@ -714,13 +747,13 @@
     const banner = document.getElementById('migrationBanner');
     banner.style.display = 'flex';
     banner.innerHTML = `
-      <span>Encontre ${local.profiles.length} perfil(es) guardados en este navegador (version anterior). ¿Los subo?</span>
+      <span>Encontré ${local.profiles.length} perfil(es) guardados en este navegador (versión anterior, sin servidor). ¿Los subo?</span>
       <button class="btn primary sm" type="button" id="migrateNowBtn">Migrar ahora</button>
       <button class="btn ghost sm" type="button" id="migrateDismissBtn">Ignorar</button>
     `;
     document.getElementById('migrateNowBtn').addEventListener('click', async () => {
       try{
-        await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ mode:'merge', profiles:local.profiles, accounts:local.accounts }) });
+        await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, mode:'merge', profiles:local.profiles, accounts:local.accounts }) });
         banner.style.display = 'none';
         haptic('success');
         showToast('Datos migrados al servidor', 'success');
@@ -735,14 +768,14 @@
   }
 
   /* ============================================================
-     DISPONIBILIDAD Y HELPERS DE FORMATO
+     DISPONIBILIDAD
      ============================================================ */
   function computeStatus(acc){
     if(!acc.enabled) return { key:'disabled', label:'Desactivada', sub:'apagada a mano', remainingMs:0 };
     if(!acc.lastUsed) return { key:'neutral', label:'Nunca usada', sub:'', remainingMs:0 };
-    if(!acc.limitResetHours || !acc.limitCount) return { key:'neutral', label:'Sin limite definido', sub:'', remainingMs:0 };
+    if(!acc.limitResetHours || !acc.limitCount) return { key:'neutral', label:'Sin límite definido', sub:'', remainingMs:0 };
     const last = new Date(acc.lastUsed).getTime();
-    if(Number.isNaN(last)) return { key:'neutral', label:'Sin limite definido', sub:'', remainingMs:0 };
+    if(Number.isNaN(last)) return { key:'neutral', label:'Sin límite definido', sub:'', remainingMs:0 };
     const resetAt = last + acc.limitResetHours*3600*1000;
     const now = Date.now();
     if(now >= resetAt) return { key:'available', label:'Disponible', sub:'', remainingMs:0 };
@@ -770,6 +803,9 @@
   const PLAN_CLASS = { Free:'plan-free', Plus:'plan-plus', Pro:'plan-pro', Team:'plan-team' };
   function planClass(plan){ return PLAN_CLASS[plan] || 'plan-otro'; }
 
+  /* ============================================================
+     HELPERS DE DATOS
+     ============================================================ */
   function getProfile(id){ return state.profiles.find(p => p.id === id); }
   function getAccount(id){ return state.accounts.find(a => a.id === id); }
   function accountsOf(profileId){ return state.accounts.filter(a => a.profileId === profileId); }
@@ -798,13 +834,14 @@
   }
 
   /* ============================================================
-     RENDERIZADO BASE
+     RENDER
      ============================================================ */
   function renderAll(){
     refreshFilterOptions();
     renderStats();
     renderReadyStrip();
     renderRail();
+    renderForm();
     renderMain();
     renderCatalog();
     renderPromptsSection();
@@ -840,11 +877,11 @@
     }
     const cooling = state.accounts.map(computeStatus).filter(s => s.key === 'cooldown').sort((a,b)=>a.remainingMs-b.remainingMs)[0];
     if(state.accounts.length === 0){
-      el.innerHTML = `<span class="ready-empty">Aun no registraste ninguna cuenta. Crea un perfil y agrega la primera con "+ Cuenta IA".</span>`;
+      el.innerHTML = `<span class="ready-empty">Aún no registraste ninguna cuenta. Creá un perfil y agregá la primera con "+ Cuenta IA".</span>`;
     } else if(cooling){
-      el.innerHTML = `<span class="ready-empty">Todo en cooldown — la proxima vuelve en <b>${formatRemaining(cooling.remainingMs)}</b>.</span>`;
+      el.innerHTML = `<span class="ready-empty">Todo en cooldown — la próxima vuelve en <b>${formatRemaining(cooling.remainingMs)}</b>.</span>`;
     } else {
-      el.innerHTML = `<span class="ready-empty">Nada con disponibilidad calculable todavia.</span>`;
+      el.innerHTML = `<span class="ready-empty">Nada con disponibilidad calculable todavía.</span>`;
     }
   }
 
@@ -874,14 +911,14 @@
 
     const catSel = document.getElementById('filterCategory');
     const currentCat = ui.filterCategory;
-    catSel.innerHTML = '<option value="">Todas las categorias</option>' + Object.entries(AI_CATEGORIES).map(([id,c]) => `<option value="${id}" ${id===currentCat?'selected':''}>${c.icon} ${escapeHtml(c.label)}</option>`).join('');
+    catSel.innerHTML = '<option value="">Todas las categorías</option>' + Object.entries(AI_CATEGORIES).map(([id,c]) => `<option value="${id}" ${id===currentCat?'selected':''}>${c.icon} ${escapeHtml(c.label)}</option>`).join('');
   }
 
   function renderMain(){
     syncBackButton();
     const zone = document.getElementById('mainZone');
     if(state.profiles.length === 0){
-      zone.innerHTML = `<div class="empty-state"><b>Todavia no hay perfiles</b>Crea el primero con "+ Perfil".</div>`;
+      zone.innerHTML = `<div class="empty-state"><b>Todavía no hay perfiles</b>Creá el primero con "+ Perfil".</div>`;
       return;
     }
     if(ui.activeProfile === null){
@@ -900,8 +937,8 @@
     const isCollapsed = ui.collapsedProfiles.has(profile.id);
 
     let body;
-    if(all.length === 0) body = `<div class="profile-empty">Sin cuentas todavia.</div>`;
-    else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la busqueda o el filtro.</div>`;
+    if(all.length === 0) body = `<div class="profile-empty">Sin cuentas todavía.</div>`;
+    else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
     else body = visible.map(renderAccountRow).join('');
 
     return `
@@ -931,8 +968,8 @@
     const { available, cooldown } = statusCounts(all);
 
     let body;
-    if(all.length === 0) body = `<div class="profile-empty">Este perfil todavia no tiene cuentas.</div>`;
-    else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la busqueda o el filtro.</div>`;
+    if(all.length === 0) body = `<div class="profile-empty">Este perfil todavía no tiene cuentas.</div>`;
+    else if(visible.length === 0) body = `<div class="profile-empty">Ninguna cuenta coincide con la búsqueda o el filtro.</div>`;
     else body = visible.map(renderAccountRow).join('');
 
     return `
@@ -975,7 +1012,7 @@
         <span class="acc-lastused">${formatRelative(acc.lastUsed)}</span>
         <span class="acc-notes" title="${escapeHtml(notesPreview)}">${escapeHtml(notesPreview) || '—'}</span>
         <div class="acc-actions">
-          <button class="icon-btn ${acc.apiKey ? 'is-on' : 'is-empty'}" type="button" data-action="copy-apikey" data-id="${acc.id}" title="${acc.apiKey ? 'Copiar API key' : 'Sin API key guardada'}">${ICONS.key}</button>
+          <button class="icon-btn ${acc.apiKey ? 'is-on' : 'is-empty'}" type="button" data-action="copy-apikey" data-id="${acc.id}" title="${acc.apiKey ? 'Copiar API key' : 'Sin API key guardada — editá la cuenta para agregarla'}">${ICONS.key}</button>
           <button class="icon-btn ${acc.enabled ? 'is-on' : 'is-off'}" type="button" data-action="toggle-enabled" data-id="${acc.id}" title="${acc.enabled ? 'Desactivar cuenta' : 'Activar cuenta'}">${ICONS.power}</button>
           <button class="icon-btn" type="button" data-action="mark-used" data-id="${acc.id}" title="Marcar usada ahora">${ICONS.clock}</button>
           <button class="icon-btn" type="button" data-action="edit-account" data-id="${acc.id}" title="Editar cuenta">${ICONS.pencil}</button>
@@ -984,6 +1021,7 @@
       </div>`;
   }
 
+  /* ---------- Actualizaciones quirúrgicas ---------- */
   function updateAccountRowVisual(acc){
     const row = document.querySelector(`.account-row[data-account-id="${acc.id}"]`);
     if(!row) return false;
@@ -1008,12 +1046,15 @@
     renderStats(); renderReadyStrip(); renderRail(); renderInsights(); renderControlBar();
   }
 
+  /* ============================================================
+     CATÁLOGO DE IAs POR CATEGORÍA
+     ============================================================ */
   function renderCatalog(){
     const panel = document.getElementById('catalogPanel');
     const btn = document.getElementById('catalogToggleBtn');
     if(!panel || !btn) return;
     panel.hidden = !ui.catalogOpen;
-    btn.textContent = ui.catalogOpen ? '📚 Ocultar catalogo de IAs' : '📚 Catalogo de IAs por categoria';
+    btn.textContent = ui.catalogOpen ? '📚 Ocultar catálogo de IAs' : '📚 Catálogo de IAs por categoría';
     if(!ui.catalogOpen) return;
     const have = new Set(state.accounts.map(a => a.service.trim().toLowerCase()));
     panel.innerHTML = Object.entries(AI_CATEGORIES).map(([catId, cat]) => {
@@ -1025,7 +1066,7 @@
           <div class="catalog-items">
             ${items.map(([name, p]) => `
               <div class="catalog-ai">
-                <div class="catalog-ai-top"><b>${escapeHtml(name)}</b>${have.has(name.toLowerCase()) ? '<span class="catalog-have">✓ ya la tenes</span>' : ''}</div>
+                <div class="catalog-ai-top"><b>${escapeHtml(name)}</b>${have.has(name.toLowerCase()) ? '<span class="catalog-have">✓ ya la tenés</span>' : ''}</div>
                 <p>${escapeHtml(p.bestFor || '')}</p>
               </div>`).join('')}
           </div>
@@ -1034,164 +1075,7 @@
   }
 
   /* ============================================================
-     RENDERIZADO DE FORMULARIOS EN MODAL
-     ============================================================ */
-  function renderForm(){
-    const box = document.getElementById('formModalBox');
-    if(!ui.showForm){ box.innerHTML = ''; return; }
-
-    if(ui.showForm === 'profile'){
-      const editing = ui.editingId ? getProfile(ui.editingId) : null;
-      if(editing || !ui.bulkProfileMode){
-        box.innerHTML = `
-          <form id="profileForm">
-            <h3>${editing ? 'Renombrar perfil' : 'Nuevo perfil'}</h3>
-            <div class="form-grid" style="margin-top:10px;">
-              <input name="name" type="text" placeholder="Nombre del perfil" value="${editing ? escapeHtml(editing.name) : 'Perfil ' + nextProfileNumber()}" required autocomplete="off">
-            </div>
-            <div class="form-actions">
-              ${editing ? '' : `<button type="button" class="form-toggle-link" data-action="toggle-bulk">Crear varios numerados →</button>`}
-              <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
-              <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Crear perfil'}</button>
-            </div>
-          </form>`;
-      } else {
-        const start = nextProfileNumber();
-        box.innerHTML = `
-          <form id="profileBulkForm">
-            <h3>Crear varios perfiles numerados</h3>
-            <p class="form-sub">Del 1 al 20 crea "Perfil 1" ... "Perfil 20".</p>
-            <div class="form-grid cols-3" style="margin-top:10px;">
-              <input name="prefix" type="text" placeholder="Prefijo" value="Perfil" autocomplete="off">
-              <input name="from" type="number" min="1" placeholder="Desde" value="${start}">
-              <input name="to" type="number" min="1" placeholder="Hasta" value="${start + 9}">
-            </div>
-            <div class="form-actions">
-              <button type="button" class="form-toggle-link" data-action="toggle-bulk">← Crear uno solo</button>
-              <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
-              <button type="submit" class="btn primary">Crear perfiles</button>
-            </div>
-          </form>`;
-      }
-      setTimeout(() => { const i = box.querySelector('input[name="name"], input[name="prefix"]'); if(i) i.focus(); }, 100);
-
-    } else if(ui.showForm === 'account'){
-      if(state.profiles.length === 0){
-        box.innerHTML = `
-          <div>
-            <h3>Nueva cuenta IA</h3>
-            <p class="form-empty-note" style="margin-top:10px;">☝️ Primero crea un perfil.</p>
-            <div class="form-actions"><button type="button" class="btn ghost" data-action="cancel-form">Cerrar</button></div>
-          </div>`;
-        return;
-      }
-      const editing = ui.editingId ? getAccount(ui.editingId) : null;
-      const defaultProfileId = editing ? editing.profileId : (ui.activeProfile || state.profiles[0].id);
-      const lastUsedLocal = editing && editing.lastUsed ? toLocalInputValue(editing.lastUsed) : '';
-      ui.formCategories = editing ? getServiceCategories(editing.service).slice() : [];
-      const uniqueEmails = [...new Set(state.accounts.map(a => (a.email || '').trim()).filter(Boolean))].sort();
-
-      box.innerHTML = `
-        <form id="accountForm">
-          <h3>${editing ? 'Editar cuenta' : 'Nueva cuenta IA'}</h3>
-          <div class="form-grid" style="margin-top:10px;">
-            <select name="profileId" required>
-              ${state.profiles.map(p => `<option value="${p.id}" ${defaultProfileId===p.id ? 'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
-            </select>
-            <input name="service" id="serviceInput" list="serviceSuggestions" placeholder="IA (ChatGPT, Claude...)" value="${editing ? escapeHtml(editing.service) : ''}" required autocomplete="off">
-            <input name="email" list="emailSuggestions" type="text" placeholder="Correo usado" value="${editing ? escapeHtml(editing.email) : ''}" autocomplete="off">
-            <input name="plan" list="planSuggestions" placeholder="Plan" value="${editing ? escapeHtml(editing.plan) : ''}" autocomplete="off">
-          </div>
-          <p class="form-hint" id="serviceBestForHint"></p>
-          <div class="cat-picker-wrap">
-            <span class="cat-picker-label">¿En que es mejor esta IA?</span>
-            <div class="cat-picker" id="categoryPicker">
-              ${Object.entries(AI_CATEGORIES).map(([id,c]) => `<button type="button" class="cat-chip cat-pick ${ui.formCategories.includes(id)?'is-selected':''}" data-cat="${id}" style="--neon-hue:${getNeonHue('cat:'+id)}">${c.icon}<span class="cat-label">${escapeHtml(c.label)}</span></button>`).join('')}
-            </div>
-          </div>
-          <div class="form-grid cols-3" style="margin-top:10px">
-            <input name="limitCount" type="number" min="0" placeholder="Mensajes" value="${editing && editing.limitCount ? editing.limitCount : ''}">
-            <input name="limitResetHours" type="number" min="0" placeholder="Horas" value="${editing && editing.limitResetHours ? editing.limitResetHours : ''}">
-            <input name="lastUsed" type="datetime-local" value="${lastUsedLocal}">
-          </div>
-          <div class="form-grid" style="margin-top:6px">
-            <div class="field-key">
-              <input name="apiKey" id="apiKeyInput" type="password" placeholder="API Key / Token (opcional)" value="${editing ? escapeHtml(editing.apiKey || '') : ''}" autocomplete="off" spellcheck="false">
-              <button type="button" class="icon-btn" id="apiKeyToggleBtn" title="Mostrar/ocultar">${ICONS.eye}</button>
-            </div>
-          </div>
-          <p class="form-hint" style="margin:2px 0;">🔒 Se guarda encriptada (AES 256) en el servidor.</p>
-          <div class="form-grid" style="margin-top:6px"><textarea name="notes" placeholder="Notas...">${editing ? escapeHtml(editing.notes) : ''}</textarea></div>
-          <div class="form-actions">
-            <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
-            <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Agregar cuenta'}</button>
-          </div>
-        </form>
-        <datalist id="serviceSuggestions">${Object.keys(AI_PRESETS).map(s => `<option value="${s}">`).join('')}</datalist>
-        <datalist id="planSuggestions"><option value="Free"><option value="Plus"><option value="Pro"><option value="Team"><option value="Max"><option value="Advanced"></datalist>
-        <datalist id="emailSuggestions">${uniqueEmails.map(e => `<option value="${escapeHtml(e)}">`).join('')}</datalist>`;
-      
-      box.querySelector('#apiKeyToggleBtn').addEventListener('click', () => {
-        const input = box.querySelector('#apiKeyInput');
-        const btn = box.querySelector('#apiKeyToggleBtn');
-        const reveal = input.type === 'password';
-        input.type = reveal ? 'text' : 'password';
-        btn.innerHTML = reveal ? ICONS.eyeOff : ICONS.eye;
-      });
-      box.querySelector('#categoryPicker').addEventListener('click', e => {
-        const chip = e.target.closest('.cat-pick');
-        if(!chip) return;
-        const cat = chip.dataset.cat;
-        const idx = ui.formCategories.indexOf(cat);
-        if(idx === -1) ui.formCategories.push(cat); else ui.formCategories.splice(idx, 1);
-        chip.classList.toggle('is-selected');
-      });
-      function updateBestForHint(serviceVal){
-        const hintEl = box.querySelector('#serviceBestForHint');
-        const preset = findPreset(serviceVal);
-        hintEl.textContent = preset && preset.bestFor ? `💡 ${preset.bestFor}` : '';
-      }
-      updateBestForHint(editing ? editing.service : '');
-      box.querySelector('#serviceInput').addEventListener('input', e => updateBestForHint(e.target.value));
-      if(!editing){
-        box.querySelector('#serviceInput').addEventListener('change', e => {
-          const preset = AI_PRESETS[e.target.value];
-          if(preset){
-            const form = e.target.closest('form');
-            const planEl = form.querySelector('input[name="plan"]'), cEl = form.querySelector('input[name="limitCount"]'), rEl = form.querySelector('input[name="limitResetHours"]');
-            if(!planEl.value) planEl.value = preset.plan || '';
-            if(!cEl.value && preset.limitCount) cEl.value = preset.limitCount;
-            if(!rEl.value && preset.limitResetHours) rEl.value = preset.limitResetHours;
-          }
-          if(ui.formCategories.length === 0){
-            const suggested = getServiceCategories(e.target.value);
-            if(suggested.length){
-              ui.formCategories = suggested.slice();
-              box.querySelectorAll('.cat-pick').forEach(b => b.classList.toggle('is-selected', suggested.includes(b.dataset.cat)));
-            }
-          }
-        });
-      }
-      setTimeout(() => { const s = box.querySelector('#serviceInput'); if(s) s.focus(); }, 100);
-    }
-  }
-
-  function openForm(kind, editingId){
-    ui.showForm = kind; ui.editingId = editingId || null; ui.bulkProfileMode = false;
-    renderForm();
-    document.getElementById('formOverlay').classList.add('is-open');
-  }
-
-  function closeForm(){
-    document.getElementById('formOverlay').classList.remove('is-open');
-    setTimeout(() => {
-      ui.showForm = null; ui.editingId = null; ui.bulkProfileMode = false; ui.formCategories = [];
-      renderForm();
-    }, 200);
-  }
-
-  /* ============================================================
-     RENDERIZADO DE PROMPTS EN MODAL
+     VAULT DE PROMPTS (almacenado en localStorage, sin servidor)
      ============================================================ */
   function matchesPromptFilters(p){
     if(ui.promptFilterCategory && !(p.categories || []).includes(ui.promptFilterCategory)) return false;
@@ -1211,7 +1095,7 @@
     const currentCat = ui.promptFilterCategory;
     const usedCats = new Set();
     prompts.forEach(p => (p.categories || []).forEach(c => usedCats.add(c)));
-    catSel.innerHTML = '<option value="">Todas las categorias</option>' + Object.entries(AI_CATEGORIES).filter(([id]) => usedCats.has(id)).map(([id,c]) => `<option value="${id}" ${id===currentCat?'selected':''}>${c.icon} ${escapeHtml(c.label)}</option>`).join('');
+    catSel.innerHTML = '<option value="">Todas las categorías</option>' + Object.entries(AI_CATEGORIES).filter(([id]) => usedCats.has(id)).map(([id,c]) => `<option value="${id}" ${id===currentCat?'selected':''}>${c.icon} ${escapeHtml(c.label)}</option>`).join('');
     const currentSvc = ui.promptFilterService;
     const services = [...new Set(prompts.map(p => (p.service||'').trim()).filter(Boolean))].sort();
     svcSel.innerHTML = '<option value="">Todas las IAs</option>' + services.map(s => `<option value="${escapeHtml(s)}" ${s===currentSvc?'selected':''}>${escapeHtml(s)}</option>`).join('');
@@ -1236,7 +1120,7 @@
         </div>
         ${cats ? `<div class="prompt-cats">${cats}</div>` : ''}
         <p class="prompt-body ${expanded ? 'is-expanded' : ''}">${escapeHtml(p.body)}</p>
-        <button type="button" class="prompt-expand-btn" data-action="toggle-expand-prompt" data-id="${p.id}">${expanded ? 'Ver menos ▲' : 'Ver mas ▼'}</button>
+        <button type="button" class="prompt-expand-btn" data-action="toggle-expand-prompt" data-id="${p.id}">${expanded ? 'Ver menos ▲' : 'Ver más ▼'}</button>
         ${p.notes ? `<p class="prompt-notes">${escapeHtml(p.notes)}</p>` : ''}
       </div>`;
   }
@@ -1245,52 +1129,51 @@
     const zone = document.getElementById('promptsZone');
     if(!zone) return;
     if(prompts.length === 0){
-      zone.innerHTML = `<div class="prompts-empty">Todavia no guardaste ningun prompt. Usa <b>+ Prompt</b> para crear el primero.</div>`;
+      zone.innerHTML = `<div class="prompts-empty">Todavía no guardaste ningún prompt. Usá <b>+ Prompt</b> para crear el primero.</div>`;
       return;
     }
     const visible = prompts.filter(matchesPromptFilters).sort((a,b) => (b.favorite - a.favorite) || (b.createdAt||'').localeCompare(a.createdAt||''));
     if(visible.length === 0){
-      zone.innerHTML = `<div class="prompts-empty">Ningun prompt coincide con la busqueda o el filtro.</div>`;
+      zone.innerHTML = `<div class="prompts-empty">Ningún prompt coincide con la búsqueda o el filtro.</div>`;
       return;
     }
     zone.innerHTML = `<div class="prompts-grid">${visible.map(renderPromptCard).join('')}</div>`;
   }
 
   function renderPromptsSection(){
+    renderPromptForm();
     renderPrompts();
     refreshPromptFilterOptions();
     renderInsights();
   }
 
   function renderPromptForm(){
-    const box = document.getElementById('formModalBox');
-    if(!ui.showPromptForm) return;
-    
+    const zone = document.getElementById('promptFormZone');
+    if(!zone) return;
+    if(!ui.showPromptForm){ zone.innerHTML = ''; return; }
     const editing = ui.editingPromptId ? getPrompt(ui.editingPromptId) : null;
     ui.promptFormCategories = editing ? (editing.categories || []).slice() : [];
-    
-    box.innerHTML = `
-      <form id="promptForm">
+    zone.innerHTML = `
+      <form class="form-panel" id="promptForm">
         <h3>${editing ? 'Editar prompt' : 'Nuevo prompt'}</h3>
-        <div class="form-grid" style="margin-top:10px;">
-          <input name="title" placeholder="Titulo (ej: Tapa de album)" value="${editing ? escapeHtml(editing.title) : ''}" required>
+        <div class="form-grid">
+          <input name="title" placeholder="Título (ej: Tapa de álbum dembow)" value="${editing ? escapeHtml(editing.title) : ''}" required>
           <input name="service" list="serviceSuggestions" placeholder="IA (opcional)" value="${editing ? escapeHtml(editing.service || '') : ''}" autocomplete="off">
         </div>
         <div class="cat-picker-wrap">
-          <span class="cat-picker-label">Categorias (opcional)</span>
+          <span class="cat-picker-label">Categorías (opcional)</span>
           <div class="cat-picker" id="promptCategoryPicker">
             ${Object.entries(AI_CATEGORIES).map(([id,c]) => `<button type="button" class="cat-chip cat-pick ${ui.promptFormCategories.includes(id)?'is-selected':''}" data-cat="${id}" style="--neon-hue:${getNeonHue('cat:'+id)}">${c.icon}<span class="cat-label">${escapeHtml(c.label)}</span></button>`).join('')}
           </div>
         </div>
-        <div class="form-grid" style="margin-top:10px"><textarea name="body" placeholder="El prompt completo..." required style="min-height:120px">${editing ? escapeHtml(editing.body) : ''}</textarea></div>
-        <div class="form-grid" style="margin-top:6px"><textarea name="notes" placeholder="Notas (opcional)...">${editing ? escapeHtml(editing.notes || '') : ''}</textarea></div>
+        <div class="form-grid" style="margin-top:10px"><textarea name="body" placeholder="El prompt completo…" required style="min-height:120px">${editing ? escapeHtml(editing.body) : ''}</textarea></div>
+        <div class="form-grid" style="margin-top:6px"><textarea name="notes" placeholder="Notas (opcional)…">${editing ? escapeHtml(editing.notes || '') : ''}</textarea></div>
         <div class="form-actions">
           <button type="button" class="btn ghost" data-action="cancel-prompt-form">Cancelar</button>
           <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Guardar prompt'}</button>
         </div>
       </form>`;
-      
-    box.querySelector('#promptCategoryPicker').addEventListener('click', e => {
+    zone.querySelector('#promptCategoryPicker').addEventListener('click', e => {
       const chip = e.target.closest('.cat-pick');
       if(!chip) return;
       const cat = chip.dataset.cat;
@@ -1298,23 +1181,19 @@
       if(idx === -1) ui.promptFormCategories.push(cat); else ui.promptFormCategories.splice(idx, 1);
       chip.classList.toggle('is-selected');
     });
-    box.querySelector('#promptForm').addEventListener('submit', e => { e.preventDefault(); submitPromptForm(new FormData(e.target)); });
-    setTimeout(() => { const i = box.querySelector('input[name="title"]'); if(i) i.focus(); }, 100);
+    zone.querySelector('#promptForm').addEventListener('submit', e => { e.preventDefault(); submitPromptForm(new FormData(e.target)); });
+    zone.querySelector('input[name="title"]').focus();
   }
 
   function openPromptForm(editingId){
     ui.showPromptForm = true; ui.editingPromptId = editingId || null;
     renderPromptForm();
-    document.getElementById('formOverlay').classList.add('is-open');
+    const zone = document.getElementById('promptFormZone');
+    zone.scrollIntoView({ behavior:'smooth', block:'start' });
+    const panel = zone.querySelector('.form-panel');
+    if(panel){ panel.classList.add('just-opened'); setTimeout(() => panel.classList.remove('just-opened'), 1300); }
   }
-
-  function closePromptForm(){
-    document.getElementById('formOverlay').classList.remove('is-open');
-    setTimeout(() => {
-      ui.showPromptForm = false; ui.editingPromptId = null; ui.promptFormCategories = [];
-      document.getElementById('formModalBox').innerHTML = '';
-    }, 200);
-  }
+  function closePromptForm(){ ui.showPromptForm = false; ui.editingPromptId = null; ui.promptFormCategories = []; renderPromptForm(); }
 
   function submitPromptForm(fd){
     const title = (fd.get('title') || '').trim();
@@ -1398,7 +1277,190 @@
   }
 
   /* ============================================================
-     🧠 MKEYZ INSIGHTS
+     ⚡ PROMPT LAB — de tu idea en lenguaje natural a un prompt avanzado
+     Dos motores:
+     1) Generador estructurado LOCAL: instantáneo, offline, organiza tu idea
+        en el formato profesional que mejor rinde para cada tipo de IA.
+     2) Mejora con IA ONLINE: reescribe tu idea usando text.pollinations.ai
+        (gratuito, sin API key — mismo proveedor que ya usás en Publisherz).
+     ============================================================ */
+  let labState = { target:'texto', result:'', source:'' };
+
+  const LAB_TEMPLATES = {
+    texto: (idea) => `# ROL
+Actuá como un experto senior en el tema que sigue, con criterio propio y experiencia práctica real.
+
+# CONTEXTO
+${idea}
+
+# TAREA
+Desarrollá una respuesta completa y accionable sobre lo anterior. Priorizá profundidad sobre generalidades: andá al detalle concreto, con ejemplos reales aplicables a mi caso.
+
+# REQUISITOS
+- Respondé en español, con tono directo y sin relleno.
+- Si hay pasos, numeralos en orden de ejecución.
+- Si hay decisiones que tomar, mostrame las opciones con pros/contras y recomendame una.
+- Si te falta información clave, preguntámela antes de asumir.
+
+# FORMATO DE SALIDA
+Estructura clara con secciones. Terminá con un resumen de 2-3 líneas de lo esencial.`,
+
+    imagen: (idea) => `${idea.trim().replace(/\.$/,'')}, highly detailed, professional composition, dramatic lighting, sharp focus, 8k resolution, trending digital art
+
+NEGATIVE: blurry, low quality, watermark, text artifacts, deformed, oversaturated
+
+— Ajustes recomendados —
+Aspect ratio: 1:1 para tapa/portada · 9:16 para stories/TikTok · 16:9 para YouTube
+Estilo Mkeyz: agregar "dark neon palette, mint green and hot pink accents, street aesthetic" si va con tu marca`,
+
+    musica: (idea) => `[GÉNERO Y BASE]
+${idea}
+
+[PRODUCCIÓN]
+104-106 BPM, minimalist percussive production, distorted 808 bass, dry aggressive vocals, short chant phrases, dark atmosphere
+
+[ESTRUCTURA]
+Intro corta (4 bars) → verso → hook pegajoso y repetible → verso → hook → outro seca
+
+[NEGATIVE]
+no EDM drops, no autotune excesivo, no pads brillantes, no reverb larga en voz
+
+— Nota — Este template arranca con tu ADN sonoro (104-106 BPM, 808 distorsionada, voz seca). Ajustá el bloque [PRODUCCIÓN] si esta idea pide otra cosa.`,
+
+    video: (idea) => `# CONCEPTO
+${idea}
+
+# ESPECIFICACIONES
+- Duración objetivo: [15s / 30s / 60s]
+- Formato: vertical 9:16 (TikTok/Reels) u horizontal 16:9 (YouTube)
+- Ritmo de corte: rápido, cortes al beat
+
+# ESCENA POR ESCENA
+Describir cada plano: encuadre, movimiento de cámara, iluminación, acción.
+Plano 1: [hook visual en los primeros 2 segundos]
+Plano 2: [desarrollo]
+Plano final: [remate + CTA]
+
+# ESTILO VISUAL
+Dark neon, contraste alto, paleta mint/rosa/púrpura sobre negro, estética urbana nocturna.`,
+
+    codigo: (idea) => `# OBJETIVO
+${idea}
+
+# STACK Y CONTEXTO
+- Especificar: lenguaje, framework, versiones, y dónde corre (navegador, servidor, APK…)
+- Restricciones: [single-file / sin dependencias externas / compatible con X]
+
+# REQUISITOS TÉCNICOS
+- Código completo y funcional, no pseudocódigo ni fragmentos sueltos.
+- Manejo de errores en operaciones que puedan fallar (red, parsing, permisos).
+- Comentarios solo donde la lógica no sea obvia.
+
+# ENTREGABLE
+El archivo completo listo para usar. Si modificás código existente, mostrá el bloque exacto a reemplazar. Al final, listá qué probar para verificar que funciona.`
+  };
+
+  const LAB_TARGET_META = {
+    texto:  { label:'💬 Texto / Chat', vaultCats:['chat','writing'] },
+    imagen: { label:'🎨 Imagen',       vaultCats:['design'] },
+    musica: { label:'🎵 Música (Suno)',vaultCats:['audio'] },
+    video:  { label:'🎬 Video',        vaultCats:['video'] },
+    codigo: { label:'💻 Código',       vaultCats:['programming'] }
+  };
+
+  function labShowResult(text, source){
+    labState.result = text;
+    labState.source = source;
+    document.getElementById('labResultText').textContent = text;
+    document.getElementById('labResultSource').textContent = source;
+    document.getElementById('labResult').hidden = false;
+    document.getElementById('labLoading').hidden = true;
+    document.getElementById('labResult').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+
+  function labGenerate(){
+    const idea = document.getElementById('labInput').value.trim();
+    if(!idea){ haptic('error'); showToast('Escribí primero tu idea en el cuadro', 'error'); return; }
+    haptic();
+    const tpl = LAB_TEMPLATES[labState.target] || LAB_TEMPLATES.texto;
+    labShowResult(tpl(idea), 'Prompt estructurado (generado offline, instantáneo)');
+  }
+
+  async function labEnhance(){
+    const idea = document.getElementById('labInput').value.trim();
+    if(!idea){ haptic('error'); showToast('Escribí primero tu idea en el cuadro', 'error'); return; }
+    haptic();
+    const loading = document.getElementById('labLoading');
+    document.getElementById('labResult').hidden = true;
+    document.getElementById('labLoadingText').textContent = 'Mejorando tu prompt con IA (gratuito, puede tardar unos segundos)…';
+    loading.hidden = false;
+    const meta = LAB_TARGET_META[labState.target] || LAB_TARGET_META.texto;
+    const metaprompt = `Sos un ingeniero de prompts experto. Convertí la siguiente idea escrita en lenguaje natural en un prompt avanzado, específico y profesional para una IA de tipo "${meta.label}". El prompt resultante debe estar en español, ser directo, incluir contexto, requisitos concretos y formato de salida esperado. Respondé SOLO con el prompt final, sin explicaciones ni introducción.\n\nIDEA: ${idea}`;
+    try{
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 25000);
+      const res = await fetch('https://text.pollinations.ai/' + encodeURIComponent(metaprompt), { signal: controller.signal });
+      clearTimeout(timer);
+      if(!res.ok) throw new Error('respuesta ' + res.status);
+      const text = (await res.text()).trim();
+      if(!text) throw new Error('respuesta vacía');
+      haptic('success');
+      labShowResult(text, 'Prompt mejorado con IA (Pollinations, online)');
+    }catch(e){
+      haptic('error');
+      loading.hidden = true;
+      const tpl = LAB_TEMPLATES[labState.target] || LAB_TEMPLATES.texto;
+      labShowResult(tpl(idea), 'La IA online no respondió — te dejo la versión estructurada offline');
+      showToast('IA online no disponible ahora (' + (e.name === 'AbortError' ? 'tardó demasiado' : e.message) + ')', 'error');
+    }
+  }
+
+  async function labCopy(){
+    if(!labState.result) return;
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(labState.result);
+      } else {
+        const tmp = document.createElement('textarea');
+        tmp.value = labState.result;
+        tmp.style.position = 'fixed';
+        tmp.style.opacity = '0';
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand('copy');
+        tmp.remove();
+      }
+      haptic('success');
+      showToast('Prompt copiado', 'success');
+    }catch(e){
+      haptic('error');
+      showToast('No se pudo copiar: ' + e.message, 'error');
+    }
+  }
+
+  function labSaveToVault(){
+    if(!labState.result) return;
+    const idea = document.getElementById('labInput').value.trim();
+    const meta = LAB_TARGET_META[labState.target] || LAB_TARGET_META.texto;
+    const title = (idea.length > 48 ? idea.slice(0, 48).trimEnd() + '…' : idea) || 'Prompt del Lab';
+    prompts.unshift({
+      id: uid(), favorite: false, createdAt: new Date().toISOString(),
+      title, body: labState.result,
+      service: '', notes: 'Generado en ⚡ Prompt Lab',
+      categories: meta.vaultCats.slice()
+    });
+    savePromptsLocal(prompts);
+    renderPrompts();
+    refreshPromptFilterOptions();
+    renderInsights();
+    haptic('success');
+    showToast('Guardado en el Vault de Prompts', 'success');
+  }
+
+  /* ============================================================
+     🧠 MKEYZ INSIGHTS — la app piensa por vos
+     Heurísticas en vivo sobre tus propias cuentas y prompts.
+     No usa ninguna IA externa: todo se calcula acá mismo, gratis e instantáneo.
      ============================================================ */
   function computeInsights(){
     const insights = [];
@@ -1408,6 +1470,7 @@
     const available = withStatus.filter(x => x.status.key === 'available' || x.status.key === 'neutral');
     const cooldown = withStatus.filter(x => x.status.key === 'cooldown');
 
+    // A) Próxima cuenta sugerida (reparte el desgaste: prioriza la que hace más tiempo no se toca)
     if(available.length){
       const sorted = available.slice().sort((a,b) => {
         const at = a.acc.lastUsed ? new Date(a.acc.lastUsed).getTime() : -1;
@@ -1418,11 +1481,12 @@
       const profile = getProfile(pick.profileId);
       insights.push({
         icon:'👉', tone:'good',
-        text:`Para repartir el uso, arranca con <b>${escapeHtml(pick.service)}</b>${pick.email ? ' ('+escapeHtml(pick.email)+')' : ''} en <b>${escapeHtml(profile ? profile.name : '—')}</b> — es la disponible que hace mas tiempo no tocas.`,
+        text:`Para repartir el uso, arrancá con <b>${escapeHtml(pick.service)}</b>${pick.email ? ' ('+escapeHtml(pick.email)+')' : ''} en <b>${escapeHtml(profile ? profile.name : '—')}</b> — es la disponible que hace más tiempo no tocás.`,
         actionHtml:`<button class="btn sm accent" type="button" data-action="mark-used" data-id="${pick.id}">Marcar usada ahora</button>`
       });
     }
 
+    // B) Categorías sin nada disponible ahora
     const catAccounts = {};
     enabled.forEach(a => getServiceCategories(a.service).forEach(c => { (catAccounts[c] = catAccounts[c] || []).push(a); }));
     Object.entries(catAccounts).forEach(([catId, accs]) => {
@@ -1430,39 +1494,44 @@
       if(!anyFree){
         const cat = AI_CATEGORIES[catId];
         insights.push({ icon: cat ? cat.icon : '⚠️', tone:'warn',
-          text:`No tenes nada disponible ahora en <b>${cat ? escapeHtml(cat.label) : catId}</b> — ${accs.length===1?'la unica cuenta esta':'las '+accs.length+' cuentas estan'} en cooldown.` });
+          text:`No tenés nada disponible ahora en <b>${cat ? escapeHtml(cat.label) : catId}</b> — ${accs.length===1?'la única cuenta está':'las '+accs.length+' cuentas están'} en cooldown.` });
       }
     });
 
+    // C) Todo en cooldown, sin ninguna disponible
     if(available.length === 0 && cooldown.length > 0){
       const soonest = cooldown.slice().sort((a,b) => a.status.remainingMs - b.status.remainingMs)[0];
       insights.push({ icon:'⏳', tone:'warn',
-        text:`No tenes ninguna cuenta disponible en este momento. La primera en liberarse es <b>${escapeHtml(soonest.acc.service)}</b>, ${soonest.status.sub}.` });
+        text:`No tenés ninguna cuenta disponible en este momento. La primera en liberarse es <b>${escapeHtml(soonest.acc.service)}</b>, ${soonest.status.sub}.` });
     }
 
+    // D) Cuentas nunca usadas
     const neverUsed = enabled.filter(a => !a.lastUsed);
     if(neverUsed.length){
       insights.push({ icon:'🌱', tone:'neutral',
-        text:`Tenes ${neverUsed.length} cuenta${neverUsed.length>1?'s':''} que nunca usaste: ${neverUsed.slice(0,3).map(a=>escapeHtml(a.service)).join(', ')}${neverUsed.length>3?'...':''}.` });
+        text:`Tenés ${neverUsed.length} cuenta${neverUsed.length>1?'s':''} que nunca usaste: ${neverUsed.slice(0,3).map(a=>escapeHtml(a.service)).join(', ')}${neverUsed.length>3?'…':''}.` });
     }
 
+    // E) Cuentas pagas inactivas hace 14+ días (o nunca usadas)
     const idlePaid = enabled.filter(a => a.plan && a.plan.toLowerCase() !== 'free' && (!a.lastUsed || (Date.now() - new Date(a.lastUsed).getTime()) > 14*24*3600*1000));
     if(idlePaid.length){
       insights.push({ icon:'💸', tone:'warn',
-        text:`Pagas por ${idlePaid.length} cuenta${idlePaid.length>1?'s':''} (${idlePaid.slice(0,3).map(a=>escapeHtml(a.service)).join(', ')}) que no usas hace mas de 2 semanas. ¿Vale la pena seguir pagandola${idlePaid.length>1?'s':''}?` });
+        text:`Pagás por ${idlePaid.length} cuenta${idlePaid.length>1?'s':''} (${idlePaid.slice(0,3).map(a=>escapeHtml(a.service)).join(', ')}) que no usás hace más de 2 semanas. ¿Vale la pena seguir pagándola${idlePaid.length>1?'s':''}?` });
     }
 
+    // F) Prompts sin categoría
     const uncategorized = prompts.filter(p => !(p.categories && p.categories.length));
     if(uncategorized.length >= 3){
       insights.push({ icon:'🏷️', tone:'neutral',
-        text:`Tenes ${uncategorized.length} prompts en el Vault sin categoria — etiquetalos para encontrarlos mas rapido.` });
+        text:`Tenés ${uncategorized.length} prompts en el Vault sin categoría — etiquetalos para encontrarlos más rápido.` });
     }
 
+    // G) Favorito del Vault que no copiás hace rato
     const staleFavs = prompts.filter(p => p.favorite && (!p.lastCopiedAt || (Date.now() - new Date(p.lastCopiedAt).getTime()) > 21*24*3600*1000));
     if(staleFavs.length){
       const p = staleFavs[0];
       insights.push({ icon:'⭐', tone:'neutral',
-        text:`Marcaste "<b>${escapeHtml(p.title)}</b>" como favorito pero ${p.lastCopiedAt ? 'no lo copias hace mas de 3 semanas' : 'todavia no lo copiaste nunca'}.`,
+        text:`Marcaste "<b>${escapeHtml(p.title)}</b>" como favorito pero ${p.lastCopiedAt ? 'no lo copiás hace más de 3 semanas' : 'todavía no lo copiaste nunca'}.`,
         actionHtml:`<button class="btn sm accent" type="button" data-action="copy-prompt" data-id="${p.id}">Copiar ahora</button>` });
     }
 
@@ -1486,13 +1555,181 @@
   }
 
   /* ============================================================
-     FUNCIONES REST CORE
+     FORMULARIOS
      ============================================================ */
+  function renderForm(){
+    const zone = document.getElementById('formZone');
+    if(ui.showForm === 'profile'){
+      const editing = ui.editingId ? getProfile(ui.editingId) : null;
+      if(editing || !ui.bulkProfileMode){
+        zone.innerHTML = `
+          <form class="form-panel" id="profileForm">
+            <h3>${editing ? 'Renombrar perfil' : 'Nuevo perfil'}</h3>
+            <div class="form-grid">
+              <input name="name" type="text" placeholder="Nombre del perfil" value="${editing ? escapeHtml(editing.name) : 'Perfil ' + nextProfileNumber()}" required autocomplete="off">
+            </div>
+            <div class="form-actions">
+              ${editing ? '' : `<button type="button" class="form-toggle-link" data-action="toggle-bulk">Crear varios numerados →</button>`}
+              <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
+              <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Crear perfil'}</button>
+            </div>
+          </form>`;
+      } else {
+        const start = nextProfileNumber();
+        zone.innerHTML = `
+          <form class="form-panel" id="profileBulkForm">
+            <h3>Crear varios perfiles numerados</h3>
+            <p class="form-sub">Por ejemplo: del 1 al 20 crea "Perfil 1" … "Perfil 20".</p>
+            <div class="form-grid cols-3">
+              <input name="prefix" type="text" placeholder="Prefijo" value="Perfil" autocomplete="off">
+              <input name="from" type="number" min="1" placeholder="Desde" value="${start}">
+              <input name="to" type="number" min="1" placeholder="Hasta" value="${start + 9}">
+            </div>
+            <div class="form-actions">
+              <button type="button" class="form-toggle-link" data-action="toggle-bulk">← Crear uno solo</button>
+              <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
+              <button type="submit" class="btn primary">Crear perfiles</button>
+            </div>
+          </form>`;
+      }
+      const input = zone.querySelector('input[name="name"], input[name="prefix"]');
+      if(input) input.focus();
+    } else if(ui.showForm === 'account'){
+      if(state.profiles.length === 0){
+        zone.innerHTML = `
+          <div class="form-panel">
+            <p class="form-empty-note">☝️ Primero creá un perfil.</p>
+            <div class="form-actions"><button type="button" class="btn ghost" data-action="cancel-form">Cerrar</button></div>
+          </div>`;
+        return;
+      }
+      const editing = ui.editingId ? getAccount(ui.editingId) : null;
+      const defaultProfileId = editing ? editing.profileId : (ui.activeProfile || state.profiles[0].id);
+      const lastUsedLocal = editing && editing.lastUsed ? toLocalInputValue(editing.lastUsed) : '';
+      ui.formCategories = editing ? getServiceCategories(editing.service).slice() : [];
+      
+      // EXTRACCIÓN DINÁMICA DE CORREOS PARA AUTOCOMPLETADO NATIVO
+      const uniqueEmails = [...new Set(state.accounts.map(a => (a.email || '').trim()).filter(Boolean))].sort();
+
+      zone.innerHTML = `
+        <form class="form-panel" id="accountForm">
+          <h3>${editing ? 'Editar cuenta' : 'Nueva cuenta IA'}</h3>
+          <div class="form-grid">
+            <select name="profileId" required>
+              ${state.profiles.map(p => `<option value="${p.id}" ${defaultProfileId===p.id ? 'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
+            </select>
+            <input name="service" id="serviceInput" list="serviceSuggestions" placeholder="IA (ChatGPT, Claude…)" value="${editing ? escapeHtml(editing.service) : ''}" required autocomplete="off">
+            <input name="email" list="emailSuggestions" type="text" placeholder="Correo usado" value="${editing ? escapeHtml(editing.email) : ''}" autocomplete="off">
+            <input name="plan" list="planSuggestions" placeholder="Plan" value="${editing ? escapeHtml(editing.plan) : ''}" autocomplete="off">
+          </div>
+          <p class="form-hint" id="serviceBestForHint"></p>
+          <div class="cat-picker-wrap">
+            <span class="cat-picker-label">¿En qué es mejor esta IA? (programación, diseño, engagement…)</span>
+            <div class="cat-picker" id="categoryPicker">
+              ${Object.entries(AI_CATEGORIES).map(([id,c]) => `<button type="button" class="cat-chip cat-pick ${ui.formCategories.includes(id)?'is-selected':''}" data-cat="${id}" style="--neon-hue:${getNeonHue('cat:'+id)}">${c.icon}<span class="cat-label">${escapeHtml(c.label)}</span></button>`).join('')}
+            </div>
+          </div>
+          <div class="form-grid cols-3" style="margin-top:10px">
+            <input name="limitCount" type="number" min="0" placeholder="Mensajes" value="${editing && editing.limitCount ? editing.limitCount : ''}">
+            <input name="limitResetHours" type="number" min="0" placeholder="Cada cuántas horas" value="${editing && editing.limitResetHours ? editing.limitResetHours : ''}">
+            <input name="lastUsed" type="datetime-local" value="${lastUsedLocal}">
+          </div>
+          <p class="form-hint">¿No sabés los límites exactos? Dejalos vacíos.</p>
+          <div class="form-grid" style="margin-top:6px">
+            <div class="field-key">
+              <input name="apiKey" id="apiKeyInput" type="password" placeholder="API Key / Token (opcional)" value="${editing ? escapeHtml(editing.apiKey || '') : ''}" autocomplete="off" spellcheck="false">
+              <button type="button" class="icon-btn" id="apiKeyToggleBtn" title="Mostrar/ocultar">${ICONS.eye}</button>
+            </div>
+          </div>
+          <p class="form-hint">🔒 Se guarda junto con la cuenta para tenerla recopilada y a mano más adelante.</p>
+          <div class="form-grid" style="margin-top:6px"><textarea name="notes" placeholder="Notas…">${editing ? escapeHtml(editing.notes) : ''}</textarea></div>
+          <div class="form-actions">
+            <button type="button" class="btn ghost" data-action="cancel-form">Cancelar</button>
+            <button type="submit" class="btn primary">${editing ? 'Guardar cambios' : 'Agregar cuenta'}</button>
+          </div>
+        </form>
+        <datalist id="serviceSuggestions">${Object.keys(AI_PRESETS).map(s => `<option value="${s}">`).join('')}</datalist>
+        <datalist id="planSuggestions"><option value="Free"><option value="Plus"><option value="Pro"><option value="Team"><option value="Max"><option value="Advanced"></datalist>
+        <datalist id="emailSuggestions">${uniqueEmails.map(e => `<option value="${escapeHtml(e)}">`).join('')}</datalist>`;
+      
+      zone.querySelector('#apiKeyToggleBtn').addEventListener('click', () => {
+        const input = zone.querySelector('#apiKeyInput');
+        const btn = zone.querySelector('#apiKeyToggleBtn');
+        const reveal = input.type === 'password';
+        input.type = reveal ? 'text' : 'password';
+        btn.innerHTML = reveal ? ICONS.eyeOff : ICONS.eye;
+      });
+      const categoryPicker = zone.querySelector('#categoryPicker');
+      categoryPicker.addEventListener('click', e => {
+        const chip = e.target.closest('.cat-pick');
+        if(!chip) return;
+        const cat = chip.dataset.cat;
+        const idx = ui.formCategories.indexOf(cat);
+        if(idx === -1) ui.formCategories.push(cat); else ui.formCategories.splice(idx, 1);
+        chip.classList.toggle('is-selected');
+      });
+      function updateBestForHint(serviceVal){
+        const hintEl = zone.querySelector('#serviceBestForHint');
+        const preset = findPreset(serviceVal);
+        hintEl.textContent = preset && preset.bestFor ? `💡 ${preset.bestFor}` : '';
+      }
+      updateBestForHint(editing ? editing.service : '');
+      zone.querySelector('#serviceInput').addEventListener('input', e => updateBestForHint(e.target.value));
+      if(!editing){
+        zone.querySelector('#serviceInput').addEventListener('change', e => {
+          const preset = AI_PRESETS[e.target.value];
+          if(preset){
+            const form = e.target.closest('form');
+            const planEl = form.querySelector('input[name="plan"]'), cEl = form.querySelector('input[name="limitCount"]'), rEl = form.querySelector('input[name="limitResetHours"]');
+            if(!planEl.value) planEl.value = preset.plan || '';
+            if(!cEl.value && preset.limitCount) cEl.value = preset.limitCount;
+            if(!rEl.value && preset.limitResetHours) rEl.value = preset.limitResetHours;
+          }
+          if(ui.formCategories.length === 0){
+            const suggested = getServiceCategories(e.target.value);
+            if(suggested.length){
+              ui.formCategories = suggested.slice();
+              zone.querySelectorAll('.cat-pick').forEach(b => b.classList.toggle('is-selected', suggested.includes(b.dataset.cat)));
+            }
+          }
+        });
+      }
+      zone.querySelector('#serviceInput').focus();
+    } else {
+      zone.innerHTML = '';
+    }
+  }
+
   function toLocalInputValue(iso){
     const d = new Date(iso);
     if(Number.isNaN(d.getTime())) return '';
     const pad = n => String(n).padStart(2,'0');
     return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  /* ============================================================
+     ACCIONES Y COLAPSO PERMANENTE
+     ============================================================ */
+  function openForm(kind, editingId){
+    ui.showForm = kind; ui.editingId = editingId || null; ui.bulkProfileMode = false;
+    renderForm();
+    const zone = document.getElementById('formZone');
+    zone.scrollIntoView({ behavior:'smooth', block:'start' });
+    const panel = zone.querySelector('.form-panel');
+    if(panel){ panel.classList.add('just-opened'); setTimeout(() => panel.classList.remove('just-opened'), 1300); }
+  }
+  function closeForm(){ ui.showForm = null; ui.editingId = null; ui.bulkProfileMode = false; ui.formCategories = []; renderForm(); }
+
+  function selectProfile(id){ ui.activeProfile = id || null; renderRail(); renderMain(); }
+  
+  function toggleCollapse(id){
+    if (ui.collapsedProfiles.has(id)) {
+      ui.collapsedProfiles.delete(id);
+    } else {
+      ui.collapsedProfiles.add(id);
+    }
+    const card = document.querySelector(`.profile-card[data-profile-id="${id}"]`);
+    if(card) card.classList.toggle('is-collapsed');
   }
 
   async function deleteProfile(id){
@@ -1501,7 +1738,7 @@
     const ok = await tgConfirmDelete(`¿Eliminar el perfil "${profile.name}" y todas sus cuentas?`, 'Eliminar perfil');
     if(!ok) return;
     try{
-      await apiFetch(`/api/profiles/${id}`, { method:'DELETE' });
+      await apiFetch(`/api/profiles/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
       if(ui.activeProfile === id) ui.activeProfile = null;
       haptic('success');
       await loadState();
@@ -1516,7 +1753,7 @@
     const ok = await tgConfirmDelete(`¿Eliminar la cuenta de ${acc.service}?`, 'Eliminar cuenta');
     if(!ok) return;
     try{
-      await apiFetch(`/api/accounts/${id}`, { method:'DELETE' });
+      await apiFetch(`/api/accounts/${id}` + qs({ tg_id:TG_ID }), { method:'DELETE' });
       haptic('success');
       await loadState();
       renderAll();
@@ -1534,7 +1771,7 @@
     else { renderAll(); }
     haptic();
     try{
-      const res = await apiFetch(`/api/accounts/${id}/mark-used`, { method:'POST', body: JSON.stringify({}) });
+      const res = await apiFetch(`/api/accounts/${id}/mark-used`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) });
       Object.assign(acc, res.account);
     }catch(e){
       acc.lastUsed = prev;
@@ -1582,7 +1819,7 @@
     else { renderAll(); }
     haptic();
     try{
-      const res = await apiFetch(`/api/accounts/${id}/toggle-enabled`, { method:'POST', body: JSON.stringify({}) });
+      const res = await apiFetch(`/api/accounts/${id}/toggle-enabled`, { method:'POST', body: JSON.stringify({ tg_id:TG_ID }) });
       Object.assign(acc, res.account);
     }catch(e){
       acc.enabled = prev;
@@ -1596,9 +1833,9 @@
     if(!name) return;
     try{
       if(ui.editingId){
-        await apiFetch(`/api/profiles/${ui.editingId}`, { method:'PATCH', body: JSON.stringify({ name }) });
+        await apiFetch(`/api/profiles/${ui.editingId}`, { method:'PATCH', body: JSON.stringify({ tg_id:TG_ID, name }) });
       } else {
-        const res = await apiFetch('/api/profiles', { method:'POST', body: JSON.stringify({ name }) });
+        const res = await apiFetch('/api/profiles', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, name }) });
         ui.activeProfile = res.profile.id;
       }
       haptic('success');
@@ -1611,7 +1848,7 @@
 
   async function submitBulkProfiles(prefix, from, to){
     try{
-      const res = await apiFetch('/api/profiles/bulk', { method:'POST', body: JSON.stringify({ prefix, from, to }) });
+      const res = await apiFetch('/api/profiles/bulk', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, prefix, from, to }) });
       haptic('success');
       closeForm();
       await loadState();
@@ -1625,7 +1862,7 @@
     const service = (fd.get('service') || '').trim();
     if(!profileId || !service) return;
     const payload = {
-      profileId, service,
+      tg_id: TG_ID, profileId, service,
       email: (fd.get('email')||'').trim(),
       plan: (fd.get('plan')||'Free').trim() || 'Free',
       limitCount: fd.get('limitCount') ? Number(fd.get('limitCount')) : null,
@@ -1654,7 +1891,7 @@
 
   async function exportData(){
     try{
-      const data = await apiFetch('/api/export');
+      const data = await apiFetch('/api/export' + qs({ tg_id:TG_ID }));
       data.prompts = prompts;
       data.customCategories = customCategoryMap;
       const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
@@ -1671,7 +1908,7 @@
     try{
       const parsed = JSON.parse(json);
       if(!parsed || !Array.isArray(parsed.profiles) || !Array.isArray(parsed.accounts)) throw new Error('formato no reconocido');
-      await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ mode:'replace', profiles:parsed.profiles, accounts:parsed.accounts }) });
+      await apiFetch('/api/import', { method:'POST', body: JSON.stringify({ tg_id:TG_ID, mode:'replace', profiles:parsed.profiles, accounts:parsed.accounts }) });
       if(Array.isArray(parsed.prompts)){
         prompts = parsed.prompts;
         savePromptsLocal(prompts);
@@ -1703,7 +1940,7 @@
     const inCooldown = accountsInCooldown();
     if(inCooldown.length === 0){
       haptic();
-      showToast('Ninguna cuenta esta en cooldown ahora mismo', 'success');
+      showToast('Ninguna cuenta está en cooldown ahora mismo', 'success');
       return;
     }
     const ok = await tgConfirmDelete(`¿Reiniciar el cooldown de ${inCooldown.length} cuenta${inCooldown.length>1?'s':''}? No se borra nada, solo vuelven a quedar disponibles.`, 'Reiniciar cooldowns');
@@ -1717,7 +1954,7 @@
     const results = await Promise.allSettled(inCooldown.map(acc => apiFetch(`/api/accounts/${acc.id}`, {
       method:'PATCH',
       body: JSON.stringify({
-        profileId: acc.profileId, service: acc.service,
+        tg_id: TG_ID, profileId: acc.profileId, service: acc.service,
         email: acc.email || '', plan: acc.plan || 'Free',
         limitCount: acc.limitCount, limitResetHours: acc.limitResetHours,
         apiKey: acc.apiKey || '', notes: acc.notes || '',
@@ -1745,10 +1982,10 @@
   }
 
   async function resetAll(){
-    const ok = await tgConfirmDelete('¿Seguro que queres borrar todos los perfiles y cuentas del servidor?', 'Borrar todo');
+    const ok = await tgConfirmDelete('¿Seguro que querés borrar todos los perfiles y cuentas del servidor?', 'Borrar todo');
     if(!ok) return;
     try{
-      await apiFetch('/api/reset', { method:'DELETE' });
+      await apiFetch('/api/reset' + qs({ tg_id:TG_ID }), { method:'DELETE' });
       ui.activeProfile = null;
       haptic('warning');
       await loadState();
@@ -1761,9 +1998,9 @@
      REFRESCO EN SEGUNDO PLANO
      ============================================================ */
   async function backgroundPoll(){
-    if(ui.showForm || ui.showPromptForm) return;
+    if(ui.showForm) return;
     try{
-      const fresh = await apiFetch('/api/state');
+      const fresh = await apiFetch('/api/state' + qs({ tg_id:TG_ID }));
       if(JSON.stringify(fresh) !== JSON.stringify(state)){
         state = fresh;
         renderAll();
@@ -1782,14 +2019,15 @@
   document.getElementById('promptSearchInput').addEventListener('input', e => { ui.promptSearch = e.target.value.toLowerCase(); renderPrompts(); });
   document.getElementById('promptFilterCategory').addEventListener('change', e => { ui.promptFilterCategory = e.target.value; renderPrompts(); });
   document.getElementById('promptFilterService').addEventListener('change', e => { ui.promptFilterService = e.target.value; renderPrompts(); });
+  document.getElementById('labTargets').addEventListener('click', e => {
+    const btn = e.target.closest('.lab-target');
+    if(!btn) return;
+    labState.target = btn.dataset.target;
+    document.querySelectorAll('#labTargets .lab-target').forEach(b => b.classList.toggle('is-active', b === btn));
+    haptic('light');
+  });
 
   document.addEventListener('click', e => {
-    if(e.target.id === 'formOverlay'){
-       if(ui.showForm) closeForm();
-       if(ui.showPromptForm) closePromptForm();
-       return;
-    }
-    
     const target = e.target.closest('[data-action]');
     if(!target) return;
     const action = target.dataset.action, id = target.dataset.id;
@@ -1818,6 +2056,10 @@
       case 'export': exportData(); break;
       case 'import': importData(); break;
       case 'reset-cooldowns': resetAllCooldowns(); break;
+      case 'lab-generate': labGenerate(); break;
+      case 'lab-enhance': labEnhance(); break;
+      case 'lab-copy': labCopy(); break;
+      case 'lab-save': labSaveToVault(); break;
       case 'reset': resetAll(); break;
     }
   });
@@ -1856,7 +2098,7 @@
       await loadState();
     }catch(e){
       document.getElementById('mainZone').innerHTML = `<div class="empty-state"><b>No se pudo conectar</b>${escapeHtml(e.message)}</div>`;
-      showToast('Sin conexion con el servidor', 'error');
+      showToast('Sin conexión con el servidor', 'error');
       return;
     }
     renderAll();
