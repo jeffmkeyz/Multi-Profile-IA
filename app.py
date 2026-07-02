@@ -14,6 +14,7 @@ import uuid
 import hashlib
 import hmac
 import json
+import requests
 from urllib.parse import parse_qsl
 from contextlib import closing
 
@@ -418,6 +419,70 @@ def reset_all():
     db.execute("DELETE FROM profiles WHERE tg_id=?", (g.real_tg_id,))
     db.commit()
     return jsonify({"ok": True})
+
+# ---------------------------------------------------------------------------
+# ⚡ Prompt Lab — mejora con IA (proxy seguro del lado del servidor)
+# Pollinations ahora exige API key; acá vive como variable de entorno
+# POLLINATIONS_KEY y nunca toca el navegador. Registrate en
+# https://enter.pollinations.ai para obtenerla (tier gratuito disponible).
+# ---------------------------------------------------------------------------
+POLLINATIONS_KEY = os.environ.get("POLLINATIONS_KEY", "").strip()
+
+LAB_TARGET_LABELS = {
+    "texto": "chat / asistente de texto",
+    "imagen": "generación de imágenes",
+    "musica": "generación de música (Suno)",
+    "video": "generación de video",
+    "codigo": "asistente de programación",
+}
+
+@app.route("/api/lab/enhance", methods=["POST"])
+@limiter.limit("10 per minute")
+def lab_enhance():
+    if not POLLINATIONS_KEY:
+        return error("IA online no configurada en el servidor (falta POLLINATIONS_KEY)", 503)
+
+    body = request.get_json(force=True) or {}
+    idea = (body.get("idea") or "").strip()
+    target = body.get("target") or "texto"
+    if not idea:
+        return error("falta idea")
+    if len(idea) > 4000:
+        return error("idea demasiado larga (máx. 4000 caracteres)")
+
+    target_label = LAB_TARGET_LABELS.get(target, LAB_TARGET_LABELS["texto"])
+    metaprompt = (
+        "Sos un ingeniero de prompts experto. Convertí la siguiente idea escrita en "
+        f"lenguaje natural en un prompt avanzado, específico y profesional para una IA de tipo \"{target_label}\". "
+        "El prompt resultante debe estar en español, ser directo, incluir contexto, requisitos "
+        "concretos y formato de salida esperado. Respondé SOLO con el prompt final, sin "
+        "explicaciones ni introducción.\n\nIDEA: " + idea
+    )
+
+    try:
+        resp = requests.post(
+            "https://gen.pollinations.ai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {POLLINATIONS_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "openai",
+                "messages": [{"role": "user", "content": metaprompt}],
+            },
+            timeout=20,
+        )
+        if resp.status_code != 200:
+            return error(f"la IA respondió {resp.status_code}", 502)
+        data = resp.json()
+        text = (data.get("choices") or [{}])[0].get("message", {}).get("content", "").strip()
+        if not text:
+            return error("la IA devolvió una respuesta vacía", 502)
+        return jsonify({"prompt": text})
+    except requests.Timeout:
+        return error("la IA tardó demasiado en responder", 504)
+    except Exception as exc:
+        return error(f"no se pudo contactar a la IA: {exc}", 502)
 
 init_db()
 if __name__ == "__main__":
