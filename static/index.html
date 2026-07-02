@@ -423,8 +423,8 @@
       </div>
       <div class="lab-actions">
         <button class="btn primary" type="button" data-action="lab-generate">⚡ Generar prompt</button>
-        <button class="btn ghost" type="button" data-action="lab-enhance" title="Reescribe tu idea con un modelo de IA gratuito (Pollinations), sin API key">✨ Mejorar con IA</button>
-        <p class="lab-hint">"Generar" es instantáneo y offline. "Mejorar con IA" usa un modelo gratuito online.</p>
+        <button class="btn ghost" type="button" data-action="lab-enhance" title="Reescribe tu idea con IA a través de tu propio servidor">✨ Mejorar con IA</button>
+        <p class="lab-hint">"Generar" es instantáneo y offline. "Mejorar con IA" pasa por tu servidor (requiere POLLINATIONS_KEY en Railway).</p>
       </div>
       <div class="lab-loading" id="labLoading" hidden><span class="lab-spinner"></span><span id="labLoadingText">Pensando…</span></div>
       <div class="lab-result" id="labResult" hidden>
@@ -590,13 +590,23 @@
   }
 
   /* ============================================================
-     API
+     API — autenticación con el backend seguro:
+     dentro de Telegram manda el initData firmado (el servidor valida
+     la firma criptográfica); fuera de Telegram usa el modo DEV.
      ============================================================ */
+  function authHeader(){
+    if(tg && tg.initData) return tg.initData;
+    return 'DEV_MODE_' + TG_ID;
+  }
   async function apiFetch(path, options){
     options = options || {};
     const res = await fetch(path, {
-      headers: { 'Content-Type': 'application/json' },
-      ...options
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': authHeader(),
+        ...(options.headers || {})
+      }
     });
     if(!res.ok){
       let msg = 'Error de red (' + res.status + ')';
@@ -1281,8 +1291,8 @@
      Dos motores:
      1) Generador estructurado LOCAL: instantáneo, offline, organiza tu idea
         en el formato profesional que mejor rinde para cada tipo de IA.
-     2) Mejora con IA ONLINE: reescribe tu idea usando text.pollinations.ai
-        (gratuito, sin API key — mismo proveedor que ya usás en Publisherz).
+     2) Mejora con IA ONLINE: reescribe tu idea vía /api/lab/enhance de tu
+        propio backend (la key de Pollinations vive en el servidor, nunca acá).
      ============================================================ */
   let labState = { target:'texto', result:'', source:'' };
 
@@ -1392,26 +1402,22 @@ El archivo completo listo para usar. Si modificás código existente, mostrá el
     haptic();
     const loading = document.getElementById('labLoading');
     document.getElementById('labResult').hidden = true;
-    document.getElementById('labLoadingText').textContent = 'Mejorando tu prompt con IA (gratuito, puede tardar unos segundos)…';
+    document.getElementById('labLoadingText').textContent = 'Mejorando tu prompt con IA…';
     loading.hidden = false;
-    const meta = LAB_TARGET_META[labState.target] || LAB_TARGET_META.texto;
-    const metaprompt = `Sos un ingeniero de prompts experto. Convertí la siguiente idea escrita en lenguaje natural en un prompt avanzado, específico y profesional para una IA de tipo "${meta.label}". El prompt resultante debe estar en español, ser directo, incluir contexto, requisitos concretos y formato de salida esperado. Respondé SOLO con el prompt final, sin explicaciones ni introducción.\n\nIDEA: ${idea}`;
     try{
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 25000);
-      const res = await fetch('https://text.pollinations.ai/' + encodeURIComponent(metaprompt), { signal: controller.signal });
-      clearTimeout(timer);
-      if(!res.ok) throw new Error('respuesta ' + res.status);
-      const text = (await res.text()).trim();
-      if(!text) throw new Error('respuesta vacía');
+      const res = await apiFetch('/api/lab/enhance', {
+        method:'POST',
+        body: JSON.stringify({ idea, target: labState.target })
+      });
+      if(!res.prompt) throw new Error('respuesta vacía');
       haptic('success');
-      labShowResult(text, 'Prompt mejorado con IA (Pollinations, online)');
+      labShowResult(res.prompt, 'Prompt mejorado con IA (vía tu servidor)');
     }catch(e){
       haptic('error');
       loading.hidden = true;
       const tpl = LAB_TEMPLATES[labState.target] || LAB_TEMPLATES.texto;
       labShowResult(tpl(idea), 'La IA online no respondió — te dejo la versión estructurada offline');
-      showToast('IA online no disponible ahora (' + (e.name === 'AbortError' ? 'tardó demasiado' : e.message) + ')', 'error');
+      showToast('IA online: ' + e.message, 'error');
     }
   }
 
@@ -2103,7 +2109,7 @@ El archivo completo listo para usar. Si modificás código existente, mostrá el
     }
     renderAll();
     maybeOfferMigration();
-    setInterval(backgroundPoll, 30000);
+    setInterval(backgroundPoll, 90000);
     setInterval(refreshComputedVisuals, 60000);
   }
   boot();
